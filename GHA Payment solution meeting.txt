@@ -1,0 +1,40 @@
+GHA Payment solution meeting
+
+NEW Landing Page:
+
+- Just have For Freight Forwarder + Quick Pay option
+- Add a new banner option
+
+Next page is now:
+
+- For FF -> Registered Accounts
+- Change Cargo Payment Lookup to Cargo Lookup
+- Enter AWB number to view status and make payment
+
+Cargo Status & Billing (Guest Pay):
+
+- Breakdown Status --> Status: Ready for Pickup
+- Remove free storage period, elapsed days, remaining free period
+- Add current storage fee
+- Add pickup date choosing option --> shows estimated charge
+- Remove pcs & weight & cargo description
+
+Review & Pay page (Guest Pay):
+
+- Remove ACH & International Wire option
+- Processing Fee is our Upkeep Fee --> $10
+- 2.5% is CC FEE NOT PROCESSING FEE --> need another row in pay item
+
+Payment Confirmation page (Guest Pay):
+
+- Remove E-release status section
+- Datetime is korean
+
+Registered Customer Dashboard page:
+
+- Remove Pending Payment List
+- Add to AWB Watch list should be --> Search & Pay AWB section
+- FROM the search AWB detail page --> this is where you add to watchlist if needed
+
+
+watchlist ->search awb

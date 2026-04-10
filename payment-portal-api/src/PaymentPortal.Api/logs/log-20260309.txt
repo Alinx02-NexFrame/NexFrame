@@ -1,0 +1,1115 @@
+2026-03-09 16:36:18.318 -05:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-09 16:36:18.352 -05:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-03-09 16:36:18.353 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-09 16:36:18.354 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-03-09 16:36:18.364 -05:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-03-09 16:36:18.372 -05:00 [INF] Applying migration '20260309213514_AddCargoFlightDateConsigneeReadyToPickup'.
+2026-03-09 16:36:18.404 -05:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [Cargo] ADD [Consignee] nvarchar(max) NOT NULL DEFAULT N'';
+2026-03-09 16:36:18.406 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [Cargo] ADD [FlightDate] datetime2 NOT NULL DEFAULT '0001-01-01T00:00:00.0000000';
+2026-03-09 16:36:18.407 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [Cargo] ADD [ReadyToPickup] bit NOT NULL DEFAULT CAST(0 AS bit);
+2026-03-09 16:36:18.408 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20260309213514_AddCargoFlightDateConsigneeReadyToPickup', N'8.0.23');
+2026-03-09 16:36:31.004 -05:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-09 16:36:31.041 -05:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [PaymentPortal] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+END;
+2026-03-09 16:36:31.055 -05:00 [INF] Executed DbCommand (13ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+DROP DATABASE [PaymentPortal];
+2026-03-09 16:36:35.176 -05:00 [INF] Executed DbCommand (142ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+CREATE DATABASE [PaymentPortal];
+2026-03-09 16:36:35.233 -05:00 [INF] Executed DbCommand (37ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [PaymentPortal] SET READ_COMMITTED_SNAPSHOT ON;
+END;
+2026-03-09 16:36:35.243 -05:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-09 16:36:35.271 -05:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [__EFMigrationsHistory] (
+    [MigrationId] nvarchar(150) NOT NULL,
+    [ProductVersion] nvarchar(32) NOT NULL,
+    CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+);
+2026-03-09 16:36:35.272 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-09 16:36:35.278 -05:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-03-09 16:36:35.281 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-03-09 16:36:35.287 -05:00 [INF] Applying migration '20260207054047_InitialCreate'.
+2026-03-09 16:36:35.313 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [AuditLogs] (
+    [Id] int NOT NULL IDENTITY,
+    [UserId] int NULL,
+    [Action] nvarchar(max) NOT NULL,
+    [EntityType] nvarchar(max) NOT NULL,
+    [EntityId] int NULL,
+    [Details] nvarchar(max) NULL,
+    [IpAddress] nvarchar(max) NULL,
+    [Timestamp] datetime2 NOT NULL,
+    CONSTRAINT [PK_AuditLogs] PRIMARY KEY ([Id])
+);
+2026-03-09 16:36:35.314 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Cargo] (
+    [Id] int NOT NULL IDENTITY,
+    [AwbNumber] nvarchar(20) NOT NULL,
+    [Origin] nvarchar(100) NOT NULL,
+    [Destination] nvarchar(100) NOT NULL,
+    [ArrivalDate] datetime2 NOT NULL,
+    [ArrivalTime] nvarchar(10) NOT NULL,
+    [BreakdownStatus] nvarchar(20) NOT NULL,
+    [CustomsStatus] nvarchar(20) NOT NULL,
+    [StorageStartDate] datetime2 NOT NULL,
+    [FreeTimeDays] int NOT NULL,
+    [Pieces] int NOT NULL,
+    [Weight] decimal(18,2) NOT NULL,
+    [Description] nvarchar(500) NOT NULL,
+    CONSTRAINT [PK_Cargo] PRIMARY KEY ([Id])
+);
+2026-03-09 16:36:35.315 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Companies] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(200) NOT NULL,
+    [Email] nvarchar(200) NOT NULL,
+    [TaxId] nvarchar(50) NULL,
+    [AccountCredit] decimal(18,2) NOT NULL,
+    [CreatedAt] datetime2 NOT NULL,
+    CONSTRAINT [PK_Companies] PRIMARY KEY ([Id])
+);
+2026-03-09 16:36:35.316 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [BillingRecords] (
+    [Id] int NOT NULL IDENTITY,
+    [CargoId] int NOT NULL,
+    [ServiceFee] decimal(18,2) NOT NULL,
+    [StorageFee] decimal(18,2) NOT NULL,
+    [OtherCharge] decimal(18,2) NOT NULL,
+    [Subtotal] decimal(18,2) NOT NULL,
+    [ProcessingFee] decimal(18,2) NOT NULL,
+    [Total] decimal(18,2) NOT NULL,
+    [DueDate] datetime2 NOT NULL,
+    [Status] nvarchar(20) NOT NULL,
+    [CreatedAt] datetime2 NOT NULL,
+    [UpdatedAt] datetime2 NOT NULL,
+    CONSTRAINT [PK_BillingRecords] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_BillingRecords_Cargo_CargoId] FOREIGN KEY ([CargoId]) REFERENCES [Cargo] ([Id]) ON DELETE CASCADE
+);
+2026-03-09 16:36:35.317 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Users] (
+    [Id] int NOT NULL IDENTITY,
+    [Email] nvarchar(200) NOT NULL,
+    [PasswordHash] nvarchar(500) NOT NULL,
+    [FullName] nvarchar(100) NOT NULL,
+    [Role] nvarchar(20) NOT NULL,
+    [CompanyId] int NULL,
+    [CompanyRole] nvarchar(50) NULL,
+    [IsActive] bit NOT NULL,
+    [CreatedAt] datetime2 NOT NULL,
+    CONSTRAINT [PK_Users] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Users_Companies_CompanyId] FOREIGN KEY ([CompanyId]) REFERENCES [Companies] ([Id]) ON DELETE NO ACTION
+);
+2026-03-09 16:36:35.318 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Watchlists] (
+    [Id] int NOT NULL IDENTITY,
+    [CompanyId] int NOT NULL,
+    [CreatedAt] datetime2 NOT NULL,
+    CONSTRAINT [PK_Watchlists] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Watchlists_Companies_CompanyId] FOREIGN KEY ([CompanyId]) REFERENCES [Companies] ([Id]) ON DELETE CASCADE
+);
+2026-03-09 16:36:35.320 -05:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Payments] (
+    [Id] int NOT NULL IDENTITY,
+    [ConfirmationNumber] nvarchar(50) NOT NULL,
+    [AwbNumber] nvarchar(20) NOT NULL,
+    [Amount] decimal(18,2) NOT NULL,
+    [ProcessingFee] decimal(18,2) NOT NULL,
+    [PaymentMethod] nvarchar(30) NOT NULL,
+    [PaymentStatus] nvarchar(20) NOT NULL,
+    [Email] nvarchar(200) NOT NULL,
+    [CardLast4] nvarchar(4) NULL,
+    [UserId] int NULL,
+    [CompanyId] int NULL,
+    [CargoId] int NULL,
+    [PaymentDate] datetime2 NOT NULL,
+    CONSTRAINT [PK_Payments] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Payments_Cargo_CargoId] FOREIGN KEY ([CargoId]) REFERENCES [Cargo] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_Payments_Companies_CompanyId] FOREIGN KEY ([CompanyId]) REFERENCES [Companies] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_Payments_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE NO ACTION
+);
+2026-03-09 16:36:35.321 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [RefreshTokens] (
+    [Id] int NOT NULL IDENTITY,
+    [UserId] int NOT NULL,
+    [Token] nvarchar(500) NOT NULL,
+    [ExpiresAt] datetime2 NOT NULL,
+    [CreatedAt] datetime2 NOT NULL,
+    [IsRevoked] bit NOT NULL,
+    CONSTRAINT [PK_RefreshTokens] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_RefreshTokens_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
+);
+2026-03-09 16:36:35.322 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Reports] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(max) NOT NULL,
+    [ReportType] int NOT NULL,
+    [Format] int NOT NULL,
+    [FileUrl] nvarchar(max) NULL,
+    [GeneratedById] int NOT NULL,
+    [GeneratedAt] datetime2 NOT NULL,
+    CONSTRAINT [PK_Reports] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Reports_Users_GeneratedById] FOREIGN KEY ([GeneratedById]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
+);
+2026-03-09 16:36:35.323 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [UploadHistory] (
+    [Id] int NOT NULL IDENTITY,
+    [FileName] nvarchar(max) NOT NULL,
+    [Status] int NOT NULL,
+    [RecordCount] int NOT NULL,
+    [CompanyId] int NULL,
+    [UploadedById] int NOT NULL,
+    [UploadedAt] datetime2 NOT NULL,
+    [ErrorMessage] nvarchar(max) NULL,
+    CONSTRAINT [PK_UploadHistory] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_UploadHistory_Users_UploadedById] FOREIGN KEY ([UploadedById]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
+);
+2026-03-09 16:36:35.324 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [WatchlistItems] (
+    [Id] int NOT NULL IDENTITY,
+    [WatchlistId] int NOT NULL,
+    [AwbNumber] nvarchar(max) NOT NULL,
+    [AddedAt] datetime2 NOT NULL,
+    CONSTRAINT [PK_WatchlistItems] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_WatchlistItems_Watchlists_WatchlistId] FOREIGN KEY ([WatchlistId]) REFERENCES [Watchlists] ([Id]) ON DELETE CASCADE
+);
+2026-03-09 16:36:35.324 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_BillingRecords_CargoId] ON [BillingRecords] ([CargoId]);
+2026-03-09 16:36:35.325 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_Cargo_AwbNumber] ON [Cargo] ([AwbNumber]);
+2026-03-09 16:36:35.325 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Payments_CargoId] ON [Payments] ([CargoId]);
+2026-03-09 16:36:35.325 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Payments_CompanyId] ON [Payments] ([CompanyId]);
+2026-03-09 16:36:35.326 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_Payments_ConfirmationNumber] ON [Payments] ([ConfirmationNumber]);
+2026-03-09 16:36:35.326 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Payments_UserId] ON [Payments] ([UserId]);
+2026-03-09 16:36:35.327 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_RefreshTokens_Token] ON [RefreshTokens] ([Token]);
+2026-03-09 16:36:35.327 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_RefreshTokens_UserId] ON [RefreshTokens] ([UserId]);
+2026-03-09 16:36:35.328 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Reports_GeneratedById] ON [Reports] ([GeneratedById]);
+2026-03-09 16:36:35.328 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_UploadHistory_UploadedById] ON [UploadHistory] ([UploadedById]);
+2026-03-09 16:36:35.329 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Users_CompanyId] ON [Users] ([CompanyId]);
+2026-03-09 16:36:35.330 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_Users_Email] ON [Users] ([Email]);
+2026-03-09 16:36:35.330 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_WatchlistItems_WatchlistId] ON [WatchlistItems] ([WatchlistId]);
+2026-03-09 16:36:35.330 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Watchlists_CompanyId] ON [Watchlists] ([CompanyId]);
+2026-03-09 16:36:35.332 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20260207054047_InitialCreate', N'8.0.23');
+2026-03-09 16:36:35.334 -05:00 [INF] Applying migration '20260309213514_AddCargoFlightDateConsigneeReadyToPickup'.
+2026-03-09 16:36:35.345 -05:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [Cargo] ADD [Consignee] nvarchar(max) NOT NULL DEFAULT N'';
+2026-03-09 16:36:35.346 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [Cargo] ADD [FlightDate] datetime2 NOT NULL DEFAULT '0001-01-01T00:00:00.0000000';
+2026-03-09 16:36:35.346 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [Cargo] ADD [ReadyToPickup] bit NOT NULL DEFAULT CAST(0 AS bit);
+2026-03-09 16:36:35.347 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20260309213514_AddCargoFlightDateConsigneeReadyToPickup', N'8.0.23');
+2026-03-09 16:36:47.291 -05:00 [INF] Executed DbCommand (39ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-09 16:36:47.485 -05:00 [INF] Executed DbCommand (51ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-03-09 16:36:47.495 -05:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-09 16:36:47.502 -05:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-03-09 16:36:47.533 -05:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-03-09 16:36:47.565 -05:00 [INF] No migrations were applied. The database is already up to date.
+2026-03-09 16:36:47.893 -05:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Cargo] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-03-09 16:36:48.035 -05:00 [INF] Executed DbCommand (19ms) [Parameters=[@p0='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p1='?' (DbType = DateTime2), @p2='?' (Size = 200), @p3='?' (Size = 200), @p4='?' (Size = 50), @p5='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p6='?' (DbType = DateTime2), @p7='?' (Size = 200), @p8='?' (Size = 200), @p9='?' (Size = 50), @p10='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p11='?' (DbType = DateTime2), @p12='?' (Size = 200), @p13='?' (Size = 200), @p14='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [Companies] USING (
+VALUES (@p0, @p1, @p2, @p3, @p4, 0),
+(@p5, @p6, @p7, @p8, @p9, 1),
+(@p10, @p11, @p12, @p13, @p14, 2)) AS i ([AccountCredit], [CreatedAt], [Email], [Name], [TaxId], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([AccountCredit], [CreatedAt], [Email], [Name], [TaxId])
+VALUES (i.[AccountCredit], i.[CreatedAt], i.[Email], i.[Name], i.[TaxId])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-09 16:36:48.228 -05:00 [INF] Executed DbCommand (5ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 50), @p2='?' (DbType = DateTime2), @p3='?' (Size = 200), @p4='?' (Size = 100), @p5='?' (DbType = Boolean), @p6='?' (Size = 500), @p7='?' (Size = 20), @p8='?' (DbType = Int32), @p9='?' (Size = 50), @p10='?' (DbType = DateTime2), @p11='?' (Size = 200), @p12='?' (Size = 100), @p13='?' (DbType = Boolean), @p14='?' (Size = 500), @p15='?' (Size = 20), @p16='?' (DbType = Int32), @p17='?' (Size = 50), @p18='?' (DbType = DateTime2), @p19='?' (Size = 200), @p20='?' (Size = 100), @p21='?' (DbType = Boolean), @p22='?' (Size = 500), @p23='?' (Size = 20), @p24='?' (DbType = Int32), @p25='?' (Size = 50), @p26='?' (DbType = DateTime2), @p27='?' (Size = 200), @p28='?' (Size = 100), @p29='?' (DbType = Boolean), @p30='?' (Size = 500), @p31='?' (Size = 20)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [Users] USING (
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, 0),
+(@p8, @p9, @p10, @p11, @p12, @p13, @p14, @p15, 1),
+(@p16, @p17, @p18, @p19, @p20, @p21, @p22, @p23, 2),
+(@p24, @p25, @p26, @p27, @p28, @p29, @p30, @p31, 3)) AS i ([CompanyId], [CompanyRole], [CreatedAt], [Email], [FullName], [IsActive], [PasswordHash], [Role], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([CompanyId], [CompanyRole], [CreatedAt], [Email], [FullName], [IsActive], [PasswordHash], [Role])
+VALUES (i.[CompanyId], i.[CompanyRole], i.[CreatedAt], i.[Email], i.[FullName], i.[IsActive], i.[PasswordHash], i.[Role])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-09 16:36:48.264 -05:00 [INF] Executed DbCommand (11ms) [Parameters=[@p0='?' (DbType = DateTime2), @p1='?' (Size = 10), @p2='?' (Size = 20), @p3='?' (Size = 20), @p4='?' (Size = 4000), @p5='?' (Size = 20), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (DbType = DateTime2), @p9='?' (DbType = Int32), @p10='?' (Size = 100), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime2), @p14='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p15='?' (DbType = DateTime2), @p16='?' (Size = 10), @p17='?' (Size = 20), @p18='?' (Size = 20), @p19='?' (Size = 4000), @p20='?' (Size = 20), @p21='?' (Size = 500), @p22='?' (Size = 100), @p23='?' (DbType = DateTime2), @p24='?' (DbType = Int32), @p25='?' (Size = 100), @p26='?' (DbType = Int32), @p27='?' (DbType = Boolean), @p28='?' (DbType = DateTime2), @p29='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p30='?' (DbType = DateTime2), @p31='?' (Size = 10), @p32='?' (Size = 20), @p33='?' (Size = 20), @p34='?' (Size = 4000), @p35='?' (Size = 20), @p36='?' (Size = 500), @p37='?' (Size = 100), @p38='?' (DbType = DateTime2), @p39='?' (DbType = Int32), @p40='?' (Size = 100), @p41='?' (DbType = Int32), @p42='?' (DbType = Boolean), @p43='?' (DbType = DateTime2), @p44='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p45='?' (DbType = DateTime2), @p46='?' (Size = 10), @p47='?' (Size = 20), @p48='?' (Size = 20), @p49='?' (Size = 4000), @p50='?' (Size = 20), @p51='?' (Size = 500), @p52='?' (Size = 100), @p53='?' (DbType = DateTime2), @p54='?' (DbType = Int32), @p55='?' (Size = 100), @p56='?' (DbType = Int32), @p57='?' (DbType = Boolean), @p58='?' (DbType = DateTime2), @p59='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p60='?' (DbType = DateTime2), @p61='?' (Size = 10), @p62='?' (Size = 20), @p63='?' (Size = 20), @p64='?' (Size = 4000), @p65='?' (Size = 20), @p66='?' (Size = 500), @p67='?' (Size = 100), @p68='?' (DbType = DateTime2), @p69='?' (DbType = Int32), @p70='?' (Size = 100), @p71='?' (DbType = Int32), @p72='?' (DbType = Boolean), @p73='?' (DbType = DateTime2), @p74='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p75='?' (DbType = DateTime2), @p76='?' (Size = 10), @p77='?' (Size = 20), @p78='?' (Size = 20), @p79='?' (Size = 4000), @p80='?' (Size = 20), @p81='?' (Size = 500), @p82='?' (Size = 100), @p83='?' (DbType = DateTime2), @p84='?' (DbType = Int32), @p85='?' (Size = 100), @p86='?' (DbType = Int32), @p87='?' (DbType = Boolean), @p88='?' (DbType = DateTime2), @p89='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p90='?' (DbType = DateTime2), @p91='?' (Size = 10), @p92='?' (Size = 20), @p93='?' (Size = 20), @p94='?' (Size = 4000), @p95='?' (Size = 20), @p96='?' (Size = 500), @p97='?' (Size = 100), @p98='?' (DbType = DateTime2), @p99='?' (DbType = Int32), @p100='?' (Size = 100), @p101='?' (DbType = Int32), @p102='?' (DbType = Boolean), @p103='?' (DbType = DateTime2), @p104='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p105='?' (DbType = DateTime2), @p106='?' (Size = 10), @p107='?' (Size = 20), @p108='?' (Size = 20), @p109='?' (Size = 4000), @p110='?' (Size = 20), @p111='?' (Size = 500), @p112='?' (Size = 100), @p113='?' (DbType = DateTime2), @p114='?' (DbType = Int32), @p115='?' (Size = 100), @p116='?' (DbType = Int32), @p117='?' (DbType = Boolean), @p118='?' (DbType = DateTime2), @p119='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p120='?' (DbType = DateTime2), @p121='?' (Size = 10), @p122='?' (Size = 20), @p123='?' (Size = 20), @p124='?' (Size = 4000), @p125='?' (Size = 20), @p126='?' (Size = 500), @p127='?' (Size = 100), @p128='?' (DbType = DateTime2), @p129='?' (DbType = Int32), @p130='?' (Size = 100), @p131='?' (DbType = Int32), @p132='?' (DbType = Boolean), @p133='?' (DbType = DateTime2), @p134='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p135='?' (DbType = DateTime2), @p136='?' (Size = 10), @p137='?' (Size = 20), @p138='?' (Size = 20), @p139='?' (Size = 4000), @p140='?' (Size = 20), @p141='?' (Size = 500), @p142='?' (Size = 100), @p143='?' (DbType = DateTime2), @p144='?' (DbType = Int32), @p145='?' (Size = 100), @p146='?' (DbType = Int32), @p147='?' (DbType = Boolean), @p148='?' (DbType = DateTime2), @p149='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p150='?' (DbType = DateTime2), @p151='?' (Size = 10), @p152='?' (Size = 20), @p153='?' (Size = 20), @p154='?' (Size = 4000), @p155='?' (Size = 20), @p156='?' (Size = 500), @p157='?' (Size = 100), @p158='?' (DbType = DateTime2), @p159='?' (DbType = Int32), @p160='?' (Size = 100), @p161='?' (DbType = Int32), @p162='?' (DbType = Boolean), @p163='?' (DbType = DateTime2), @p164='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p165='?' (DbType = DateTime2), @p166='?' (Size = 10), @p167='?' (Size = 20), @p168='?' (Size = 20), @p169='?' (Size = 4000), @p170='?' (Size = 20), @p171='?' (Size = 500), @p172='?' (Size = 100), @p173='?' (DbType = DateTime2), @p174='?' (DbType = Int32), @p175='?' (Size = 100), @p176='?' (DbType = Int32), @p177='?' (DbType = Boolean), @p178='?' (DbType = DateTime2), @p179='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p180='?' (DbType = DateTime2), @p181='?' (Size = 10), @p182='?' (Size = 20), @p183='?' (Size = 20), @p184='?' (Size = 4000), @p185='?' (Size = 20), @p186='?' (Size = 500), @p187='?' (Size = 100), @p188='?' (DbType = DateTime2), @p189='?' (DbType = Int32), @p190='?' (Size = 100), @p191='?' (DbType = Int32), @p192='?' (DbType = Boolean), @p193='?' (DbType = DateTime2), @p194='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p195='?' (DbType = DateTime2), @p196='?' (Size = 10), @p197='?' (Size = 20), @p198='?' (Size = 20), @p199='?' (Size = 4000), @p200='?' (Size = 20), @p201='?' (Size = 500), @p202='?' (Size = 100), @p203='?' (DbType = DateTime2), @p204='?' (DbType = Int32), @p205='?' (Size = 100), @p206='?' (DbType = Int32), @p207='?' (DbType = Boolean), @p208='?' (DbType = DateTime2), @p209='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p210='?' (DbType = DateTime2), @p211='?' (Size = 10), @p212='?' (Size = 20), @p213='?' (Size = 20), @p214='?' (Size = 4000), @p215='?' (Size = 20), @p216='?' (Size = 500), @p217='?' (Size = 100), @p218='?' (DbType = DateTime2), @p219='?' (DbType = Int32), @p220='?' (Size = 100), @p221='?' (DbType = Int32), @p222='?' (DbType = Boolean), @p223='?' (DbType = DateTime2), @p224='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p225='?' (DbType = DateTime2), @p226='?' (Size = 10), @p227='?' (Size = 20), @p228='?' (Size = 20), @p229='?' (Size = 4000), @p230='?' (Size = 20), @p231='?' (Size = 500), @p232='?' (Size = 100), @p233='?' (DbType = DateTime2), @p234='?' (DbType = Int32), @p235='?' (Size = 100), @p236='?' (DbType = Int32), @p237='?' (DbType = Boolean), @p238='?' (DbType = DateTime2), @p239='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p240='?' (DbType = DateTime2), @p241='?' (Size = 10), @p242='?' (Size = 20), @p243='?' (Size = 20), @p244='?' (Size = 4000), @p245='?' (Size = 20), @p246='?' (Size = 500), @p247='?' (Size = 100), @p248='?' (DbType = DateTime2), @p249='?' (DbType = Int32), @p250='?' (Size = 100), @p251='?' (DbType = Int32), @p252='?' (DbType = Boolean), @p253='?' (DbType = DateTime2), @p254='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p255='?' (DbType = DateTime2), @p256='?' (Size = 10), @p257='?' (Size = 20), @p258='?' (Size = 20), @p259='?' (Size = 4000), @p260='?' (Size = 20), @p261='?' (Size = 500), @p262='?' (Size = 100), @p263='?' (DbType = DateTime2), @p264='?' (DbType = Int32), @p265='?' (Size = 100), @p266='?' (DbType = Int32), @p267='?' (DbType = Boolean), @p268='?' (DbType = DateTime2), @p269='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p270='?' (DbType = DateTime2), @p271='?' (Size = 10), @p272='?' (Size = 20), @p273='?' (Size = 20), @p274='?' (Size = 4000), @p275='?' (Size = 20), @p276='?' (Size = 500), @p277='?' (Size = 100), @p278='?' (DbType = DateTime2), @p279='?' (DbType = Int32), @p280='?' (Size = 100), @p281='?' (DbType = Int32), @p282='?' (DbType = Boolean), @p283='?' (DbType = DateTime2), @p284='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p285='?' (DbType = DateTime2), @p286='?' (Size = 10), @p287='?' (Size = 20), @p288='?' (Size = 20), @p289='?' (Size = 4000), @p290='?' (Size = 20), @p291='?' (Size = 500), @p292='?' (Size = 100), @p293='?' (DbType = DateTime2), @p294='?' (DbType = Int32), @p295='?' (Size = 100), @p296='?' (DbType = Int32), @p297='?' (DbType = Boolean), @p298='?' (DbType = DateTime2), @p299='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p300='?' (DbType = DateTime2), @p301='?' (Size = 10), @p302='?' (Size = 20), @p303='?' (Size = 20), @p304='?' (Size = 4000), @p305='?' (Size = 20), @p306='?' (Size = 500), @p307='?' (Size = 100), @p308='?' (DbType = DateTime2), @p309='?' (DbType = Int32), @p310='?' (Size = 100), @p311='?' (DbType = Int32), @p312='?' (DbType = Boolean), @p313='?' (DbType = DateTime2), @p314='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p315='?' (DbType = DateTime2), @p316='?' (Size = 10), @p317='?' (Size = 20), @p318='?' (Size = 20), @p319='?' (Size = 4000), @p320='?' (Size = 20), @p321='?' (Size = 500), @p322='?' (Size = 100), @p323='?' (DbType = DateTime2), @p324='?' (DbType = Int32), @p325='?' (Size = 100), @p326='?' (DbType = Int32), @p327='?' (DbType = Boolean), @p328='?' (DbType = DateTime2), @p329='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p330='?' (DbType = DateTime2), @p331='?' (Size = 10), @p332='?' (Size = 20), @p333='?' (Size = 20), @p334='?' (Size = 4000), @p335='?' (Size = 20), @p336='?' (Size = 500), @p337='?' (Size = 100), @p338='?' (DbType = DateTime2), @p339='?' (DbType = Int32), @p340='?' (Size = 100), @p341='?' (DbType = Int32), @p342='?' (DbType = Boolean), @p343='?' (DbType = DateTime2), @p344='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p345='?' (DbType = DateTime2), @p346='?' (Size = 10), @p347='?' (Size = 20), @p348='?' (Size = 20), @p349='?' (Size = 4000), @p350='?' (Size = 20), @p351='?' (Size = 500), @p352='?' (Size = 100), @p353='?' (DbType = DateTime2), @p354='?' (DbType = Int32), @p355='?' (Size = 100), @p356='?' (DbType = Int32), @p357='?' (DbType = Boolean), @p358='?' (DbType = DateTime2), @p359='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p360='?' (DbType = DateTime2), @p361='?' (Size = 10), @p362='?' (Size = 20), @p363='?' (Size = 20), @p364='?' (Size = 4000), @p365='?' (Size = 20), @p366='?' (Size = 500), @p367='?' (Size = 100), @p368='?' (DbType = DateTime2), @p369='?' (DbType = Int32), @p370='?' (Size = 100), @p371='?' (DbType = Int32), @p372='?' (DbType = Boolean), @p373='?' (DbType = DateTime2), @p374='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p375='?' (DbType = DateTime2), @p376='?' (Size = 10), @p377='?' (Size = 20), @p378='?' (Size = 20), @p379='?' (Size = 4000), @p380='?' (Size = 20), @p381='?' (Size = 500), @p382='?' (Size = 100), @p383='?' (DbType = DateTime2), @p384='?' (DbType = Int32), @p385='?' (Size = 100), @p386='?' (DbType = Int32), @p387='?' (DbType = Boolean), @p388='?' (DbType = DateTime2), @p389='?' (Precision = 18) (Scale = 2) (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [Cargo] USING (
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14, 0),
+(@p15, @p16, @p17, @p18, @p19, @p20, @p21, @p22, @p23, @p24, @p25, @p26, @p27, @p28, @p29, 1),
+(@p30, @p31, @p32, @p33, @p34, @p35, @p36, @p37, @p38, @p39, @p40, @p41, @p42, @p43, @p44, 2),
+(@p45, @p46, @p47, @p48, @p49, @p50, @p51, @p52, @p53, @p54, @p55, @p56, @p57, @p58, @p59, 3),
+(@p60, @p61, @p62, @p63, @p64, @p65, @p66, @p67, @p68, @p69, @p70, @p71, @p72, @p73, @p74, 4),
+(@p75, @p76, @p77, @p78, @p79, @p80, @p81, @p82, @p83, @p84, @p85, @p86, @p87, @p88, @p89, 5),
+(@p90, @p91, @p92, @p93, @p94, @p95, @p96, @p97, @p98, @p99, @p100, @p101, @p102, @p103, @p104, 6),
+(@p105, @p106, @p107, @p108, @p109, @p110, @p111, @p112, @p113, @p114, @p115, @p116, @p117, @p118, @p119, 7),
+(@p120, @p121, @p122, @p123, @p124, @p125, @p126, @p127, @p128, @p129, @p130, @p131, @p132, @p133, @p134, 8),
+(@p135, @p136, @p137, @p138, @p139, @p140, @p141, @p142, @p143, @p144, @p145, @p146, @p147, @p148, @p149, 9),
+(@p150, @p151, @p152, @p153, @p154, @p155, @p156, @p157, @p158, @p159, @p160, @p161, @p162, @p163, @p164, 10),
+(@p165, @p166, @p167, @p168, @p169, @p170, @p171, @p172, @p173, @p174, @p175, @p176, @p177, @p178, @p179, 11),
+(@p180, @p181, @p182, @p183, @p184, @p185, @p186, @p187, @p188, @p189, @p190, @p191, @p192, @p193, @p194, 12),
+(@p195, @p196, @p197, @p198, @p199, @p200, @p201, @p202, @p203, @p204, @p205, @p206, @p207, @p208, @p209, 13),
+(@p210, @p211, @p212, @p213, @p214, @p215, @p216, @p217, @p218, @p219, @p220, @p221, @p222, @p223, @p224, 14),
+(@p225, @p226, @p227, @p228, @p229, @p230, @p231, @p232, @p233, @p234, @p235, @p236, @p237, @p238, @p239, 15),
+(@p240, @p241, @p242, @p243, @p244, @p245, @p246, @p247, @p248, @p249, @p250, @p251, @p252, @p253, @p254, 16),
+(@p255, @p256, @p257, @p258, @p259, @p260, @p261, @p262, @p263, @p264, @p265, @p266, @p267, @p268, @p269, 17),
+(@p270, @p271, @p272, @p273, @p274, @p275, @p276, @p277, @p278, @p279, @p280, @p281, @p282, @p283, @p284, 18),
+(@p285, @p286, @p287, @p288, @p289, @p290, @p291, @p292, @p293, @p294, @p295, @p296, @p297, @p298, @p299, 19),
+(@p300, @p301, @p302, @p303, @p304, @p305, @p306, @p307, @p308, @p309, @p310, @p311, @p312, @p313, @p314, 20),
+(@p315, @p316, @p317, @p318, @p319, @p320, @p321, @p322, @p323, @p324, @p325, @p326, @p327, @p328, @p329, 21),
+(@p330, @p331, @p332, @p333, @p334, @p335, @p336, @p337, @p338, @p339, @p340, @p341, @p342, @p343, @p344, 22),
+(@p345, @p346, @p347, @p348, @p349, @p350, @p351, @p352, @p353, @p354, @p355, @p356, @p357, @p358, @p359, 23),
+(@p360, @p361, @p362, @p363, @p364, @p365, @p366, @p367, @p368, @p369, @p370, @p371, @p372, @p373, @p374, 24),
+(@p375, @p376, @p377, @p378, @p379, @p380, @p381, @p382, @p383, @p384, @p385, @p386, @p387, @p388, @p389, 25)) AS i ([ArrivalDate], [ArrivalTime], [AwbNumber], [BreakdownStatus], [Consignee], [CustomsStatus], [Description], [Destination], [FlightDate], [FreeTimeDays], [Origin], [Pieces], [ReadyToPickup], [StorageStartDate], [Weight], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([ArrivalDate], [ArrivalTime], [AwbNumber], [BreakdownStatus], [Consignee], [CustomsStatus], [Description], [Destination], [FlightDate], [FreeTimeDays], [Origin], [Pieces], [ReadyToPickup], [StorageStartDate], [Weight])
+VALUES (i.[ArrivalDate], i.[ArrivalTime], i.[AwbNumber], i.[BreakdownStatus], i.[Consignee], i.[CustomsStatus], i.[Description], i.[Destination], i.[FlightDate], i.[FreeTimeDays], i.[Origin], i.[Pieces], i.[ReadyToPickup], i.[StorageStartDate], i.[Weight])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-09 16:36:48.292 -05:00 [INF] Executed DbCommand (6ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (DbType = DateTime2), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p5='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p6='?' (Size = 20), @p7='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p10='?' (DbType = DateTime2), @p11='?' (DbType = Int32), @p12='?' (DbType = DateTime2), @p13='?' (DbType = DateTime2), @p14='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p15='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p16='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p17='?' (Size = 20), @p18='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p19='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p20='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p21='?' (DbType = DateTime2), @p22='?' (DbType = Int32), @p23='?' (DbType = DateTime2), @p24='?' (DbType = DateTime2), @p25='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p26='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p27='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p28='?' (Size = 20), @p29='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p30='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p31='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p32='?' (DbType = DateTime2)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [BillingRecords] USING (
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, 0),
+(@p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18, @p19, @p20, @p21, 1),
+(@p22, @p23, @p24, @p25, @p26, @p27, @p28, @p29, @p30, @p31, @p32, 2)) AS i ([CargoId], [CreatedAt], [DueDate], [OtherCharge], [ProcessingFee], [ServiceFee], [Status], [StorageFee], [Subtotal], [Total], [UpdatedAt], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([CargoId], [CreatedAt], [DueDate], [OtherCharge], [ProcessingFee], [ServiceFee], [Status], [StorageFee], [Subtotal], [Total], [UpdatedAt])
+VALUES (i.[CargoId], i.[CreatedAt], i.[DueDate], i.[OtherCharge], i.[ProcessingFee], i.[ServiceFee], i.[Status], i.[StorageFee], i.[Subtotal], i.[Total], i.[UpdatedAt])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-09 16:36:48.321 -05:00 [INF] Executed DbCommand (7ms) [Parameters=[@p0='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p1='?' (Size = 20), @p2='?' (Size = 4), @p3='?' (DbType = Int32), @p4='?' (DbType = Int32), @p5='?' (Size = 50), @p6='?' (Size = 200), @p7='?' (DbType = DateTime2), @p8='?' (Size = 30), @p9='?' (Size = 20), @p10='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p11='?' (DbType = Int32), @p12='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p13='?' (Size = 20), @p14='?' (Size = 4), @p15='?' (DbType = Int32), @p16='?' (DbType = Int32), @p17='?' (Size = 50), @p18='?' (Size = 200), @p19='?' (DbType = DateTime2), @p20='?' (Size = 30), @p21='?' (Size = 20), @p22='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p23='?' (DbType = Int32), @p24='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p25='?' (Size = 20), @p26='?' (Size = 4), @p27='?' (DbType = Int32), @p28='?' (DbType = Int32), @p29='?' (Size = 50), @p30='?' (Size = 200), @p31='?' (DbType = DateTime2), @p32='?' (Size = 30), @p33='?' (Size = 20), @p34='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p35='?' (DbType = Int32), @p36='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p37='?' (Size = 20), @p38='?' (Size = 4), @p39='?' (DbType = Int32), @p40='?' (DbType = Int32), @p41='?' (Size = 50), @p42='?' (Size = 200), @p43='?' (DbType = DateTime2), @p44='?' (Size = 30), @p45='?' (Size = 20), @p46='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p47='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [Payments] USING (
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, 0),
+(@p12, @p13, @p14, @p15, @p16, @p17, @p18, @p19, @p20, @p21, @p22, @p23, 1),
+(@p24, @p25, @p26, @p27, @p28, @p29, @p30, @p31, @p32, @p33, @p34, @p35, 2),
+(@p36, @p37, @p38, @p39, @p40, @p41, @p42, @p43, @p44, @p45, @p46, @p47, 3)) AS i ([Amount], [AwbNumber], [CardLast4], [CargoId], [CompanyId], [ConfirmationNumber], [Email], [PaymentDate], [PaymentMethod], [PaymentStatus], [ProcessingFee], [UserId], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Amount], [AwbNumber], [CardLast4], [CargoId], [CompanyId], [ConfirmationNumber], [Email], [PaymentDate], [PaymentMethod], [PaymentStatus], [ProcessingFee], [UserId])
+VALUES (i.[Amount], i.[AwbNumber], i.[CardLast4], i.[CargoId], i.[CompanyId], i.[ConfirmationNumber], i.[Email], i.[PaymentDate], i.[PaymentMethod], i.[PaymentStatus], i.[ProcessingFee], i.[UserId])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-09 16:36:48.334 -05:00 [INF] Executed DbCommand (2ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Watchlists] ([CompanyId], [CreatedAt])
+OUTPUT INSERTED.[Id]
+VALUES (@p0, @p1);
+2026-03-09 16:36:48.347 -05:00 [INF] Executed DbCommand (6ms) [Parameters=[@p0='?' (DbType = DateTime2), @p1='?' (Size = 4000), @p2='?' (DbType = Int32), @p3='?' (DbType = DateTime2), @p4='?' (Size = 4000), @p5='?' (DbType = Int32), @p6='?' (DbType = DateTime2), @p7='?' (Size = 4000), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 4000), @p11='?' (DbType = Int32), @p12='?' (DbType = DateTime2), @p13='?' (Size = 4000), @p14='?' (DbType = Int32), @p15='?' (DbType = DateTime2), @p16='?' (Size = 4000), @p17='?' (DbType = Int32), @p18='?' (DbType = DateTime2), @p19='?' (Size = 4000), @p20='?' (DbType = Int32), @p21='?' (DbType = DateTime2), @p22='?' (Size = 4000), @p23='?' (DbType = Int32), @p24='?' (DbType = DateTime2), @p25='?' (Size = 4000), @p26='?' (DbType = Int32), @p27='?' (DbType = DateTime2), @p28='?' (Size = 4000), @p29='?' (DbType = Int32), @p30='?' (DbType = DateTime2), @p31='?' (Size = 4000), @p32='?' (DbType = Int32), @p33='?' (DbType = DateTime2), @p34='?' (Size = 4000), @p35='?' (DbType = Int32), @p36='?' (DbType = DateTime2), @p37='?' (Size = 4000), @p38='?' (DbType = Int32), @p39='?' (DbType = DateTime2), @p40='?' (Size = 4000), @p41='?' (DbType = Int32), @p42='?' (DbType = DateTime2), @p43='?' (Size = 4000), @p44='?' (DbType = Int32), @p45='?' (DbType = DateTime2), @p46='?' (Size = 4000), @p47='?' (DbType = Int32), @p48='?' (DbType = DateTime2), @p49='?' (Size = 4000), @p50='?' (DbType = Int32), @p51='?' (DbType = DateTime2), @p52='?' (Size = 4000), @p53='?' (DbType = Int32), @p54='?' (DbType = DateTime2), @p55='?' (Size = 4000), @p56='?' (DbType = Int32), @p57='?' (DbType = DateTime2), @p58='?' (Size = 4000), @p59='?' (DbType = Int32), @p60='?' (DbType = DateTime2), @p61='?' (Size = 4000), @p62='?' (DbType = Int32), @p63='?' (DbType = DateTime2), @p64='?' (Size = 4000), @p65='?' (DbType = Int32), @p66='?' (DbType = DateTime2), @p67='?' (Size = 4000), @p68='?' (DbType = Int32), @p69='?' (DbType = DateTime2), @p70='?' (Size = 4000), @p71='?' (DbType = Int32), @p72='?' (DbType = DateTime2), @p73='?' (Size = 4000), @p74='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [WatchlistItems] USING (
+VALUES (@p0, @p1, @p2, 0),
+(@p3, @p4, @p5, 1),
+(@p6, @p7, @p8, 2),
+(@p9, @p10, @p11, 3),
+(@p12, @p13, @p14, 4),
+(@p15, @p16, @p17, 5),
+(@p18, @p19, @p20, 6),
+(@p21, @p22, @p23, 7),
+(@p24, @p25, @p26, 8),
+(@p27, @p28, @p29, 9),
+(@p30, @p31, @p32, 10),
+(@p33, @p34, @p35, 11),
+(@p36, @p37, @p38, 12),
+(@p39, @p40, @p41, 13),
+(@p42, @p43, @p44, 14),
+(@p45, @p46, @p47, 15),
+(@p48, @p49, @p50, 16),
+(@p51, @p52, @p53, 17),
+(@p54, @p55, @p56, 18),
+(@p57, @p58, @p59, 19),
+(@p60, @p61, @p62, 20),
+(@p63, @p64, @p65, 21),
+(@p66, @p67, @p68, 22),
+(@p69, @p70, @p71, 23),
+(@p72, @p73, @p74, 24)) AS i ([AddedAt], [AwbNumber], [WatchlistId], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([AddedAt], [AwbNumber], [WatchlistId])
+VALUES (i.[AddedAt], i.[AwbNumber], i.[WatchlistId])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-09 16:36:48.427 -05:00 [INF] User profile is available. Using 'C:\Users\Alinx\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-03-09 16:36:48.525 -05:00 [INF] Now listening on: http://localhost:5209
+2026-03-09 16:36:48.526 -05:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-03-09 16:36:48.526 -05:00 [INF] Hosting environment: Development
+2026-03-09 16:36:48.526 -05:00 [INF] Content root path: C:\Source_GHA\payment-portal-api\src\PaymentPortal.Api
+2026-03-09 16:46:15.248 -05:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-09 16:46:15.287 -05:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [PaymentPortal] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+END;
+2026-03-09 16:46:15.298 -05:00 [INF] Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+DROP DATABASE [PaymentPortal];
+2026-03-09 16:46:27.938 -05:00 [INF] Executed DbCommand (134ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+CREATE DATABASE [PaymentPortal];
+2026-03-09 16:46:27.995 -05:00 [INF] Executed DbCommand (36ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [PaymentPortal] SET READ_COMMITTED_SNAPSHOT ON;
+END;
+2026-03-09 16:46:28.005 -05:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-09 16:46:28.033 -05:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [__EFMigrationsHistory] (
+    [MigrationId] nvarchar(150) NOT NULL,
+    [ProductVersion] nvarchar(32) NOT NULL,
+    CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+);
+2026-03-09 16:46:28.034 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-09 16:46:28.040 -05:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-03-09 16:46:28.042 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-03-09 16:46:28.049 -05:00 [INF] Applying migration '20260207054047_InitialCreate'.
+2026-03-09 16:46:28.076 -05:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [AuditLogs] (
+    [Id] int NOT NULL IDENTITY,
+    [UserId] int NULL,
+    [Action] nvarchar(max) NOT NULL,
+    [EntityType] nvarchar(max) NOT NULL,
+    [EntityId] int NULL,
+    [Details] nvarchar(max) NULL,
+    [IpAddress] nvarchar(max) NULL,
+    [Timestamp] datetime2 NOT NULL,
+    CONSTRAINT [PK_AuditLogs] PRIMARY KEY ([Id])
+);
+2026-03-09 16:46:28.077 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Cargo] (
+    [Id] int NOT NULL IDENTITY,
+    [AwbNumber] nvarchar(20) NOT NULL,
+    [Origin] nvarchar(100) NOT NULL,
+    [Destination] nvarchar(100) NOT NULL,
+    [ArrivalDate] datetime2 NOT NULL,
+    [ArrivalTime] nvarchar(10) NOT NULL,
+    [BreakdownStatus] nvarchar(20) NOT NULL,
+    [CustomsStatus] nvarchar(20) NOT NULL,
+    [StorageStartDate] datetime2 NOT NULL,
+    [FreeTimeDays] int NOT NULL,
+    [Pieces] int NOT NULL,
+    [Weight] decimal(18,2) NOT NULL,
+    [Description] nvarchar(500) NOT NULL,
+    CONSTRAINT [PK_Cargo] PRIMARY KEY ([Id])
+);
+2026-03-09 16:46:28.078 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Companies] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(200) NOT NULL,
+    [Email] nvarchar(200) NOT NULL,
+    [TaxId] nvarchar(50) NULL,
+    [AccountCredit] decimal(18,2) NOT NULL,
+    [CreatedAt] datetime2 NOT NULL,
+    CONSTRAINT [PK_Companies] PRIMARY KEY ([Id])
+);
+2026-03-09 16:46:28.079 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [BillingRecords] (
+    [Id] int NOT NULL IDENTITY,
+    [CargoId] int NOT NULL,
+    [ServiceFee] decimal(18,2) NOT NULL,
+    [StorageFee] decimal(18,2) NOT NULL,
+    [OtherCharge] decimal(18,2) NOT NULL,
+    [Subtotal] decimal(18,2) NOT NULL,
+    [ProcessingFee] decimal(18,2) NOT NULL,
+    [Total] decimal(18,2) NOT NULL,
+    [DueDate] datetime2 NOT NULL,
+    [Status] nvarchar(20) NOT NULL,
+    [CreatedAt] datetime2 NOT NULL,
+    [UpdatedAt] datetime2 NOT NULL,
+    CONSTRAINT [PK_BillingRecords] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_BillingRecords_Cargo_CargoId] FOREIGN KEY ([CargoId]) REFERENCES [Cargo] ([Id]) ON DELETE CASCADE
+);
+2026-03-09 16:46:28.080 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Users] (
+    [Id] int NOT NULL IDENTITY,
+    [Email] nvarchar(200) NOT NULL,
+    [PasswordHash] nvarchar(500) NOT NULL,
+    [FullName] nvarchar(100) NOT NULL,
+    [Role] nvarchar(20) NOT NULL,
+    [CompanyId] int NULL,
+    [CompanyRole] nvarchar(50) NULL,
+    [IsActive] bit NOT NULL,
+    [CreatedAt] datetime2 NOT NULL,
+    CONSTRAINT [PK_Users] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Users_Companies_CompanyId] FOREIGN KEY ([CompanyId]) REFERENCES [Companies] ([Id]) ON DELETE NO ACTION
+);
+2026-03-09 16:46:28.081 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Watchlists] (
+    [Id] int NOT NULL IDENTITY,
+    [CompanyId] int NOT NULL,
+    [CreatedAt] datetime2 NOT NULL,
+    CONSTRAINT [PK_Watchlists] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Watchlists_Companies_CompanyId] FOREIGN KEY ([CompanyId]) REFERENCES [Companies] ([Id]) ON DELETE CASCADE
+);
+2026-03-09 16:46:28.082 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Payments] (
+    [Id] int NOT NULL IDENTITY,
+    [ConfirmationNumber] nvarchar(50) NOT NULL,
+    [AwbNumber] nvarchar(20) NOT NULL,
+    [Amount] decimal(18,2) NOT NULL,
+    [ProcessingFee] decimal(18,2) NOT NULL,
+    [PaymentMethod] nvarchar(30) NOT NULL,
+    [PaymentStatus] nvarchar(20) NOT NULL,
+    [Email] nvarchar(200) NOT NULL,
+    [CardLast4] nvarchar(4) NULL,
+    [UserId] int NULL,
+    [CompanyId] int NULL,
+    [CargoId] int NULL,
+    [PaymentDate] datetime2 NOT NULL,
+    CONSTRAINT [PK_Payments] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Payments_Cargo_CargoId] FOREIGN KEY ([CargoId]) REFERENCES [Cargo] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_Payments_Companies_CompanyId] FOREIGN KEY ([CompanyId]) REFERENCES [Companies] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_Payments_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE NO ACTION
+);
+2026-03-09 16:46:28.083 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [RefreshTokens] (
+    [Id] int NOT NULL IDENTITY,
+    [UserId] int NOT NULL,
+    [Token] nvarchar(500) NOT NULL,
+    [ExpiresAt] datetime2 NOT NULL,
+    [CreatedAt] datetime2 NOT NULL,
+    [IsRevoked] bit NOT NULL,
+    CONSTRAINT [PK_RefreshTokens] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_RefreshTokens_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
+);
+2026-03-09 16:46:28.084 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Reports] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(max) NOT NULL,
+    [ReportType] int NOT NULL,
+    [Format] int NOT NULL,
+    [FileUrl] nvarchar(max) NULL,
+    [GeneratedById] int NOT NULL,
+    [GeneratedAt] datetime2 NOT NULL,
+    CONSTRAINT [PK_Reports] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Reports_Users_GeneratedById] FOREIGN KEY ([GeneratedById]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
+);
+2026-03-09 16:46:28.085 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [UploadHistory] (
+    [Id] int NOT NULL IDENTITY,
+    [FileName] nvarchar(max) NOT NULL,
+    [Status] int NOT NULL,
+    [RecordCount] int NOT NULL,
+    [CompanyId] int NULL,
+    [UploadedById] int NOT NULL,
+    [UploadedAt] datetime2 NOT NULL,
+    [ErrorMessage] nvarchar(max) NULL,
+    CONSTRAINT [PK_UploadHistory] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_UploadHistory_Users_UploadedById] FOREIGN KEY ([UploadedById]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
+);
+2026-03-09 16:46:28.086 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [WatchlistItems] (
+    [Id] int NOT NULL IDENTITY,
+    [WatchlistId] int NOT NULL,
+    [AwbNumber] nvarchar(max) NOT NULL,
+    [AddedAt] datetime2 NOT NULL,
+    CONSTRAINT [PK_WatchlistItems] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_WatchlistItems_Watchlists_WatchlistId] FOREIGN KEY ([WatchlistId]) REFERENCES [Watchlists] ([Id]) ON DELETE CASCADE
+);
+2026-03-09 16:46:28.086 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_BillingRecords_CargoId] ON [BillingRecords] ([CargoId]);
+2026-03-09 16:46:28.087 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_Cargo_AwbNumber] ON [Cargo] ([AwbNumber]);
+2026-03-09 16:46:28.087 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Payments_CargoId] ON [Payments] ([CargoId]);
+2026-03-09 16:46:28.088 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Payments_CompanyId] ON [Payments] ([CompanyId]);
+2026-03-09 16:46:28.088 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_Payments_ConfirmationNumber] ON [Payments] ([ConfirmationNumber]);
+2026-03-09 16:46:28.088 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Payments_UserId] ON [Payments] ([UserId]);
+2026-03-09 16:46:28.089 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_RefreshTokens_Token] ON [RefreshTokens] ([Token]);
+2026-03-09 16:46:28.089 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_RefreshTokens_UserId] ON [RefreshTokens] ([UserId]);
+2026-03-09 16:46:28.089 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Reports_GeneratedById] ON [Reports] ([GeneratedById]);
+2026-03-09 16:46:28.090 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_UploadHistory_UploadedById] ON [UploadHistory] ([UploadedById]);
+2026-03-09 16:46:28.091 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Users_CompanyId] ON [Users] ([CompanyId]);
+2026-03-09 16:46:28.091 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_Users_Email] ON [Users] ([Email]);
+2026-03-09 16:46:28.092 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_WatchlistItems_WatchlistId] ON [WatchlistItems] ([WatchlistId]);
+2026-03-09 16:46:28.093 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Watchlists_CompanyId] ON [Watchlists] ([CompanyId]);
+2026-03-09 16:46:28.094 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20260207054047_InitialCreate', N'8.0.23');
+2026-03-09 16:46:28.097 -05:00 [INF] Applying migration '20260309213514_AddCargoFlightDateConsigneeReadyToPickup'.
+2026-03-09 16:46:28.108 -05:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [Cargo] ADD [Consignee] nvarchar(max) NOT NULL DEFAULT N'';
+2026-03-09 16:46:28.109 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [Cargo] ADD [FlightDate] datetime2 NOT NULL DEFAULT '0001-01-01T00:00:00.0000000';
+2026-03-09 16:46:28.109 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [Cargo] ADD [ReadyToPickup] bit NOT NULL DEFAULT CAST(0 AS bit);
+2026-03-09 16:46:28.109 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20260309213514_AddCargoFlightDateConsigneeReadyToPickup', N'8.0.23');
+2026-03-09 16:53:13.672 -05:00 [INF] Executed DbCommand (15ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-09 16:53:13.711 -05:00 [INF] Executed DbCommand (11ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-03-09 16:53:13.713 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-09 16:53:13.714 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-03-09 16:53:13.725 -05:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-03-09 16:53:13.734 -05:00 [INF] No migrations were applied. The database is already up to date.
+2026-03-09 16:53:13.829 -05:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Cargo] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-03-09 16:53:13.916 -05:00 [INF] Executed DbCommand (9ms) [Parameters=[@p0='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p1='?' (DbType = DateTime2), @p2='?' (Size = 200), @p3='?' (Size = 200), @p4='?' (Size = 50), @p5='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p6='?' (DbType = DateTime2), @p7='?' (Size = 200), @p8='?' (Size = 200), @p9='?' (Size = 50), @p10='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p11='?' (DbType = DateTime2), @p12='?' (Size = 200), @p13='?' (Size = 200), @p14='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [Companies] USING (
+VALUES (@p0, @p1, @p2, @p3, @p4, 0),
+(@p5, @p6, @p7, @p8, @p9, 1),
+(@p10, @p11, @p12, @p13, @p14, 2)) AS i ([AccountCredit], [CreatedAt], [Email], [Name], [TaxId], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([AccountCredit], [CreatedAt], [Email], [Name], [TaxId])
+VALUES (i.[AccountCredit], i.[CreatedAt], i.[Email], i.[Name], i.[TaxId])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-09 16:53:14.092 -05:00 [INF] Executed DbCommand (6ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 50), @p2='?' (DbType = DateTime2), @p3='?' (Size = 200), @p4='?' (Size = 100), @p5='?' (DbType = Boolean), @p6='?' (Size = 500), @p7='?' (Size = 20), @p8='?' (DbType = Int32), @p9='?' (Size = 50), @p10='?' (DbType = DateTime2), @p11='?' (Size = 200), @p12='?' (Size = 100), @p13='?' (DbType = Boolean), @p14='?' (Size = 500), @p15='?' (Size = 20), @p16='?' (DbType = Int32), @p17='?' (Size = 50), @p18='?' (DbType = DateTime2), @p19='?' (Size = 200), @p20='?' (Size = 100), @p21='?' (DbType = Boolean), @p22='?' (Size = 500), @p23='?' (Size = 20), @p24='?' (DbType = Int32), @p25='?' (Size = 50), @p26='?' (DbType = DateTime2), @p27='?' (Size = 200), @p28='?' (Size = 100), @p29='?' (DbType = Boolean), @p30='?' (Size = 500), @p31='?' (Size = 20)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [Users] USING (
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, 0),
+(@p8, @p9, @p10, @p11, @p12, @p13, @p14, @p15, 1),
+(@p16, @p17, @p18, @p19, @p20, @p21, @p22, @p23, 2),
+(@p24, @p25, @p26, @p27, @p28, @p29, @p30, @p31, 3)) AS i ([CompanyId], [CompanyRole], [CreatedAt], [Email], [FullName], [IsActive], [PasswordHash], [Role], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([CompanyId], [CompanyRole], [CreatedAt], [Email], [FullName], [IsActive], [PasswordHash], [Role])
+VALUES (i.[CompanyId], i.[CompanyRole], i.[CreatedAt], i.[Email], i.[FullName], i.[IsActive], i.[PasswordHash], i.[Role])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-09 16:53:14.138 -05:00 [INF] Executed DbCommand (10ms) [Parameters=[@p0='?' (DbType = DateTime2), @p1='?' (Size = 10), @p2='?' (Size = 20), @p3='?' (Size = 20), @p4='?' (Size = 4000), @p5='?' (Size = 20), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (DbType = DateTime2), @p9='?' (DbType = Int32), @p10='?' (Size = 100), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime2), @p14='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p15='?' (DbType = DateTime2), @p16='?' (Size = 10), @p17='?' (Size = 20), @p18='?' (Size = 20), @p19='?' (Size = 4000), @p20='?' (Size = 20), @p21='?' (Size = 500), @p22='?' (Size = 100), @p23='?' (DbType = DateTime2), @p24='?' (DbType = Int32), @p25='?' (Size = 100), @p26='?' (DbType = Int32), @p27='?' (DbType = Boolean), @p28='?' (DbType = DateTime2), @p29='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p30='?' (DbType = DateTime2), @p31='?' (Size = 10), @p32='?' (Size = 20), @p33='?' (Size = 20), @p34='?' (Size = 4000), @p35='?' (Size = 20), @p36='?' (Size = 500), @p37='?' (Size = 100), @p38='?' (DbType = DateTime2), @p39='?' (DbType = Int32), @p40='?' (Size = 100), @p41='?' (DbType = Int32), @p42='?' (DbType = Boolean), @p43='?' (DbType = DateTime2), @p44='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p45='?' (DbType = DateTime2), @p46='?' (Size = 10), @p47='?' (Size = 20), @p48='?' (Size = 20), @p49='?' (Size = 4000), @p50='?' (Size = 20), @p51='?' (Size = 500), @p52='?' (Size = 100), @p53='?' (DbType = DateTime2), @p54='?' (DbType = Int32), @p55='?' (Size = 100), @p56='?' (DbType = Int32), @p57='?' (DbType = Boolean), @p58='?' (DbType = DateTime2), @p59='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p60='?' (DbType = DateTime2), @p61='?' (Size = 10), @p62='?' (Size = 20), @p63='?' (Size = 20), @p64='?' (Size = 4000), @p65='?' (Size = 20), @p66='?' (Size = 500), @p67='?' (Size = 100), @p68='?' (DbType = DateTime2), @p69='?' (DbType = Int32), @p70='?' (Size = 100), @p71='?' (DbType = Int32), @p72='?' (DbType = Boolean), @p73='?' (DbType = DateTime2), @p74='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p75='?' (DbType = DateTime2), @p76='?' (Size = 10), @p77='?' (Size = 20), @p78='?' (Size = 20), @p79='?' (Size = 4000), @p80='?' (Size = 20), @p81='?' (Size = 500), @p82='?' (Size = 100), @p83='?' (DbType = DateTime2), @p84='?' (DbType = Int32), @p85='?' (Size = 100), @p86='?' (DbType = Int32), @p87='?' (DbType = Boolean), @p88='?' (DbType = DateTime2), @p89='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p90='?' (DbType = DateTime2), @p91='?' (Size = 10), @p92='?' (Size = 20), @p93='?' (Size = 20), @p94='?' (Size = 4000), @p95='?' (Size = 20), @p96='?' (Size = 500), @p97='?' (Size = 100), @p98='?' (DbType = DateTime2), @p99='?' (DbType = Int32), @p100='?' (Size = 100), @p101='?' (DbType = Int32), @p102='?' (DbType = Boolean), @p103='?' (DbType = DateTime2), @p104='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p105='?' (DbType = DateTime2), @p106='?' (Size = 10), @p107='?' (Size = 20), @p108='?' (Size = 20), @p109='?' (Size = 4000), @p110='?' (Size = 20), @p111='?' (Size = 500), @p112='?' (Size = 100), @p113='?' (DbType = DateTime2), @p114='?' (DbType = Int32), @p115='?' (Size = 100), @p116='?' (DbType = Int32), @p117='?' (DbType = Boolean), @p118='?' (DbType = DateTime2), @p119='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p120='?' (DbType = DateTime2), @p121='?' (Size = 10), @p122='?' (Size = 20), @p123='?' (Size = 20), @p124='?' (Size = 4000), @p125='?' (Size = 20), @p126='?' (Size = 500), @p127='?' (Size = 100), @p128='?' (DbType = DateTime2), @p129='?' (DbType = Int32), @p130='?' (Size = 100), @p131='?' (DbType = Int32), @p132='?' (DbType = Boolean), @p133='?' (DbType = DateTime2), @p134='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p135='?' (DbType = DateTime2), @p136='?' (Size = 10), @p137='?' (Size = 20), @p138='?' (Size = 20), @p139='?' (Size = 4000), @p140='?' (Size = 20), @p141='?' (Size = 500), @p142='?' (Size = 100), @p143='?' (DbType = DateTime2), @p144='?' (DbType = Int32), @p145='?' (Size = 100), @p146='?' (DbType = Int32), @p147='?' (DbType = Boolean), @p148='?' (DbType = DateTime2), @p149='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p150='?' (DbType = DateTime2), @p151='?' (Size = 10), @p152='?' (Size = 20), @p153='?' (Size = 20), @p154='?' (Size = 4000), @p155='?' (Size = 20), @p156='?' (Size = 500), @p157='?' (Size = 100), @p158='?' (DbType = DateTime2), @p159='?' (DbType = Int32), @p160='?' (Size = 100), @p161='?' (DbType = Int32), @p162='?' (DbType = Boolean), @p163='?' (DbType = DateTime2), @p164='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p165='?' (DbType = DateTime2), @p166='?' (Size = 10), @p167='?' (Size = 20), @p168='?' (Size = 20), @p169='?' (Size = 4000), @p170='?' (Size = 20), @p171='?' (Size = 500), @p172='?' (Size = 100), @p173='?' (DbType = DateTime2), @p174='?' (DbType = Int32), @p175='?' (Size = 100), @p176='?' (DbType = Int32), @p177='?' (DbType = Boolean), @p178='?' (DbType = DateTime2), @p179='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p180='?' (DbType = DateTime2), @p181='?' (Size = 10), @p182='?' (Size = 20), @p183='?' (Size = 20), @p184='?' (Size = 4000), @p185='?' (Size = 20), @p186='?' (Size = 500), @p187='?' (Size = 100), @p188='?' (DbType = DateTime2), @p189='?' (DbType = Int32), @p190='?' (Size = 100), @p191='?' (DbType = Int32), @p192='?' (DbType = Boolean), @p193='?' (DbType = DateTime2), @p194='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p195='?' (DbType = DateTime2), @p196='?' (Size = 10), @p197='?' (Size = 20), @p198='?' (Size = 20), @p199='?' (Size = 4000), @p200='?' (Size = 20), @p201='?' (Size = 500), @p202='?' (Size = 100), @p203='?' (DbType = DateTime2), @p204='?' (DbType = Int32), @p205='?' (Size = 100), @p206='?' (DbType = Int32), @p207='?' (DbType = Boolean), @p208='?' (DbType = DateTime2), @p209='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p210='?' (DbType = DateTime2), @p211='?' (Size = 10), @p212='?' (Size = 20), @p213='?' (Size = 20), @p214='?' (Size = 4000), @p215='?' (Size = 20), @p216='?' (Size = 500), @p217='?' (Size = 100), @p218='?' (DbType = DateTime2), @p219='?' (DbType = Int32), @p220='?' (Size = 100), @p221='?' (DbType = Int32), @p222='?' (DbType = Boolean), @p223='?' (DbType = DateTime2), @p224='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p225='?' (DbType = DateTime2), @p226='?' (Size = 10), @p227='?' (Size = 20), @p228='?' (Size = 20), @p229='?' (Size = 4000), @p230='?' (Size = 20), @p231='?' (Size = 500), @p232='?' (Size = 100), @p233='?' (DbType = DateTime2), @p234='?' (DbType = Int32), @p235='?' (Size = 100), @p236='?' (DbType = Int32), @p237='?' (DbType = Boolean), @p238='?' (DbType = DateTime2), @p239='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p240='?' (DbType = DateTime2), @p241='?' (Size = 10), @p242='?' (Size = 20), @p243='?' (Size = 20), @p244='?' (Size = 4000), @p245='?' (Size = 20), @p246='?' (Size = 500), @p247='?' (Size = 100), @p248='?' (DbType = DateTime2), @p249='?' (DbType = Int32), @p250='?' (Size = 100), @p251='?' (DbType = Int32), @p252='?' (DbType = Boolean), @p253='?' (DbType = DateTime2), @p254='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p255='?' (DbType = DateTime2), @p256='?' (Size = 10), @p257='?' (Size = 20), @p258='?' (Size = 20), @p259='?' (Size = 4000), @p260='?' (Size = 20), @p261='?' (Size = 500), @p262='?' (Size = 100), @p263='?' (DbType = DateTime2), @p264='?' (DbType = Int32), @p265='?' (Size = 100), @p266='?' (DbType = Int32), @p267='?' (DbType = Boolean), @p268='?' (DbType = DateTime2), @p269='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p270='?' (DbType = DateTime2), @p271='?' (Size = 10), @p272='?' (Size = 20), @p273='?' (Size = 20), @p274='?' (Size = 4000), @p275='?' (Size = 20), @p276='?' (Size = 500), @p277='?' (Size = 100), @p278='?' (DbType = DateTime2), @p279='?' (DbType = Int32), @p280='?' (Size = 100), @p281='?' (DbType = Int32), @p282='?' (DbType = Boolean), @p283='?' (DbType = DateTime2), @p284='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p285='?' (DbType = DateTime2), @p286='?' (Size = 10), @p287='?' (Size = 20), @p288='?' (Size = 20), @p289='?' (Size = 4000), @p290='?' (Size = 20), @p291='?' (Size = 500), @p292='?' (Size = 100), @p293='?' (DbType = DateTime2), @p294='?' (DbType = Int32), @p295='?' (Size = 100), @p296='?' (DbType = Int32), @p297='?' (DbType = Boolean), @p298='?' (DbType = DateTime2), @p299='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p300='?' (DbType = DateTime2), @p301='?' (Size = 10), @p302='?' (Size = 20), @p303='?' (Size = 20), @p304='?' (Size = 4000), @p305='?' (Size = 20), @p306='?' (Size = 500), @p307='?' (Size = 100), @p308='?' (DbType = DateTime2), @p309='?' (DbType = Int32), @p310='?' (Size = 100), @p311='?' (DbType = Int32), @p312='?' (DbType = Boolean), @p313='?' (DbType = DateTime2), @p314='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p315='?' (DbType = DateTime2), @p316='?' (Size = 10), @p317='?' (Size = 20), @p318='?' (Size = 20), @p319='?' (Size = 4000), @p320='?' (Size = 20), @p321='?' (Size = 500), @p322='?' (Size = 100), @p323='?' (DbType = DateTime2), @p324='?' (DbType = Int32), @p325='?' (Size = 100), @p326='?' (DbType = Int32), @p327='?' (DbType = Boolean), @p328='?' (DbType = DateTime2), @p329='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p330='?' (DbType = DateTime2), @p331='?' (Size = 10), @p332='?' (Size = 20), @p333='?' (Size = 20), @p334='?' (Size = 4000), @p335='?' (Size = 20), @p336='?' (Size = 500), @p337='?' (Size = 100), @p338='?' (DbType = DateTime2), @p339='?' (DbType = Int32), @p340='?' (Size = 100), @p341='?' (DbType = Int32), @p342='?' (DbType = Boolean), @p343='?' (DbType = DateTime2), @p344='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p345='?' (DbType = DateTime2), @p346='?' (Size = 10), @p347='?' (Size = 20), @p348='?' (Size = 20), @p349='?' (Size = 4000), @p350='?' (Size = 20), @p351='?' (Size = 500), @p352='?' (Size = 100), @p353='?' (DbType = DateTime2), @p354='?' (DbType = Int32), @p355='?' (Size = 100), @p356='?' (DbType = Int32), @p357='?' (DbType = Boolean), @p358='?' (DbType = DateTime2), @p359='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p360='?' (DbType = DateTime2), @p361='?' (Size = 10), @p362='?' (Size = 20), @p363='?' (Size = 20), @p364='?' (Size = 4000), @p365='?' (Size = 20), @p366='?' (Size = 500), @p367='?' (Size = 100), @p368='?' (DbType = DateTime2), @p369='?' (DbType = Int32), @p370='?' (Size = 100), @p371='?' (DbType = Int32), @p372='?' (DbType = Boolean), @p373='?' (DbType = DateTime2), @p374='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p375='?' (DbType = DateTime2), @p376='?' (Size = 10), @p377='?' (Size = 20), @p378='?' (Size = 20), @p379='?' (Size = 4000), @p380='?' (Size = 20), @p381='?' (Size = 500), @p382='?' (Size = 100), @p383='?' (DbType = DateTime2), @p384='?' (DbType = Int32), @p385='?' (Size = 100), @p386='?' (DbType = Int32), @p387='?' (DbType = Boolean), @p388='?' (DbType = DateTime2), @p389='?' (Precision = 18) (Scale = 2) (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [Cargo] USING (
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14, 0),
+(@p15, @p16, @p17, @p18, @p19, @p20, @p21, @p22, @p23, @p24, @p25, @p26, @p27, @p28, @p29, 1),
+(@p30, @p31, @p32, @p33, @p34, @p35, @p36, @p37, @p38, @p39, @p40, @p41, @p42, @p43, @p44, 2),
+(@p45, @p46, @p47, @p48, @p49, @p50, @p51, @p52, @p53, @p54, @p55, @p56, @p57, @p58, @p59, 3),
+(@p60, @p61, @p62, @p63, @p64, @p65, @p66, @p67, @p68, @p69, @p70, @p71, @p72, @p73, @p74, 4),
+(@p75, @p76, @p77, @p78, @p79, @p80, @p81, @p82, @p83, @p84, @p85, @p86, @p87, @p88, @p89, 5),
+(@p90, @p91, @p92, @p93, @p94, @p95, @p96, @p97, @p98, @p99, @p100, @p101, @p102, @p103, @p104, 6),
+(@p105, @p106, @p107, @p108, @p109, @p110, @p111, @p112, @p113, @p114, @p115, @p116, @p117, @p118, @p119, 7),
+(@p120, @p121, @p122, @p123, @p124, @p125, @p126, @p127, @p128, @p129, @p130, @p131, @p132, @p133, @p134, 8),
+(@p135, @p136, @p137, @p138, @p139, @p140, @p141, @p142, @p143, @p144, @p145, @p146, @p147, @p148, @p149, 9),
+(@p150, @p151, @p152, @p153, @p154, @p155, @p156, @p157, @p158, @p159, @p160, @p161, @p162, @p163, @p164, 10),
+(@p165, @p166, @p167, @p168, @p169, @p170, @p171, @p172, @p173, @p174, @p175, @p176, @p177, @p178, @p179, 11),
+(@p180, @p181, @p182, @p183, @p184, @p185, @p186, @p187, @p188, @p189, @p190, @p191, @p192, @p193, @p194, 12),
+(@p195, @p196, @p197, @p198, @p199, @p200, @p201, @p202, @p203, @p204, @p205, @p206, @p207, @p208, @p209, 13),
+(@p210, @p211, @p212, @p213, @p214, @p215, @p216, @p217, @p218, @p219, @p220, @p221, @p222, @p223, @p224, 14),
+(@p225, @p226, @p227, @p228, @p229, @p230, @p231, @p232, @p233, @p234, @p235, @p236, @p237, @p238, @p239, 15),
+(@p240, @p241, @p242, @p243, @p244, @p245, @p246, @p247, @p248, @p249, @p250, @p251, @p252, @p253, @p254, 16),
+(@p255, @p256, @p257, @p258, @p259, @p260, @p261, @p262, @p263, @p264, @p265, @p266, @p267, @p268, @p269, 17),
+(@p270, @p271, @p272, @p273, @p274, @p275, @p276, @p277, @p278, @p279, @p280, @p281, @p282, @p283, @p284, 18),
+(@p285, @p286, @p287, @p288, @p289, @p290, @p291, @p292, @p293, @p294, @p295, @p296, @p297, @p298, @p299, 19),
+(@p300, @p301, @p302, @p303, @p304, @p305, @p306, @p307, @p308, @p309, @p310, @p311, @p312, @p313, @p314, 20),
+(@p315, @p316, @p317, @p318, @p319, @p320, @p321, @p322, @p323, @p324, @p325, @p326, @p327, @p328, @p329, 21),
+(@p330, @p331, @p332, @p333, @p334, @p335, @p336, @p337, @p338, @p339, @p340, @p341, @p342, @p343, @p344, 22),
+(@p345, @p346, @p347, @p348, @p349, @p350, @p351, @p352, @p353, @p354, @p355, @p356, @p357, @p358, @p359, 23),
+(@p360, @p361, @p362, @p363, @p364, @p365, @p366, @p367, @p368, @p369, @p370, @p371, @p372, @p373, @p374, 24),
+(@p375, @p376, @p377, @p378, @p379, @p380, @p381, @p382, @p383, @p384, @p385, @p386, @p387, @p388, @p389, 25)) AS i ([ArrivalDate], [ArrivalTime], [AwbNumber], [BreakdownStatus], [Consignee], [CustomsStatus], [Description], [Destination], [FlightDate], [FreeTimeDays], [Origin], [Pieces], [ReadyToPickup], [StorageStartDate], [Weight], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([ArrivalDate], [ArrivalTime], [AwbNumber], [BreakdownStatus], [Consignee], [CustomsStatus], [Description], [Destination], [FlightDate], [FreeTimeDays], [Origin], [Pieces], [ReadyToPickup], [StorageStartDate], [Weight])
+VALUES (i.[ArrivalDate], i.[ArrivalTime], i.[AwbNumber], i.[BreakdownStatus], i.[Consignee], i.[CustomsStatus], i.[Description], i.[Destination], i.[FlightDate], i.[FreeTimeDays], i.[Origin], i.[Pieces], i.[ReadyToPickup], i.[StorageStartDate], i.[Weight])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-09 16:53:14.165 -05:00 [INF] Executed DbCommand (5ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (DbType = DateTime2), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p5='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p6='?' (Size = 20), @p7='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p10='?' (DbType = DateTime2), @p11='?' (DbType = Int32), @p12='?' (DbType = DateTime2), @p13='?' (DbType = DateTime2), @p14='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p15='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p16='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p17='?' (Size = 20), @p18='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p19='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p20='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p21='?' (DbType = DateTime2), @p22='?' (DbType = Int32), @p23='?' (DbType = DateTime2), @p24='?' (DbType = DateTime2), @p25='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p26='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p27='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p28='?' (Size = 20), @p29='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p30='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p31='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p32='?' (DbType = DateTime2)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [BillingRecords] USING (
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, 0),
+(@p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18, @p19, @p20, @p21, 1),
+(@p22, @p23, @p24, @p25, @p26, @p27, @p28, @p29, @p30, @p31, @p32, 2)) AS i ([CargoId], [CreatedAt], [DueDate], [OtherCharge], [ProcessingFee], [ServiceFee], [Status], [StorageFee], [Subtotal], [Total], [UpdatedAt], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([CargoId], [CreatedAt], [DueDate], [OtherCharge], [ProcessingFee], [ServiceFee], [Status], [StorageFee], [Subtotal], [Total], [UpdatedAt])
+VALUES (i.[CargoId], i.[CreatedAt], i.[DueDate], i.[OtherCharge], i.[ProcessingFee], i.[ServiceFee], i.[Status], i.[StorageFee], i.[Subtotal], i.[Total], i.[UpdatedAt])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-09 16:53:14.198 -05:00 [INF] Executed DbCommand (8ms) [Parameters=[@p0='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p1='?' (Size = 20), @p2='?' (Size = 4), @p3='?' (DbType = Int32), @p4='?' (DbType = Int32), @p5='?' (Size = 50), @p6='?' (Size = 200), @p7='?' (DbType = DateTime2), @p8='?' (Size = 30), @p9='?' (Size = 20), @p10='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p11='?' (DbType = Int32), @p12='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p13='?' (Size = 20), @p14='?' (Size = 4), @p15='?' (DbType = Int32), @p16='?' (DbType = Int32), @p17='?' (Size = 50), @p18='?' (Size = 200), @p19='?' (DbType = DateTime2), @p20='?' (Size = 30), @p21='?' (Size = 20), @p22='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p23='?' (DbType = Int32), @p24='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p25='?' (Size = 20), @p26='?' (Size = 4), @p27='?' (DbType = Int32), @p28='?' (DbType = Int32), @p29='?' (Size = 50), @p30='?' (Size = 200), @p31='?' (DbType = DateTime2), @p32='?' (Size = 30), @p33='?' (Size = 20), @p34='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p35='?' (DbType = Int32), @p36='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p37='?' (Size = 20), @p38='?' (Size = 4), @p39='?' (DbType = Int32), @p40='?' (DbType = Int32), @p41='?' (Size = 50), @p42='?' (Size = 200), @p43='?' (DbType = DateTime2), @p44='?' (Size = 30), @p45='?' (Size = 20), @p46='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p47='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [Payments] USING (
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, 0),
+(@p12, @p13, @p14, @p15, @p16, @p17, @p18, @p19, @p20, @p21, @p22, @p23, 1),
+(@p24, @p25, @p26, @p27, @p28, @p29, @p30, @p31, @p32, @p33, @p34, @p35, 2),
+(@p36, @p37, @p38, @p39, @p40, @p41, @p42, @p43, @p44, @p45, @p46, @p47, 3)) AS i ([Amount], [AwbNumber], [CardLast4], [CargoId], [CompanyId], [ConfirmationNumber], [Email], [PaymentDate], [PaymentMethod], [PaymentStatus], [ProcessingFee], [UserId], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Amount], [AwbNumber], [CardLast4], [CargoId], [CompanyId], [ConfirmationNumber], [Email], [PaymentDate], [PaymentMethod], [PaymentStatus], [ProcessingFee], [UserId])
+VALUES (i.[Amount], i.[AwbNumber], i.[CardLast4], i.[CargoId], i.[CompanyId], i.[ConfirmationNumber], i.[Email], i.[PaymentDate], i.[PaymentMethod], i.[PaymentStatus], i.[ProcessingFee], i.[UserId])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-09 16:53:14.211 -05:00 [INF] Executed DbCommand (2ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Watchlists] ([CompanyId], [CreatedAt])
+OUTPUT INSERTED.[Id]
+VALUES (@p0, @p1);
+2026-03-09 16:53:14.226 -05:00 [INF] Executed DbCommand (6ms) [Parameters=[@p0='?' (DbType = DateTime2), @p1='?' (Size = 4000), @p2='?' (DbType = Int32), @p3='?' (DbType = DateTime2), @p4='?' (Size = 4000), @p5='?' (DbType = Int32), @p6='?' (DbType = DateTime2), @p7='?' (Size = 4000), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 4000), @p11='?' (DbType = Int32), @p12='?' (DbType = DateTime2), @p13='?' (Size = 4000), @p14='?' (DbType = Int32), @p15='?' (DbType = DateTime2), @p16='?' (Size = 4000), @p17='?' (DbType = Int32), @p18='?' (DbType = DateTime2), @p19='?' (Size = 4000), @p20='?' (DbType = Int32), @p21='?' (DbType = DateTime2), @p22='?' (Size = 4000), @p23='?' (DbType = Int32), @p24='?' (DbType = DateTime2), @p25='?' (Size = 4000), @p26='?' (DbType = Int32), @p27='?' (DbType = DateTime2), @p28='?' (Size = 4000), @p29='?' (DbType = Int32), @p30='?' (DbType = DateTime2), @p31='?' (Size = 4000), @p32='?' (DbType = Int32), @p33='?' (DbType = DateTime2), @p34='?' (Size = 4000), @p35='?' (DbType = Int32), @p36='?' (DbType = DateTime2), @p37='?' (Size = 4000), @p38='?' (DbType = Int32), @p39='?' (DbType = DateTime2), @p40='?' (Size = 4000), @p41='?' (DbType = Int32), @p42='?' (DbType = DateTime2), @p43='?' (Size = 4000), @p44='?' (DbType = Int32), @p45='?' (DbType = DateTime2), @p46='?' (Size = 4000), @p47='?' (DbType = Int32), @p48='?' (DbType = DateTime2), @p49='?' (Size = 4000), @p50='?' (DbType = Int32), @p51='?' (DbType = DateTime2), @p52='?' (Size = 4000), @p53='?' (DbType = Int32), @p54='?' (DbType = DateTime2), @p55='?' (Size = 4000), @p56='?' (DbType = Int32), @p57='?' (DbType = DateTime2), @p58='?' (Size = 4000), @p59='?' (DbType = Int32), @p60='?' (DbType = DateTime2), @p61='?' (Size = 4000), @p62='?' (DbType = Int32), @p63='?' (DbType = DateTime2), @p64='?' (Size = 4000), @p65='?' (DbType = Int32), @p66='?' (DbType = DateTime2), @p67='?' (Size = 4000), @p68='?' (DbType = Int32), @p69='?' (DbType = DateTime2), @p70='?' (Size = 4000), @p71='?' (DbType = Int32), @p72='?' (DbType = DateTime2), @p73='?' (Size = 4000), @p74='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [WatchlistItems] USING (
+VALUES (@p0, @p1, @p2, 0),
+(@p3, @p4, @p5, 1),
+(@p6, @p7, @p8, 2),
+(@p9, @p10, @p11, 3),
+(@p12, @p13, @p14, 4),
+(@p15, @p16, @p17, 5),
+(@p18, @p19, @p20, 6),
+(@p21, @p22, @p23, 7),
+(@p24, @p25, @p26, 8),
+(@p27, @p28, @p29, 9),
+(@p30, @p31, @p32, 10),
+(@p33, @p34, @p35, 11),
+(@p36, @p37, @p38, 12),
+(@p39, @p40, @p41, 13),
+(@p42, @p43, @p44, 14),
+(@p45, @p46, @p47, 15),
+(@p48, @p49, @p50, 16),
+(@p51, @p52, @p53, 17),
+(@p54, @p55, @p56, 18),
+(@p57, @p58, @p59, 19),
+(@p60, @p61, @p62, 20),
+(@p63, @p64, @p65, 21),
+(@p66, @p67, @p68, 22),
+(@p69, @p70, @p71, 23),
+(@p72, @p73, @p74, 24)) AS i ([AddedAt], [AwbNumber], [WatchlistId], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([AddedAt], [AwbNumber], [WatchlistId])
+VALUES (i.[AddedAt], i.[AwbNumber], i.[WatchlistId])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-09 16:53:14.276 -05:00 [INF] User profile is available. Using 'C:\Users\Alinx\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-03-09 16:53:14.309 -05:00 [INF] Now listening on: http://localhost:5209
+2026-03-09 16:53:14.310 -05:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-03-09 16:53:14.310 -05:00 [INF] Hosting environment: Development
+2026-03-09 16:53:14.310 -05:00 [INF] Content root path: C:\Source_GHA\payment-portal-api\src\PaymentPortal.Api
+2026-03-09 17:01:44.702 -05:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-09 17:01:44.738 -05:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [PaymentPortal] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+END;
+2026-03-09 17:01:44.751 -05:00 [INF] Executed DbCommand (13ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+DROP DATABASE [PaymentPortal];
+2026-03-09 17:01:49.165 -05:00 [INF] Executed DbCommand (138ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+CREATE DATABASE [PaymentPortal];
+2026-03-09 17:01:49.220 -05:00 [INF] Executed DbCommand (35ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [PaymentPortal] SET READ_COMMITTED_SNAPSHOT ON;
+END;
+2026-03-09 17:01:49.230 -05:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-09 17:01:49.259 -05:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [__EFMigrationsHistory] (
+    [MigrationId] nvarchar(150) NOT NULL,
+    [ProductVersion] nvarchar(32) NOT NULL,
+    CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+);
+2026-03-09 17:01:49.260 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-09 17:01:49.267 -05:00 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-03-09 17:01:49.271 -05:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-03-09 17:01:49.278 -05:00 [INF] Applying migration '20260207054047_InitialCreate'.
+2026-03-09 17:01:49.306 -05:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [AuditLogs] (
+    [Id] int NOT NULL IDENTITY,
+    [UserId] int NULL,
+    [Action] nvarchar(max) NOT NULL,
+    [EntityType] nvarchar(max) NOT NULL,
+    [EntityId] int NULL,
+    [Details] nvarchar(max) NULL,
+    [IpAddress] nvarchar(max) NULL,
+    [Timestamp] datetime2 NOT NULL,
+    CONSTRAINT [PK_AuditLogs] PRIMARY KEY ([Id])
+);
+2026-03-09 17:01:49.307 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Cargo] (
+    [Id] int NOT NULL IDENTITY,
+    [AwbNumber] nvarchar(20) NOT NULL,
+    [Origin] nvarchar(100) NOT NULL,
+    [Destination] nvarchar(100) NOT NULL,
+    [ArrivalDate] datetime2 NOT NULL,
+    [ArrivalTime] nvarchar(10) NOT NULL,
+    [BreakdownStatus] nvarchar(20) NOT NULL,
+    [CustomsStatus] nvarchar(20) NOT NULL,
+    [StorageStartDate] datetime2 NOT NULL,
+    [FreeTimeDays] int NOT NULL,
+    [Pieces] int NOT NULL,
+    [Weight] decimal(18,2) NOT NULL,
+    [Description] nvarchar(500) NOT NULL,
+    CONSTRAINT [PK_Cargo] PRIMARY KEY ([Id])
+);
+2026-03-09 17:01:49.308 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Companies] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(200) NOT NULL,
+    [Email] nvarchar(200) NOT NULL,
+    [TaxId] nvarchar(50) NULL,
+    [AccountCredit] decimal(18,2) NOT NULL,
+    [CreatedAt] datetime2 NOT NULL,
+    CONSTRAINT [PK_Companies] PRIMARY KEY ([Id])
+);
+2026-03-09 17:01:49.309 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [BillingRecords] (
+    [Id] int NOT NULL IDENTITY,
+    [CargoId] int NOT NULL,
+    [ServiceFee] decimal(18,2) NOT NULL,
+    [StorageFee] decimal(18,2) NOT NULL,
+    [OtherCharge] decimal(18,2) NOT NULL,
+    [Subtotal] decimal(18,2) NOT NULL,
+    [ProcessingFee] decimal(18,2) NOT NULL,
+    [Total] decimal(18,2) NOT NULL,
+    [DueDate] datetime2 NOT NULL,
+    [Status] nvarchar(20) NOT NULL,
+    [CreatedAt] datetime2 NOT NULL,
+    [UpdatedAt] datetime2 NOT NULL,
+    CONSTRAINT [PK_BillingRecords] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_BillingRecords_Cargo_CargoId] FOREIGN KEY ([CargoId]) REFERENCES [Cargo] ([Id]) ON DELETE CASCADE
+);
+2026-03-09 17:01:49.311 -05:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Users] (
+    [Id] int NOT NULL IDENTITY,
+    [Email] nvarchar(200) NOT NULL,
+    [PasswordHash] nvarchar(500) NOT NULL,
+    [FullName] nvarchar(100) NOT NULL,
+    [Role] nvarchar(20) NOT NULL,
+    [CompanyId] int NULL,
+    [CompanyRole] nvarchar(50) NULL,
+    [IsActive] bit NOT NULL,
+    [CreatedAt] datetime2 NOT NULL,
+    CONSTRAINT [PK_Users] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Users_Companies_CompanyId] FOREIGN KEY ([CompanyId]) REFERENCES [Companies] ([Id]) ON DELETE NO ACTION
+);
+2026-03-09 17:01:49.312 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Watchlists] (
+    [Id] int NOT NULL IDENTITY,
+    [CompanyId] int NOT NULL,
+    [CreatedAt] datetime2 NOT NULL,
+    CONSTRAINT [PK_Watchlists] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Watchlists_Companies_CompanyId] FOREIGN KEY ([CompanyId]) REFERENCES [Companies] ([Id]) ON DELETE CASCADE
+);
+2026-03-09 17:01:49.313 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Payments] (
+    [Id] int NOT NULL IDENTITY,
+    [ConfirmationNumber] nvarchar(50) NOT NULL,
+    [AwbNumber] nvarchar(20) NOT NULL,
+    [Amount] decimal(18,2) NOT NULL,
+    [ProcessingFee] decimal(18,2) NOT NULL,
+    [PaymentMethod] nvarchar(30) NOT NULL,
+    [PaymentStatus] nvarchar(20) NOT NULL,
+    [Email] nvarchar(200) NOT NULL,
+    [CardLast4] nvarchar(4) NULL,
+    [UserId] int NULL,
+    [CompanyId] int NULL,
+    [CargoId] int NULL,
+    [PaymentDate] datetime2 NOT NULL,
+    CONSTRAINT [PK_Payments] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Payments_Cargo_CargoId] FOREIGN KEY ([CargoId]) REFERENCES [Cargo] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_Payments_Companies_CompanyId] FOREIGN KEY ([CompanyId]) REFERENCES [Companies] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_Payments_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE NO ACTION
+);
+2026-03-09 17:01:49.314 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [RefreshTokens] (
+    [Id] int NOT NULL IDENTITY,
+    [UserId] int NOT NULL,
+    [Token] nvarchar(500) NOT NULL,
+    [ExpiresAt] datetime2 NOT NULL,
+    [CreatedAt] datetime2 NOT NULL,
+    [IsRevoked] bit NOT NULL,
+    CONSTRAINT [PK_RefreshTokens] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_RefreshTokens_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
+);
+2026-03-09 17:01:49.316 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Reports] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(max) NOT NULL,
+    [ReportType] int NOT NULL,
+    [Format] int NOT NULL,
+    [FileUrl] nvarchar(max) NULL,
+    [GeneratedById] int NOT NULL,
+    [GeneratedAt] datetime2 NOT NULL,
+    CONSTRAINT [PK_Reports] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Reports_Users_GeneratedById] FOREIGN KEY ([GeneratedById]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
+);
+2026-03-09 17:01:49.317 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [UploadHistory] (
+    [Id] int NOT NULL IDENTITY,
+    [FileName] nvarchar(max) NOT NULL,
+    [Status] int NOT NULL,
+    [RecordCount] int NOT NULL,
+    [CompanyId] int NULL,
+    [UploadedById] int NOT NULL,
+    [UploadedAt] datetime2 NOT NULL,
+    [ErrorMessage] nvarchar(max) NULL,
+    CONSTRAINT [PK_UploadHistory] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_UploadHistory_Users_UploadedById] FOREIGN KEY ([UploadedById]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
+);
+2026-03-09 17:01:49.318 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [WatchlistItems] (
+    [Id] int NOT NULL IDENTITY,
+    [WatchlistId] int NOT NULL,
+    [AwbNumber] nvarchar(max) NOT NULL,
+    [AddedAt] datetime2 NOT NULL,
+    CONSTRAINT [PK_WatchlistItems] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_WatchlistItems_Watchlists_WatchlistId] FOREIGN KEY ([WatchlistId]) REFERENCES [Watchlists] ([Id]) ON DELETE CASCADE
+);
+2026-03-09 17:01:49.319 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_BillingRecords_CargoId] ON [BillingRecords] ([CargoId]);
+2026-03-09 17:01:49.319 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_Cargo_AwbNumber] ON [Cargo] ([AwbNumber]);
+2026-03-09 17:01:49.320 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Payments_CargoId] ON [Payments] ([CargoId]);
+2026-03-09 17:01:49.320 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Payments_CompanyId] ON [Payments] ([CompanyId]);
+2026-03-09 17:01:49.321 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_Payments_ConfirmationNumber] ON [Payments] ([ConfirmationNumber]);
+2026-03-09 17:01:49.321 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Payments_UserId] ON [Payments] ([UserId]);
+2026-03-09 17:01:49.321 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_RefreshTokens_Token] ON [RefreshTokens] ([Token]);
+2026-03-09 17:01:49.322 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_RefreshTokens_UserId] ON [RefreshTokens] ([UserId]);
+2026-03-09 17:01:49.322 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Reports_GeneratedById] ON [Reports] ([GeneratedById]);
+2026-03-09 17:01:49.323 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_UploadHistory_UploadedById] ON [UploadHistory] ([UploadedById]);
+2026-03-09 17:01:49.324 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Users_CompanyId] ON [Users] ([CompanyId]);
+2026-03-09 17:01:49.324 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_Users_Email] ON [Users] ([Email]);
+2026-03-09 17:01:49.325 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_WatchlistItems_WatchlistId] ON [WatchlistItems] ([WatchlistId]);
+2026-03-09 17:01:49.325 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Watchlists_CompanyId] ON [Watchlists] ([CompanyId]);
+2026-03-09 17:01:49.326 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20260207054047_InitialCreate', N'8.0.23');
+2026-03-09 17:01:49.329 -05:00 [INF] Applying migration '20260309213514_AddCargoFlightDateConsigneeReadyToPickup'.
+2026-03-09 17:01:49.340 -05:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [Cargo] ADD [Consignee] nvarchar(max) NOT NULL DEFAULT N'';
+2026-03-09 17:01:49.341 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [Cargo] ADD [FlightDate] datetime2 NOT NULL DEFAULT '0001-01-01T00:00:00.0000000';
+2026-03-09 17:01:49.342 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [Cargo] ADD [ReadyToPickup] bit NOT NULL DEFAULT CAST(0 AS bit);
+2026-03-09 17:01:49.342 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20260309213514_AddCargoFlightDateConsigneeReadyToPickup', N'8.0.23');
+2026-03-09 17:02:00.455 -05:00 [INF] Executed DbCommand (12ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-09 17:02:00.492 -05:00 [INF] Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-03-09 17:02:00.494 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-03-09 17:02:00.494 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-03-09 17:02:00.503 -05:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-03-09 17:02:00.511 -05:00 [INF] No migrations were applied. The database is already up to date.
+2026-03-09 17:02:00.598 -05:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Cargo] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-03-09 17:02:00.677 -05:00 [INF] Executed DbCommand (9ms) [Parameters=[@p0='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p1='?' (DbType = DateTime2), @p2='?' (Size = 200), @p3='?' (Size = 200), @p4='?' (Size = 50), @p5='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p6='?' (DbType = DateTime2), @p7='?' (Size = 200), @p8='?' (Size = 200), @p9='?' (Size = 50), @p10='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p11='?' (DbType = DateTime2), @p12='?' (Size = 200), @p13='?' (Size = 200), @p14='?' (Size = 50)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [Companies] USING (
+VALUES (@p0, @p1, @p2, @p3, @p4, 0),
+(@p5, @p6, @p7, @p8, @p9, 1),
+(@p10, @p11, @p12, @p13, @p14, 2)) AS i ([AccountCredit], [CreatedAt], [Email], [Name], [TaxId], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([AccountCredit], [CreatedAt], [Email], [Name], [TaxId])
+VALUES (i.[AccountCredit], i.[CreatedAt], i.[Email], i.[Name], i.[TaxId])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-09 17:02:00.843 -05:00 [INF] Executed DbCommand (5ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 50), @p2='?' (DbType = DateTime2), @p3='?' (Size = 200), @p4='?' (Size = 100), @p5='?' (DbType = Boolean), @p6='?' (Size = 500), @p7='?' (Size = 20), @p8='?' (DbType = Int32), @p9='?' (Size = 50), @p10='?' (DbType = DateTime2), @p11='?' (Size = 200), @p12='?' (Size = 100), @p13='?' (DbType = Boolean), @p14='?' (Size = 500), @p15='?' (Size = 20), @p16='?' (DbType = Int32), @p17='?' (Size = 50), @p18='?' (DbType = DateTime2), @p19='?' (Size = 200), @p20='?' (Size = 100), @p21='?' (DbType = Boolean), @p22='?' (Size = 500), @p23='?' (Size = 20), @p24='?' (DbType = Int32), @p25='?' (Size = 50), @p26='?' (DbType = DateTime2), @p27='?' (Size = 200), @p28='?' (Size = 100), @p29='?' (DbType = Boolean), @p30='?' (Size = 500), @p31='?' (Size = 20)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [Users] USING (
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, 0),
+(@p8, @p9, @p10, @p11, @p12, @p13, @p14, @p15, 1),
+(@p16, @p17, @p18, @p19, @p20, @p21, @p22, @p23, 2),
+(@p24, @p25, @p26, @p27, @p28, @p29, @p30, @p31, 3)) AS i ([CompanyId], [CompanyRole], [CreatedAt], [Email], [FullName], [IsActive], [PasswordHash], [Role], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([CompanyId], [CompanyRole], [CreatedAt], [Email], [FullName], [IsActive], [PasswordHash], [Role])
+VALUES (i.[CompanyId], i.[CompanyRole], i.[CreatedAt], i.[Email], i.[FullName], i.[IsActive], i.[PasswordHash], i.[Role])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-09 17:02:00.875 -05:00 [INF] Executed DbCommand (9ms) [Parameters=[@p0='?' (DbType = DateTime2), @p1='?' (Size = 10), @p2='?' (Size = 20), @p3='?' (Size = 20), @p4='?' (Size = 4000), @p5='?' (Size = 20), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (DbType = DateTime2), @p9='?' (DbType = Int32), @p10='?' (Size = 100), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime2), @p14='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p15='?' (DbType = DateTime2), @p16='?' (Size = 10), @p17='?' (Size = 20), @p18='?' (Size = 20), @p19='?' (Size = 4000), @p20='?' (Size = 20), @p21='?' (Size = 500), @p22='?' (Size = 100), @p23='?' (DbType = DateTime2), @p24='?' (DbType = Int32), @p25='?' (Size = 100), @p26='?' (DbType = Int32), @p27='?' (DbType = Boolean), @p28='?' (DbType = DateTime2), @p29='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p30='?' (DbType = DateTime2), @p31='?' (Size = 10), @p32='?' (Size = 20), @p33='?' (Size = 20), @p34='?' (Size = 4000), @p35='?' (Size = 20), @p36='?' (Size = 500), @p37='?' (Size = 100), @p38='?' (DbType = DateTime2), @p39='?' (DbType = Int32), @p40='?' (Size = 100), @p41='?' (DbType = Int32), @p42='?' (DbType = Boolean), @p43='?' (DbType = DateTime2), @p44='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p45='?' (DbType = DateTime2), @p46='?' (Size = 10), @p47='?' (Size = 20), @p48='?' (Size = 20), @p49='?' (Size = 4000), @p50='?' (Size = 20), @p51='?' (Size = 500), @p52='?' (Size = 100), @p53='?' (DbType = DateTime2), @p54='?' (DbType = Int32), @p55='?' (Size = 100), @p56='?' (DbType = Int32), @p57='?' (DbType = Boolean), @p58='?' (DbType = DateTime2), @p59='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p60='?' (DbType = DateTime2), @p61='?' (Size = 10), @p62='?' (Size = 20), @p63='?' (Size = 20), @p64='?' (Size = 4000), @p65='?' (Size = 20), @p66='?' (Size = 500), @p67='?' (Size = 100), @p68='?' (DbType = DateTime2), @p69='?' (DbType = Int32), @p70='?' (Size = 100), @p71='?' (DbType = Int32), @p72='?' (DbType = Boolean), @p73='?' (DbType = DateTime2), @p74='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p75='?' (DbType = DateTime2), @p76='?' (Size = 10), @p77='?' (Size = 20), @p78='?' (Size = 20), @p79='?' (Size = 4000), @p80='?' (Size = 20), @p81='?' (Size = 500), @p82='?' (Size = 100), @p83='?' (DbType = DateTime2), @p84='?' (DbType = Int32), @p85='?' (Size = 100), @p86='?' (DbType = Int32), @p87='?' (DbType = Boolean), @p88='?' (DbType = DateTime2), @p89='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p90='?' (DbType = DateTime2), @p91='?' (Size = 10), @p92='?' (Size = 20), @p93='?' (Size = 20), @p94='?' (Size = 4000), @p95='?' (Size = 20), @p96='?' (Size = 500), @p97='?' (Size = 100), @p98='?' (DbType = DateTime2), @p99='?' (DbType = Int32), @p100='?' (Size = 100), @p101='?' (DbType = Int32), @p102='?' (DbType = Boolean), @p103='?' (DbType = DateTime2), @p104='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p105='?' (DbType = DateTime2), @p106='?' (Size = 10), @p107='?' (Size = 20), @p108='?' (Size = 20), @p109='?' (Size = 4000), @p110='?' (Size = 20), @p111='?' (Size = 500), @p112='?' (Size = 100), @p113='?' (DbType = DateTime2), @p114='?' (DbType = Int32), @p115='?' (Size = 100), @p116='?' (DbType = Int32), @p117='?' (DbType = Boolean), @p118='?' (DbType = DateTime2), @p119='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p120='?' (DbType = DateTime2), @p121='?' (Size = 10), @p122='?' (Size = 20), @p123='?' (Size = 20), @p124='?' (Size = 4000), @p125='?' (Size = 20), @p126='?' (Size = 500), @p127='?' (Size = 100), @p128='?' (DbType = DateTime2), @p129='?' (DbType = Int32), @p130='?' (Size = 100), @p131='?' (DbType = Int32), @p132='?' (DbType = Boolean), @p133='?' (DbType = DateTime2), @p134='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p135='?' (DbType = DateTime2), @p136='?' (Size = 10), @p137='?' (Size = 20), @p138='?' (Size = 20), @p139='?' (Size = 4000), @p140='?' (Size = 20), @p141='?' (Size = 500), @p142='?' (Size = 100), @p143='?' (DbType = DateTime2), @p144='?' (DbType = Int32), @p145='?' (Size = 100), @p146='?' (DbType = Int32), @p147='?' (DbType = Boolean), @p148='?' (DbType = DateTime2), @p149='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p150='?' (DbType = DateTime2), @p151='?' (Size = 10), @p152='?' (Size = 20), @p153='?' (Size = 20), @p154='?' (Size = 4000), @p155='?' (Size = 20), @p156='?' (Size = 500), @p157='?' (Size = 100), @p158='?' (DbType = DateTime2), @p159='?' (DbType = Int32), @p160='?' (Size = 100), @p161='?' (DbType = Int32), @p162='?' (DbType = Boolean), @p163='?' (DbType = DateTime2), @p164='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p165='?' (DbType = DateTime2), @p166='?' (Size = 10), @p167='?' (Size = 20), @p168='?' (Size = 20), @p169='?' (Size = 4000), @p170='?' (Size = 20), @p171='?' (Size = 500), @p172='?' (Size = 100), @p173='?' (DbType = DateTime2), @p174='?' (DbType = Int32), @p175='?' (Size = 100), @p176='?' (DbType = Int32), @p177='?' (DbType = Boolean), @p178='?' (DbType = DateTime2), @p179='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p180='?' (DbType = DateTime2), @p181='?' (Size = 10), @p182='?' (Size = 20), @p183='?' (Size = 20), @p184='?' (Size = 4000), @p185='?' (Size = 20), @p186='?' (Size = 500), @p187='?' (Size = 100), @p188='?' (DbType = DateTime2), @p189='?' (DbType = Int32), @p190='?' (Size = 100), @p191='?' (DbType = Int32), @p192='?' (DbType = Boolean), @p193='?' (DbType = DateTime2), @p194='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p195='?' (DbType = DateTime2), @p196='?' (Size = 10), @p197='?' (Size = 20), @p198='?' (Size = 20), @p199='?' (Size = 4000), @p200='?' (Size = 20), @p201='?' (Size = 500), @p202='?' (Size = 100), @p203='?' (DbType = DateTime2), @p204='?' (DbType = Int32), @p205='?' (Size = 100), @p206='?' (DbType = Int32), @p207='?' (DbType = Boolean), @p208='?' (DbType = DateTime2), @p209='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p210='?' (DbType = DateTime2), @p211='?' (Size = 10), @p212='?' (Size = 20), @p213='?' (Size = 20), @p214='?' (Size = 4000), @p215='?' (Size = 20), @p216='?' (Size = 500), @p217='?' (Size = 100), @p218='?' (DbType = DateTime2), @p219='?' (DbType = Int32), @p220='?' (Size = 100), @p221='?' (DbType = Int32), @p222='?' (DbType = Boolean), @p223='?' (DbType = DateTime2), @p224='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p225='?' (DbType = DateTime2), @p226='?' (Size = 10), @p227='?' (Size = 20), @p228='?' (Size = 20), @p229='?' (Size = 4000), @p230='?' (Size = 20), @p231='?' (Size = 500), @p232='?' (Size = 100), @p233='?' (DbType = DateTime2), @p234='?' (DbType = Int32), @p235='?' (Size = 100), @p236='?' (DbType = Int32), @p237='?' (DbType = Boolean), @p238='?' (DbType = DateTime2), @p239='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p240='?' (DbType = DateTime2), @p241='?' (Size = 10), @p242='?' (Size = 20), @p243='?' (Size = 20), @p244='?' (Size = 4000), @p245='?' (Size = 20), @p246='?' (Size = 500), @p247='?' (Size = 100), @p248='?' (DbType = DateTime2), @p249='?' (DbType = Int32), @p250='?' (Size = 100), @p251='?' (DbType = Int32), @p252='?' (DbType = Boolean), @p253='?' (DbType = DateTime2), @p254='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p255='?' (DbType = DateTime2), @p256='?' (Size = 10), @p257='?' (Size = 20), @p258='?' (Size = 20), @p259='?' (Size = 4000), @p260='?' (Size = 20), @p261='?' (Size = 500), @p262='?' (Size = 100), @p263='?' (DbType = DateTime2), @p264='?' (DbType = Int32), @p265='?' (Size = 100), @p266='?' (DbType = Int32), @p267='?' (DbType = Boolean), @p268='?' (DbType = DateTime2), @p269='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p270='?' (DbType = DateTime2), @p271='?' (Size = 10), @p272='?' (Size = 20), @p273='?' (Size = 20), @p274='?' (Size = 4000), @p275='?' (Size = 20), @p276='?' (Size = 500), @p277='?' (Size = 100), @p278='?' (DbType = DateTime2), @p279='?' (DbType = Int32), @p280='?' (Size = 100), @p281='?' (DbType = Int32), @p282='?' (DbType = Boolean), @p283='?' (DbType = DateTime2), @p284='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p285='?' (DbType = DateTime2), @p286='?' (Size = 10), @p287='?' (Size = 20), @p288='?' (Size = 20), @p289='?' (Size = 4000), @p290='?' (Size = 20), @p291='?' (Size = 500), @p292='?' (Size = 100), @p293='?' (DbType = DateTime2), @p294='?' (DbType = Int32), @p295='?' (Size = 100), @p296='?' (DbType = Int32), @p297='?' (DbType = Boolean), @p298='?' (DbType = DateTime2), @p299='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p300='?' (DbType = DateTime2), @p301='?' (Size = 10), @p302='?' (Size = 20), @p303='?' (Size = 20), @p304='?' (Size = 4000), @p305='?' (Size = 20), @p306='?' (Size = 500), @p307='?' (Size = 100), @p308='?' (DbType = DateTime2), @p309='?' (DbType = Int32), @p310='?' (Size = 100), @p311='?' (DbType = Int32), @p312='?' (DbType = Boolean), @p313='?' (DbType = DateTime2), @p314='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p315='?' (DbType = DateTime2), @p316='?' (Size = 10), @p317='?' (Size = 20), @p318='?' (Size = 20), @p319='?' (Size = 4000), @p320='?' (Size = 20), @p321='?' (Size = 500), @p322='?' (Size = 100), @p323='?' (DbType = DateTime2), @p324='?' (DbType = Int32), @p325='?' (Size = 100), @p326='?' (DbType = Int32), @p327='?' (DbType = Boolean), @p328='?' (DbType = DateTime2), @p329='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p330='?' (DbType = DateTime2), @p331='?' (Size = 10), @p332='?' (Size = 20), @p333='?' (Size = 20), @p334='?' (Size = 4000), @p335='?' (Size = 20), @p336='?' (Size = 500), @p337='?' (Size = 100), @p338='?' (DbType = DateTime2), @p339='?' (DbType = Int32), @p340='?' (Size = 100), @p341='?' (DbType = Int32), @p342='?' (DbType = Boolean), @p343='?' (DbType = DateTime2), @p344='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p345='?' (DbType = DateTime2), @p346='?' (Size = 10), @p347='?' (Size = 20), @p348='?' (Size = 20), @p349='?' (Size = 4000), @p350='?' (Size = 20), @p351='?' (Size = 500), @p352='?' (Size = 100), @p353='?' (DbType = DateTime2), @p354='?' (DbType = Int32), @p355='?' (Size = 100), @p356='?' (DbType = Int32), @p357='?' (DbType = Boolean), @p358='?' (DbType = DateTime2), @p359='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p360='?' (DbType = DateTime2), @p361='?' (Size = 10), @p362='?' (Size = 20), @p363='?' (Size = 20), @p364='?' (Size = 4000), @p365='?' (Size = 20), @p366='?' (Size = 500), @p367='?' (Size = 100), @p368='?' (DbType = DateTime2), @p369='?' (DbType = Int32), @p370='?' (Size = 100), @p371='?' (DbType = Int32), @p372='?' (DbType = Boolean), @p373='?' (DbType = DateTime2), @p374='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p375='?' (DbType = DateTime2), @p376='?' (Size = 10), @p377='?' (Size = 20), @p378='?' (Size = 20), @p379='?' (Size = 4000), @p380='?' (Size = 20), @p381='?' (Size = 500), @p382='?' (Size = 100), @p383='?' (DbType = DateTime2), @p384='?' (DbType = Int32), @p385='?' (Size = 100), @p386='?' (DbType = Int32), @p387='?' (DbType = Boolean), @p388='?' (DbType = DateTime2), @p389='?' (Precision = 18) (Scale = 2) (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [Cargo] USING (
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14, 0),
+(@p15, @p16, @p17, @p18, @p19, @p20, @p21, @p22, @p23, @p24, @p25, @p26, @p27, @p28, @p29, 1),
+(@p30, @p31, @p32, @p33, @p34, @p35, @p36, @p37, @p38, @p39, @p40, @p41, @p42, @p43, @p44, 2),
+(@p45, @p46, @p47, @p48, @p49, @p50, @p51, @p52, @p53, @p54, @p55, @p56, @p57, @p58, @p59, 3),
+(@p60, @p61, @p62, @p63, @p64, @p65, @p66, @p67, @p68, @p69, @p70, @p71, @p72, @p73, @p74, 4),
+(@p75, @p76, @p77, @p78, @p79, @p80, @p81, @p82, @p83, @p84, @p85, @p86, @p87, @p88, @p89, 5),
+(@p90, @p91, @p92, @p93, @p94, @p95, @p96, @p97, @p98, @p99, @p100, @p101, @p102, @p103, @p104, 6),
+(@p105, @p106, @p107, @p108, @p109, @p110, @p111, @p112, @p113, @p114, @p115, @p116, @p117, @p118, @p119, 7),
+(@p120, @p121, @p122, @p123, @p124, @p125, @p126, @p127, @p128, @p129, @p130, @p131, @p132, @p133, @p134, 8),
+(@p135, @p136, @p137, @p138, @p139, @p140, @p141, @p142, @p143, @p144, @p145, @p146, @p147, @p148, @p149, 9),
+(@p150, @p151, @p152, @p153, @p154, @p155, @p156, @p157, @p158, @p159, @p160, @p161, @p162, @p163, @p164, 10),
+(@p165, @p166, @p167, @p168, @p169, @p170, @p171, @p172, @p173, @p174, @p175, @p176, @p177, @p178, @p179, 11),
+(@p180, @p181, @p182, @p183, @p184, @p185, @p186, @p187, @p188, @p189, @p190, @p191, @p192, @p193, @p194, 12),
+(@p195, @p196, @p197, @p198, @p199, @p200, @p201, @p202, @p203, @p204, @p205, @p206, @p207, @p208, @p209, 13),
+(@p210, @p211, @p212, @p213, @p214, @p215, @p216, @p217, @p218, @p219, @p220, @p221, @p222, @p223, @p224, 14),
+(@p225, @p226, @p227, @p228, @p229, @p230, @p231, @p232, @p233, @p234, @p235, @p236, @p237, @p238, @p239, 15),
+(@p240, @p241, @p242, @p243, @p244, @p245, @p246, @p247, @p248, @p249, @p250, @p251, @p252, @p253, @p254, 16),
+(@p255, @p256, @p257, @p258, @p259, @p260, @p261, @p262, @p263, @p264, @p265, @p266, @p267, @p268, @p269, 17),
+(@p270, @p271, @p272, @p273, @p274, @p275, @p276, @p277, @p278, @p279, @p280, @p281, @p282, @p283, @p284, 18),
+(@p285, @p286, @p287, @p288, @p289, @p290, @p291, @p292, @p293, @p294, @p295, @p296, @p297, @p298, @p299, 19),
+(@p300, @p301, @p302, @p303, @p304, @p305, @p306, @p307, @p308, @p309, @p310, @p311, @p312, @p313, @p314, 20),
+(@p315, @p316, @p317, @p318, @p319, @p320, @p321, @p322, @p323, @p324, @p325, @p326, @p327, @p328, @p329, 21),
+(@p330, @p331, @p332, @p333, @p334, @p335, @p336, @p337, @p338, @p339, @p340, @p341, @p342, @p343, @p344, 22),
+(@p345, @p346, @p347, @p348, @p349, @p350, @p351, @p352, @p353, @p354, @p355, @p356, @p357, @p358, @p359, 23),
+(@p360, @p361, @p362, @p363, @p364, @p365, @p366, @p367, @p368, @p369, @p370, @p371, @p372, @p373, @p374, 24),
+(@p375, @p376, @p377, @p378, @p379, @p380, @p381, @p382, @p383, @p384, @p385, @p386, @p387, @p388, @p389, 25)) AS i ([ArrivalDate], [ArrivalTime], [AwbNumber], [BreakdownStatus], [Consignee], [CustomsStatus], [Description], [Destination], [FlightDate], [FreeTimeDays], [Origin], [Pieces], [ReadyToPickup], [StorageStartDate], [Weight], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([ArrivalDate], [ArrivalTime], [AwbNumber], [BreakdownStatus], [Consignee], [CustomsStatus], [Description], [Destination], [FlightDate], [FreeTimeDays], [Origin], [Pieces], [ReadyToPickup], [StorageStartDate], [Weight])
+VALUES (i.[ArrivalDate], i.[ArrivalTime], i.[AwbNumber], i.[BreakdownStatus], i.[Consignee], i.[CustomsStatus], i.[Description], i.[Destination], i.[FlightDate], i.[FreeTimeDays], i.[Origin], i.[Pieces], i.[ReadyToPickup], i.[StorageStartDate], i.[Weight])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-09 17:02:00.900 -05:00 [INF] Executed DbCommand (5ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (DbType = DateTime2), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p5='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p6='?' (Size = 20), @p7='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p10='?' (DbType = DateTime2), @p11='?' (DbType = Int32), @p12='?' (DbType = DateTime2), @p13='?' (DbType = DateTime2), @p14='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p15='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p16='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p17='?' (Size = 20), @p18='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p19='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p20='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p21='?' (DbType = DateTime2), @p22='?' (DbType = Int32), @p23='?' (DbType = DateTime2), @p24='?' (DbType = DateTime2), @p25='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p26='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p27='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p28='?' (Size = 20), @p29='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p30='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p31='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p32='?' (DbType = DateTime2)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [BillingRecords] USING (
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, 0),
+(@p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18, @p19, @p20, @p21, 1),
+(@p22, @p23, @p24, @p25, @p26, @p27, @p28, @p29, @p30, @p31, @p32, 2)) AS i ([CargoId], [CreatedAt], [DueDate], [OtherCharge], [ProcessingFee], [ServiceFee], [Status], [StorageFee], [Subtotal], [Total], [UpdatedAt], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([CargoId], [CreatedAt], [DueDate], [OtherCharge], [ProcessingFee], [ServiceFee], [Status], [StorageFee], [Subtotal], [Total], [UpdatedAt])
+VALUES (i.[CargoId], i.[CreatedAt], i.[DueDate], i.[OtherCharge], i.[ProcessingFee], i.[ServiceFee], i.[Status], i.[StorageFee], i.[Subtotal], i.[Total], i.[UpdatedAt])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-09 17:02:00.927 -05:00 [INF] Executed DbCommand (6ms) [Parameters=[@p0='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p1='?' (Size = 20), @p2='?' (Size = 4), @p3='?' (DbType = Int32), @p4='?' (DbType = Int32), @p5='?' (Size = 50), @p6='?' (Size = 200), @p7='?' (DbType = DateTime2), @p8='?' (Size = 30), @p9='?' (Size = 20), @p10='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p11='?' (DbType = Int32), @p12='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p13='?' (Size = 20), @p14='?' (Size = 4), @p15='?' (DbType = Int32), @p16='?' (DbType = Int32), @p17='?' (Size = 50), @p18='?' (Size = 200), @p19='?' (DbType = DateTime2), @p20='?' (Size = 30), @p21='?' (Size = 20), @p22='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p23='?' (DbType = Int32), @p24='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p25='?' (Size = 20), @p26='?' (Size = 4), @p27='?' (DbType = Int32), @p28='?' (DbType = Int32), @p29='?' (Size = 50), @p30='?' (Size = 200), @p31='?' (DbType = DateTime2), @p32='?' (Size = 30), @p33='?' (Size = 20), @p34='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p35='?' (DbType = Int32), @p36='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p37='?' (Size = 20), @p38='?' (Size = 4), @p39='?' (DbType = Int32), @p40='?' (DbType = Int32), @p41='?' (Size = 50), @p42='?' (Size = 200), @p43='?' (DbType = DateTime2), @p44='?' (Size = 30), @p45='?' (Size = 20), @p46='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p47='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [Payments] USING (
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, 0),
+(@p12, @p13, @p14, @p15, @p16, @p17, @p18, @p19, @p20, @p21, @p22, @p23, 1),
+(@p24, @p25, @p26, @p27, @p28, @p29, @p30, @p31, @p32, @p33, @p34, @p35, 2),
+(@p36, @p37, @p38, @p39, @p40, @p41, @p42, @p43, @p44, @p45, @p46, @p47, 3)) AS i ([Amount], [AwbNumber], [CardLast4], [CargoId], [CompanyId], [ConfirmationNumber], [Email], [PaymentDate], [PaymentMethod], [PaymentStatus], [ProcessingFee], [UserId], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Amount], [AwbNumber], [CardLast4], [CargoId], [CompanyId], [ConfirmationNumber], [Email], [PaymentDate], [PaymentMethod], [PaymentStatus], [ProcessingFee], [UserId])
+VALUES (i.[Amount], i.[AwbNumber], i.[CardLast4], i.[CargoId], i.[CompanyId], i.[ConfirmationNumber], i.[Email], i.[PaymentDate], i.[PaymentMethod], i.[PaymentStatus], i.[ProcessingFee], i.[UserId])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-09 17:02:00.938 -05:00 [INF] Executed DbCommand (2ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Watchlists] ([CompanyId], [CreatedAt])
+OUTPUT INSERTED.[Id]
+VALUES (@p0, @p1);
+2026-03-09 17:02:00.951 -05:00 [INF] Executed DbCommand (6ms) [Parameters=[@p0='?' (DbType = DateTime2), @p1='?' (Size = 4000), @p2='?' (DbType = Int32), @p3='?' (DbType = DateTime2), @p4='?' (Size = 4000), @p5='?' (DbType = Int32), @p6='?' (DbType = DateTime2), @p7='?' (Size = 4000), @p8='?' (DbType = Int32), @p9='?' (DbType = DateTime2), @p10='?' (Size = 4000), @p11='?' (DbType = Int32), @p12='?' (DbType = DateTime2), @p13='?' (Size = 4000), @p14='?' (DbType = Int32), @p15='?' (DbType = DateTime2), @p16='?' (Size = 4000), @p17='?' (DbType = Int32), @p18='?' (DbType = DateTime2), @p19='?' (Size = 4000), @p20='?' (DbType = Int32), @p21='?' (DbType = DateTime2), @p22='?' (Size = 4000), @p23='?' (DbType = Int32), @p24='?' (DbType = DateTime2), @p25='?' (Size = 4000), @p26='?' (DbType = Int32), @p27='?' (DbType = DateTime2), @p28='?' (Size = 4000), @p29='?' (DbType = Int32), @p30='?' (DbType = DateTime2), @p31='?' (Size = 4000), @p32='?' (DbType = Int32), @p33='?' (DbType = DateTime2), @p34='?' (Size = 4000), @p35='?' (DbType = Int32), @p36='?' (DbType = DateTime2), @p37='?' (Size = 4000), @p38='?' (DbType = Int32), @p39='?' (DbType = DateTime2), @p40='?' (Size = 4000), @p41='?' (DbType = Int32), @p42='?' (DbType = DateTime2), @p43='?' (Size = 4000), @p44='?' (DbType = Int32), @p45='?' (DbType = DateTime2), @p46='?' (Size = 4000), @p47='?' (DbType = Int32), @p48='?' (DbType = DateTime2), @p49='?' (Size = 4000), @p50='?' (DbType = Int32), @p51='?' (DbType = DateTime2), @p52='?' (Size = 4000), @p53='?' (DbType = Int32), @p54='?' (DbType = DateTime2), @p55='?' (Size = 4000), @p56='?' (DbType = Int32), @p57='?' (DbType = DateTime2), @p58='?' (Size = 4000), @p59='?' (DbType = Int32), @p60='?' (DbType = DateTime2), @p61='?' (Size = 4000), @p62='?' (DbType = Int32), @p63='?' (DbType = DateTime2), @p64='?' (Size = 4000), @p65='?' (DbType = Int32), @p66='?' (DbType = DateTime2), @p67='?' (Size = 4000), @p68='?' (DbType = Int32), @p69='?' (DbType = DateTime2), @p70='?' (Size = 4000), @p71='?' (DbType = Int32), @p72='?' (DbType = DateTime2), @p73='?' (Size = 4000), @p74='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [WatchlistItems] USING (
+VALUES (@p0, @p1, @p2, 0),
+(@p3, @p4, @p5, 1),
+(@p6, @p7, @p8, 2),
+(@p9, @p10, @p11, 3),
+(@p12, @p13, @p14, 4),
+(@p15, @p16, @p17, 5),
+(@p18, @p19, @p20, 6),
+(@p21, @p22, @p23, 7),
+(@p24, @p25, @p26, 8),
+(@p27, @p28, @p29, 9),
+(@p30, @p31, @p32, 10),
+(@p33, @p34, @p35, 11),
+(@p36, @p37, @p38, 12),
+(@p39, @p40, @p41, 13),
+(@p42, @p43, @p44, 14),
+(@p45, @p46, @p47, 15),
+(@p48, @p49, @p50, 16),
+(@p51, @p52, @p53, 17),
+(@p54, @p55, @p56, 18),
+(@p57, @p58, @p59, 19),
+(@p60, @p61, @p62, 20),
+(@p63, @p64, @p65, 21),
+(@p66, @p67, @p68, 22),
+(@p69, @p70, @p71, 23),
+(@p72, @p73, @p74, 24)) AS i ([AddedAt], [AwbNumber], [WatchlistId], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([AddedAt], [AwbNumber], [WatchlistId])
+VALUES (i.[AddedAt], i.[AwbNumber], i.[WatchlistId])
+OUTPUT INSERTED.[Id], i._Position;
+2026-03-09 17:02:00.994 -05:00 [INF] User profile is available. Using 'C:\Users\Alinx\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-03-09 17:02:01.027 -05:00 [INF] Now listening on: http://localhost:5209
+2026-03-09 17:02:01.029 -05:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-03-09 17:02:01.029 -05:00 [INF] Hosting environment: Development
+2026-03-09 17:02:01.029 -05:00 [INF] Content root path: C:\Source_GHA\payment-portal-api\src\PaymentPortal.Api
+2026-03-09 17:02:51.834 -05:00 [INF] Request starting HTTP/1.1 GET http://localhost:5209/ - null null
+2026-03-09 17:02:51.884 -05:00 [WRN] Failed to determine the https port for redirect.
+2026-03-09 17:02:51.923 -05:00 [INF] Request finished HTTP/1.1 GET http://localhost:5209/ - 404 0 null 91.8515ms
+2026-03-09 17:02:51.926 -05:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5209/, Response status code: 404
+2026-03-09 17:05:12.674 -05:00 [INF] Request starting HTTP/1.1 GET http://localhost:5209/ - null null
+2026-03-09 17:05:12.678 -05:00 [INF] Request finished HTTP/1.1 GET http://localhost:5209/ - 404 0 null 3.4548ms
+2026-03-09 17:05:12.678 -05:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5209/, Response status code: 404
+2026-03-09 17:07:43.616 -05:00 [INF] Request starting HTTP/1.1 GET http://localhost:5209/ - null null
+2026-03-09 17:07:43.620 -05:00 [INF] Request finished HTTP/1.1 GET http://localhost:5209/ - 404 0 null 4.2006ms
+2026-03-09 17:07:43.620 -05:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5209/, Response status code: 404

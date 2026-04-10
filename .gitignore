@@ -1,0 +1,135 @@
+# ==============================
+# Node / Frontend
+# ==============================
+node_modules/
+dist/
+.cache/
+*.tsbuildinfo
+.vite/
+*.local
+
+# package manager
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ==============================
+# .NET / Backend
+# ==============================
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.cache
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+
+# NuGet
+**/packages/
+*.nuget.props
+*.nuget.targets
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+bld/
+[Bb]uild[Ll]og.*
+*.binlog
+
+# Visual Studio
+.vs/
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+[Tt]est[Rr]esult*/
+[Dd]ebugPublic/
+[Rr]eleases/
+[Aa]rtifacts/
+*_i.c
+*_p.c
+*_h.h
+*.ilk
+*.meta
+*.obj
+*.iobj
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*_wpftmp.csproj
+*.log
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# ==============================
+# OS
+# ==============================
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+._*
+nul
+
+# ==============================
+# Secrets / Environment
+# ==============================
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.pfx
+*.p12
+appsettings.*.json
+!appsettings.json
+secrets.json
+credentials.json
+
+# ==============================
+# Claude / AI tooling
+# ==============================
+.claude/settings.local.json
+.claude/commands/
+
+# ==============================
+# IDE
+# ==============================
+.vscode/
+*.swp
+*.swo
+*~
+
+# ==============================
+# Misc
+# ==============================
+*.docx
+*.make
+*.log
+*.bak
+*.orig

@@ -1,0 +1,606 @@
+2026-04-09 12:05:24.024 -05:00 [INF] Executed DbCommand (23ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-04-09 12:05:24.123 -05:00 [INF] Executed DbCommand (18ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-04-09 12:05:24.126 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-04-09 12:05:24.128 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-04-09 12:05:24.156 -05:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-04-09 12:05:24.179 -05:00 [INF] No migrations were applied. The database is already up to date.
+2026-04-09 12:05:29.229 -05:00 [INF] Executed DbCommand (15ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-04-09 12:05:29.270 -05:00 [INF] Executed DbCommand (12ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-04-09 12:05:29.272 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-04-09 12:05:29.272 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-04-09 12:05:29.281 -05:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-04-09 12:05:29.290 -05:00 [INF] No migrations were applied. The database is already up to date.
+2026-04-09 12:05:29.489 -05:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Cargo] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-04-09 12:05:29.580 -05:00 [INF] User profile is available. Using 'C:\Users\Alinx\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-04-09 12:05:29.703 -05:00 [INF] Now listening on: http://localhost:5209
+2026-04-09 12:05:29.704 -05:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-09 12:05:29.704 -05:00 [INF] Hosting environment: Development
+2026-04-09 12:05:29.704 -05:00 [INF] Content root path: C:\Source_GHA\payment-portal-api\src\PaymentPortal.Api
+2026-04-09 12:05:43.328 -05:00 [INF] Request starting HTTP/1.1 GET http://localhost:5209/api/cargo/search?awbNumber=020-12345678 - null null
+2026-04-09 12:05:43.384 -05:00 [WRN] Failed to determine the https port for redirect.
+2026-04-09 12:05:43.429 -05:00 [INF] Executing endpoint 'PaymentPortal.Api.Controllers.CargoController.Search (PaymentPortal.Api)'
+2026-04-09 12:05:43.463 -05:00 [INF] Route matched with {action = "Search", controller = "Cargo"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[PaymentPortal.Application.DTOs.Cargo.CargoDto]] Search(System.String) on controller PaymentPortal.Api.Controllers.CargoController (PaymentPortal.Api).
+2026-04-09 12:05:43.686 -05:00 [INF] Executed DbCommand (17ms) [Parameters=[@__awbNumber_0='?' (Size = 20)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [c].[Id], [c].[ArrivalDate], [c].[ArrivalTime], [c].[AwbNumber], [c].[BreakdownStatus], [c].[Consignee], [c].[CustomsStatus], [c].[Description], [c].[Destination], [c].[FlightDate], [c].[FreeTimeDays], [c].[Origin], [c].[Pieces], [c].[ReadyToPickup], [c].[StorageStartDate], [c].[Weight]
+FROM [Cargo] AS [c]
+WHERE [c].[AwbNumber] = @__awbNumber_0
+2026-04-09 12:05:43.812 -05:00 [INF] Executing OkObjectResult, writing value of type 'PaymentPortal.Application.DTOs.Cargo.CargoDto'.
+2026-04-09 12:05:43.898 -05:00 [INF] Executed action PaymentPortal.Api.Controllers.CargoController.Search (PaymentPortal.Api) in 430.9928ms
+2026-04-09 12:05:43.900 -05:00 [INF] Executed endpoint 'PaymentPortal.Api.Controllers.CargoController.Search (PaymentPortal.Api)'
+2026-04-09 12:05:43.908 -05:00 [INF] Request finished HTTP/1.1 GET http://localhost:5209/api/cargo/search?awbNumber=020-12345678 - 200 null application/json; charset=utf-8 582.5733ms
+2026-04-09 12:05:43.945 -05:00 [INF] Request starting HTTP/1.1 GET http://localhost:5209/api/cargo/search?awbNumber=020-12345678 - null null
+2026-04-09 12:05:43.950 -05:00 [INF] Executing endpoint 'PaymentPortal.Api.Controllers.CargoController.Search (PaymentPortal.Api)'
+2026-04-09 12:05:43.950 -05:00 [INF] Route matched with {action = "Search", controller = "Cargo"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[PaymentPortal.Application.DTOs.Cargo.CargoDto]] Search(System.String) on controller PaymentPortal.Api.Controllers.CargoController (PaymentPortal.Api).
+2026-04-09 12:05:44.030 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[@__awbNumber_0='?' (Size = 20)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [c].[Id], [c].[ArrivalDate], [c].[ArrivalTime], [c].[AwbNumber], [c].[BreakdownStatus], [c].[Consignee], [c].[CustomsStatus], [c].[Description], [c].[Destination], [c].[FlightDate], [c].[FreeTimeDays], [c].[Origin], [c].[Pieces], [c].[ReadyToPickup], [c].[StorageStartDate], [c].[Weight]
+FROM [Cargo] AS [c]
+WHERE [c].[AwbNumber] = @__awbNumber_0
+2026-04-09 12:05:44.033 -05:00 [INF] Executing OkObjectResult, writing value of type 'PaymentPortal.Application.DTOs.Cargo.CargoDto'.
+2026-04-09 12:05:44.034 -05:00 [INF] Executed action PaymentPortal.Api.Controllers.CargoController.Search (PaymentPortal.Api) in 83.2657ms
+2026-04-09 12:05:44.034 -05:00 [INF] Executed endpoint 'PaymentPortal.Api.Controllers.CargoController.Search (PaymentPortal.Api)'
+2026-04-09 12:05:44.035 -05:00 [INF] Request finished HTTP/1.1 GET http://localhost:5209/api/cargo/search?awbNumber=020-12345678 - 200 null application/json; charset=utf-8 89.4854ms
+2026-04-09 13:36:31.844 -05:00 [INF] Executed DbCommand (11ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+PRAGMA journal_mode = 'wal';
+2026-04-09 13:36:31.904 -05:00 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "__EFMigrationsHistory" (
+    "MigrationId" TEXT NOT NULL CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY,
+    "ProductVersion" TEXT NOT NULL
+);
+2026-04-09 13:36:31.912 -05:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2026-04-09 13:36:31.915 -05:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-04-09 13:36:31.922 -05:00 [INF] Applying migration '20260409183423_InitialCreate'.
+2026-04-09 13:36:31.947 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "AuditLogs" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_AuditLogs" PRIMARY KEY AUTOINCREMENT,
+    "UserId" INTEGER NULL,
+    "Action" TEXT NOT NULL,
+    "EntityType" TEXT NOT NULL,
+    "EntityId" INTEGER NULL,
+    "Details" TEXT NULL,
+    "IpAddress" TEXT NULL,
+    "Timestamp" TEXT NOT NULL
+);
+2026-04-09 13:36:31.947 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Cargo" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_Cargo" PRIMARY KEY AUTOINCREMENT,
+    "AwbNumber" TEXT NOT NULL,
+    "Origin" TEXT NOT NULL,
+    "Destination" TEXT NOT NULL,
+    "FlightDate" TEXT NOT NULL,
+    "ArrivalDate" TEXT NOT NULL,
+    "ArrivalTime" TEXT NOT NULL,
+    "BreakdownStatus" TEXT NOT NULL,
+    "CustomsStatus" TEXT NOT NULL,
+    "StorageStartDate" TEXT NOT NULL,
+    "FreeTimeDays" INTEGER NOT NULL,
+    "Pieces" INTEGER NOT NULL,
+    "Weight" decimal(18,2) NOT NULL,
+    "Description" TEXT NOT NULL,
+    "Consignee" TEXT NOT NULL,
+    "ReadyToPickup" INTEGER NOT NULL
+);
+2026-04-09 13:36:31.947 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Companies" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_Companies" PRIMARY KEY AUTOINCREMENT,
+    "Name" TEXT NOT NULL,
+    "Email" TEXT NOT NULL,
+    "TaxId" TEXT NULL,
+    "AccountCredit" decimal(18,2) NOT NULL,
+    "CreatedAt" TEXT NOT NULL
+);
+2026-04-09 13:36:31.947 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "BillingRecords" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_BillingRecords" PRIMARY KEY AUTOINCREMENT,
+    "CargoId" INTEGER NOT NULL,
+    "ServiceFee" decimal(18,2) NOT NULL,
+    "StorageFee" decimal(18,2) NOT NULL,
+    "OtherCharge" decimal(18,2) NOT NULL,
+    "Subtotal" decimal(18,2) NOT NULL,
+    "ProcessingFee" decimal(18,2) NOT NULL,
+    "Total" decimal(18,2) NOT NULL,
+    "DueDate" TEXT NOT NULL,
+    "Status" TEXT NOT NULL,
+    "CreatedAt" TEXT NOT NULL,
+    "UpdatedAt" TEXT NOT NULL,
+    CONSTRAINT "FK_BillingRecords_Cargo_CargoId" FOREIGN KEY ("CargoId") REFERENCES "Cargo" ("Id") ON DELETE CASCADE
+);
+2026-04-09 13:36:31.947 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Users" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_Users" PRIMARY KEY AUTOINCREMENT,
+    "Email" TEXT NOT NULL,
+    "PasswordHash" TEXT NOT NULL,
+    "FullName" TEXT NOT NULL,
+    "Role" TEXT NOT NULL,
+    "CompanyId" INTEGER NULL,
+    "CompanyRole" TEXT NULL,
+    "IsActive" INTEGER NOT NULL,
+    "CreatedAt" TEXT NOT NULL,
+    CONSTRAINT "FK_Users_Companies_CompanyId" FOREIGN KEY ("CompanyId") REFERENCES "Companies" ("Id") ON DELETE RESTRICT
+);
+2026-04-09 13:36:31.947 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Watchlists" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_Watchlists" PRIMARY KEY AUTOINCREMENT,
+    "CompanyId" INTEGER NOT NULL,
+    "CreatedAt" TEXT NOT NULL,
+    CONSTRAINT "FK_Watchlists_Companies_CompanyId" FOREIGN KEY ("CompanyId") REFERENCES "Companies" ("Id") ON DELETE CASCADE
+);
+2026-04-09 13:36:31.947 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Payments" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_Payments" PRIMARY KEY AUTOINCREMENT,
+    "ConfirmationNumber" TEXT NOT NULL,
+    "AwbNumber" TEXT NOT NULL,
+    "Amount" decimal(18,2) NOT NULL,
+    "ProcessingFee" decimal(18,2) NOT NULL,
+    "PaymentMethod" TEXT NOT NULL,
+    "PaymentStatus" TEXT NOT NULL,
+    "Email" TEXT NOT NULL,
+    "CardLast4" TEXT NULL,
+    "UserId" INTEGER NULL,
+    "CompanyId" INTEGER NULL,
+    "CargoId" INTEGER NULL,
+    "PaymentDate" TEXT NOT NULL,
+    CONSTRAINT "FK_Payments_Cargo_CargoId" FOREIGN KEY ("CargoId") REFERENCES "Cargo" ("Id") ON DELETE RESTRICT,
+    CONSTRAINT "FK_Payments_Companies_CompanyId" FOREIGN KEY ("CompanyId") REFERENCES "Companies" ("Id") ON DELETE RESTRICT,
+    CONSTRAINT "FK_Payments_Users_UserId" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON DELETE RESTRICT
+);
+2026-04-09 13:36:31.947 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "RefreshTokens" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_RefreshTokens" PRIMARY KEY AUTOINCREMENT,
+    "UserId" INTEGER NOT NULL,
+    "Token" TEXT NOT NULL,
+    "ExpiresAt" TEXT NOT NULL,
+    "CreatedAt" TEXT NOT NULL,
+    "IsRevoked" INTEGER NOT NULL,
+    CONSTRAINT "FK_RefreshTokens_Users_UserId" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON DELETE CASCADE
+);
+2026-04-09 13:36:31.947 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Reports" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_Reports" PRIMARY KEY AUTOINCREMENT,
+    "Name" TEXT NOT NULL,
+    "ReportType" INTEGER NOT NULL,
+    "Format" INTEGER NOT NULL,
+    "FileUrl" TEXT NULL,
+    "GeneratedById" INTEGER NOT NULL,
+    "GeneratedAt" TEXT NOT NULL,
+    CONSTRAINT "FK_Reports_Users_GeneratedById" FOREIGN KEY ("GeneratedById") REFERENCES "Users" ("Id") ON DELETE CASCADE
+);
+2026-04-09 13:36:31.947 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "UploadHistory" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_UploadHistory" PRIMARY KEY AUTOINCREMENT,
+    "FileName" TEXT NOT NULL,
+    "Status" INTEGER NOT NULL,
+    "RecordCount" INTEGER NOT NULL,
+    "CompanyId" INTEGER NULL,
+    "UploadedById" INTEGER NOT NULL,
+    "UploadedAt" TEXT NOT NULL,
+    "ErrorMessage" TEXT NULL,
+    CONSTRAINT "FK_UploadHistory_Users_UploadedById" FOREIGN KEY ("UploadedById") REFERENCES "Users" ("Id") ON DELETE CASCADE
+);
+2026-04-09 13:36:31.947 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "WatchlistItems" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_WatchlistItems" PRIMARY KEY AUTOINCREMENT,
+    "WatchlistId" INTEGER NOT NULL,
+    "AwbNumber" TEXT NOT NULL,
+    "AddedAt" TEXT NOT NULL,
+    CONSTRAINT "FK_WatchlistItems_Watchlists_WatchlistId" FOREIGN KEY ("WatchlistId") REFERENCES "Watchlists" ("Id") ON DELETE CASCADE
+);
+2026-04-09 13:36:31.948 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX "IX_BillingRecords_CargoId" ON "BillingRecords" ("CargoId");
+2026-04-09 13:36:31.948 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX "IX_Cargo_AwbNumber" ON "Cargo" ("AwbNumber");
+2026-04-09 13:36:31.948 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Payments_CargoId" ON "Payments" ("CargoId");
+2026-04-09 13:36:31.948 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Payments_CompanyId" ON "Payments" ("CompanyId");
+2026-04-09 13:36:31.948 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX "IX_Payments_ConfirmationNumber" ON "Payments" ("ConfirmationNumber");
+2026-04-09 13:36:31.948 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Payments_UserId" ON "Payments" ("UserId");
+2026-04-09 13:36:31.948 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX "IX_RefreshTokens_Token" ON "RefreshTokens" ("Token");
+2026-04-09 13:36:31.948 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_RefreshTokens_UserId" ON "RefreshTokens" ("UserId");
+2026-04-09 13:36:31.948 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Reports_GeneratedById" ON "Reports" ("GeneratedById");
+2026-04-09 13:36:31.948 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_UploadHistory_UploadedById" ON "UploadHistory" ("UploadedById");
+2026-04-09 13:36:31.948 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Users_CompanyId" ON "Users" ("CompanyId");
+2026-04-09 13:36:31.948 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX "IX_Users_Email" ON "Users" ("Email");
+2026-04-09 13:36:31.948 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_WatchlistItems_WatchlistId" ON "WatchlistItems" ("WatchlistId");
+2026-04-09 13:36:31.948 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Watchlists_CompanyId" ON "Watchlists" ("CompanyId");
+2026-04-09 13:36:31.948 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20260409183423_InitialCreate', '8.0.25');
+2026-04-09 13:36:32.036 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1
+    FROM "Cargo" AS "c")
+2026-04-09 13:36:32.109 -05:00 [INF] Executed DbCommand (2ms) [Parameters=[@p0='?' (DbType = Decimal), @p1='?' (DbType = DateTime), @p2='?' (Size = 25), @p3='?' (Size = 24), @p4='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Companies" ("AccountCredit", "CreatedAt", "Email", "Name", "TaxId")
+VALUES (@p0, @p1, @p2, @p3, @p4)
+RETURNING "Id";
+2026-04-09 13:36:32.115 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Decimal), @p1='?' (DbType = DateTime), @p2='?' (Size = 19), @p3='?' (Size = 22), @p4='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Companies" ("AccountCredit", "CreatedAt", "Email", "Name", "TaxId")
+VALUES (@p0, @p1, @p2, @p3, @p4)
+RETURNING "Id";
+2026-04-09 13:36:32.116 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Decimal), @p1='?' (DbType = DateTime), @p2='?' (Size = 22), @p3='?' (Size = 17), @p4='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Companies" ("AccountCredit", "CreatedAt", "Email", "Name", "TaxId")
+VALUES (@p0, @p1, @p2, @p3, @p4)
+RETURNING "Id";
+2026-04-09 13:36:32.275 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?', @p2='?' (DbType = DateTime), @p3='?' (Size = 13), @p4='?' (Size = 17), @p5='?' (DbType = Boolean), @p6='?' (Size = 60), @p7='?' (Size = 8)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("CompanyId", "CompanyRole", "CreatedAt", "Email", "FullName", "IsActive", "PasswordHash", "Role")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7)
+RETURNING "Id";
+2026-04-09 13:36:32.276 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 7), @p2='?' (DbType = DateTime), @p3='?' (Size = 22), @p4='?' (Size = 10), @p5='?' (DbType = Boolean), @p6='?' (Size = 60), @p7='?' (Size = 9)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("CompanyId", "CompanyRole", "CreatedAt", "Email", "FullName", "IsActive", "PasswordHash", "Role")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7)
+RETURNING "Id";
+2026-04-09 13:36:32.276 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 5), @p2='?' (DbType = DateTime), @p3='?' (Size = 19), @p4='?' (Size = 8), @p5='?' (DbType = Boolean), @p6='?' (Size = 60), @p7='?' (Size = 9)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("CompanyId", "CompanyRole", "CreatedAt", "Email", "FullName", "IsActive", "PasswordHash", "Role")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7)
+RETURNING "Id";
+2026-04-09 13:36:32.276 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 7), @p2='?' (DbType = DateTime), @p3='?' (Size = 19), @p4='?' (Size = 12), @p5='?' (DbType = Boolean), @p6='?' (Size = 60), @p7='?' (Size = 9)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("CompanyId", "CompanyRole", "CreatedAt", "Email", "FullName", "IsActive", "PasswordHash", "Role")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7)
+RETURNING "Id";
+2026-04-09 13:36:32.299 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 9), @p4='?' (Size = 19), @p5='?' (Size = 8), @p6='?' (Size = 21), @p7='?' (Size = 22), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 18), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.300 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 9), @p4='?' (Size = 24), @p5='?' (Size = 8), @p6='?' (Size = 17), @p7='?' (Size = 24), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 18), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.300 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 9), @p4='?' (Size = 18), @p5='?' (Size = 4), @p6='?' (Size = 16), @p7='?' (Size = 19), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 21), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.300 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 10), @p4='?' (Size = 23), @p5='?' (Size = 3), @p6='?' (Size = 10), @p7='?' (Size = 18), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 15), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.300 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 9), @p4='?' (Size = 18), @p5='?' (Size = 8), @p6='?' (Size = 19), @p7='?' (Size = 22), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 18), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.300 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 9), @p4='?' (Size = 21), @p5='?' (Size = 8), @p6='?' (Size = 17), @p7='?' (Size = 18), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 15), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.300 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 9), @p4='?' (Size = 17), @p5='?' (Size = 8), @p6='?' (Size = 21), @p7='?' (Size = 16), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 23), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.300 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 9), @p4='?' (Size = 13), @p5='?' (Size = 8), @p6='?' (Size = 23), @p7='?' (Size = 17), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 18), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.300 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 9), @p4='?' (Size = 19), @p5='?' (Size = 8), @p6='?' (Size = 20), @p7='?' (Size = 18), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 20), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.301 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 9), @p4='?' (Size = 20), @p5='?' (Size = 8), @p6='?' (Size = 11), @p7='?' (Size = 22), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 25), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.301 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 9), @p4='?' (Size = 24), @p5='?' (Size = 8), @p6='?' (Size = 15), @p7='?' (Size = 24), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 28), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.301 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 10), @p4='?' (Size = 19), @p5='?' (Size = 3), @p6='?' (Size = 15), @p7='?' (Size = 18), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 24), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.301 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 9), @p4='?' (Size = 19), @p5='?' (Size = 8), @p6='?' (Size = 8), @p7='?' (Size = 19), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 20), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.301 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 9), @p4='?' (Size = 19), @p5='?' (Size = 8), @p6='?' (Size = 13), @p7='?' (Size = 18), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 19), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.301 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 9), @p4='?' (Size = 19), @p5='?' (Size = 8), @p6='?' (Size = 20), @p7='?' (Size = 22), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 20), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.301 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 9), @p4='?' (Size = 18), @p5='?' (Size = 8), @p6='?' (Size = 12), @p7='?' (Size = 18), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 26), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.301 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 9), @p4='?' (Size = 22), @p5='?' (Size = 8), @p6='?' (Size = 21), @p7='?' (Size = 24), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 18), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.301 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 9), @p4='?' (Size = 18), @p5='?' (Size = 4), @p6='?' (Size = 12), @p7='?' (Size = 16), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 22), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.301 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 9), @p4='?' (Size = 20), @p5='?' (Size = 8), @p6='?' (Size = 14), @p7='?' (Size = 22), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 25), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.301 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 9), @p4='?' (Size = 22), @p5='?' (Size = 8), @p6='?' (Size = 14), @p7='?' (Size = 24), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 27), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.301 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 9), @p4='?' (Size = 20), @p5='?' (Size = 8), @p6='?' (Size = 14), @p7='?' (Size = 18), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 23), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.302 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 9), @p4='?' (Size = 23), @p5='?' (Size = 8), @p6='?' (Size = 15), @p7='?' (Size = 17), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 26), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.302 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 9), @p4='?' (Size = 17), @p5='?' (Size = 8), @p6='?' (Size = 7), @p7='?' (Size = 19), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 16), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.302 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 9), @p4='?' (Size = 21), @p5='?' (Size = 8), @p6='?' (Size = 8), @p7='?' (Size = 18), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 17), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.302 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 10), @p4='?' (Size = 18), @p5='?' (Size = 3), @p6='?' (Size = 14), @p7='?' (Size = 18), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 22), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.302 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 5), @p2='?' (Size = 12), @p3='?' (Size = 9), @p4='?' (Size = 26), @p5='?' (Size = 8), @p6='?' (Size = 20), @p7='?' (Size = 22), @p8='?' (DbType = DateTime), @p9='?' (DbType = Int32), @p10='?' (Size = 16), @p11='?' (DbType = Int32), @p12='?' (DbType = Boolean), @p13='?' (DbType = DateTime), @p14='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Cargo" ("ArrivalDate", "ArrivalTime", "AwbNumber", "BreakdownStatus", "Consignee", "CustomsStatus", "Description", "Destination", "FlightDate", "FreeTimeDays", "Origin", "Pieces", "ReadyToPickup", "StorageStartDate", "Weight")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14)
+RETURNING "Id";
+2026-04-09 13:36:32.321 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (DbType = Decimal), @p4='?' (DbType = Decimal), @p5='?' (DbType = Decimal), @p6='?' (Size = 7), @p7='?' (DbType = Decimal), @p8='?' (DbType = Decimal), @p9='?' (DbType = Decimal), @p10='?' (DbType = DateTime)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "BillingRecords" ("CargoId", "CreatedAt", "DueDate", "OtherCharge", "ProcessingFee", "ServiceFee", "Status", "StorageFee", "Subtotal", "Total", "UpdatedAt")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10)
+RETURNING "Id";
+2026-04-09 13:36:32.322 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (DbType = Decimal), @p4='?' (DbType = Decimal), @p5='?' (DbType = Decimal), @p6='?' (Size = 7), @p7='?' (DbType = Decimal), @p8='?' (DbType = Decimal), @p9='?' (DbType = Decimal), @p10='?' (DbType = DateTime)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "BillingRecords" ("CargoId", "CreatedAt", "DueDate", "OtherCharge", "ProcessingFee", "ServiceFee", "Status", "StorageFee", "Subtotal", "Total", "UpdatedAt")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10)
+RETURNING "Id";
+2026-04-09 13:36:32.322 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (DbType = Decimal), @p4='?' (DbType = Decimal), @p5='?' (DbType = Decimal), @p6='?' (Size = 7), @p7='?' (DbType = Decimal), @p8='?' (DbType = Decimal), @p9='?' (DbType = Decimal), @p10='?' (DbType = DateTime)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "BillingRecords" ("CargoId", "CreatedAt", "DueDate", "OtherCharge", "ProcessingFee", "ServiceFee", "Status", "StorageFee", "Subtotal", "Total", "UpdatedAt")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10)
+RETURNING "Id";
+2026-04-09 13:36:32.343 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Decimal), @p1='?' (Size = 12), @p2='?', @p3='?' (DbType = Int32), @p4='?' (DbType = Int32), @p5='?' (Size = 14), @p6='?' (Size = 22), @p7='?' (DbType = DateTime), @p8='?' (Size = 10), @p9='?' (Size = 9), @p10='?' (DbType = Decimal), @p11='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Payments" ("Amount", "AwbNumber", "CardLast4", "CargoId", "CompanyId", "ConfirmationNumber", "Email", "PaymentDate", "PaymentMethod", "PaymentStatus", "ProcessingFee", "UserId")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11)
+RETURNING "Id";
+2026-04-09 13:36:32.345 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Decimal), @p1='?' (Size = 12), @p2='?', @p3='?' (DbType = Int32), @p4='?' (DbType = Int32), @p5='?' (Size = 14), @p6='?' (Size = 19), @p7='?' (DbType = DateTime), @p8='?' (Size = 3), @p9='?' (Size = 9), @p10='?' (DbType = Decimal), @p11='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Payments" ("Amount", "AwbNumber", "CardLast4", "CargoId", "CompanyId", "ConfirmationNumber", "Email", "PaymentDate", "PaymentMethod", "PaymentStatus", "ProcessingFee", "UserId")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11)
+RETURNING "Id";
+2026-04-09 13:36:32.345 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Decimal), @p1='?' (Size = 12), @p2='?', @p3='?' (DbType = Int32), @p4='?' (DbType = Int32), @p5='?' (Size = 14), @p6='?' (Size = 19), @p7='?' (DbType = DateTime), @p8='?' (Size = 10), @p9='?' (Size = 9), @p10='?' (DbType = Decimal), @p11='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Payments" ("Amount", "AwbNumber", "CardLast4", "CargoId", "CompanyId", "ConfirmationNumber", "Email", "PaymentDate", "PaymentMethod", "PaymentStatus", "ProcessingFee", "UserId")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11)
+RETURNING "Id";
+2026-04-09 13:36:32.345 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Decimal), @p1='?' (Size = 12), @p2='?', @p3='?' (DbType = Int32), @p4='?' (DbType = Int32), @p5='?' (Size = 14), @p6='?' (Size = 22), @p7='?' (DbType = DateTime), @p8='?' (Size = 17), @p9='?' (Size = 9), @p10='?' (DbType = Decimal), @p11='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Payments" ("Amount", "AwbNumber", "CardLast4", "CargoId", "CompanyId", "ConfirmationNumber", "Email", "PaymentDate", "PaymentMethod", "PaymentStatus", "ProcessingFee", "UserId")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11)
+RETURNING "Id";
+2026-04-09 13:36:32.352 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Watchlists" ("CompanyId", "CreatedAt")
+VALUES (@p0, @p1)
+RETURNING "Id";
+2026-04-09 13:36:32.359 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.359 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.359 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.359 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.359 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.360 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.360 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.360 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.360 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.360 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.360 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.360 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.360 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.360 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.360 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.360 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.360 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.361 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.361 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.361 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.361 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.361 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.361 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.361 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.361 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (Size = 12), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WatchlistItems" ("AddedAt", "AwbNumber", "WatchlistId")
+VALUES (@p0, @p1, @p2)
+RETURNING "Id";
+2026-04-09 13:36:32.412 -05:00 [INF] User profile is available. Using 'C:\Users\Alinx\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-04-09 13:36:32.517 -05:00 [INF] Now listening on: http://localhost:5209
+2026-04-09 13:36:32.518 -05:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-09 13:36:32.519 -05:00 [INF] Hosting environment: Development
+2026-04-09 13:36:32.519 -05:00 [INF] Content root path: C:\Source_GHA\payment-portal-api\src\PaymentPortal.Api
+2026-04-09 13:36:46.899 -05:00 [INF] Request starting HTTP/1.1 GET http://localhost:5209/api/cargo/search?awbNumber=020-12345678 - null null
+2026-04-09 13:36:46.918 -05:00 [WRN] Failed to determine the https port for redirect.
+2026-04-09 13:36:46.931 -05:00 [INF] Executing endpoint 'PaymentPortal.Api.Controllers.CargoController.Search (PaymentPortal.Api)'
+2026-04-09 13:36:46.942 -05:00 [INF] Route matched with {action = "Search", controller = "Cargo"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[PaymentPortal.Application.DTOs.Cargo.CargoDto]] Search(System.String) on controller PaymentPortal.Api.Controllers.CargoController (PaymentPortal.Api).
+2026-04-09 13:36:47.023 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@__awbNumber_0='?' (Size = 12)], CommandType='"Text"', CommandTimeout='30']
+SELECT "c"."Id", "c"."ArrivalDate", "c"."ArrivalTime", "c"."AwbNumber", "c"."BreakdownStatus", "c"."Consignee", "c"."CustomsStatus", "c"."Description", "c"."Destination", "c"."FlightDate", "c"."FreeTimeDays", "c"."Origin", "c"."Pieces", "c"."ReadyToPickup", "c"."StorageStartDate", "c"."Weight"
+FROM "Cargo" AS "c"
+WHERE "c"."AwbNumber" = @__awbNumber_0
+LIMIT 1
+2026-04-09 13:36:47.042 -05:00 [INF] Executing OkObjectResult, writing value of type 'PaymentPortal.Application.DTOs.Cargo.CargoDto'.
+2026-04-09 13:36:47.073 -05:00 [INF] Executed action PaymentPortal.Api.Controllers.CargoController.Search (PaymentPortal.Api) in 129.4684ms
+2026-04-09 13:36:47.074 -05:00 [INF] Executed endpoint 'PaymentPortal.Api.Controllers.CargoController.Search (PaymentPortal.Api)'
+2026-04-09 13:36:47.077 -05:00 [INF] Request finished HTTP/1.1 GET http://localhost:5209/api/cargo/search?awbNumber=020-12345678 - 200 null application/json; charset=utf-8 178.3688ms
+2026-04-09 13:36:47.115 -05:00 [INF] Request starting HTTP/1.1 GET http://localhost:5209/api/cargo/search?awbNumber=020-12345678 - null null
+2026-04-09 13:36:47.117 -05:00 [INF] Executing endpoint 'PaymentPortal.Api.Controllers.CargoController.Search (PaymentPortal.Api)'
+2026-04-09 13:36:47.117 -05:00 [INF] Route matched with {action = "Search", controller = "Cargo"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[PaymentPortal.Application.DTOs.Cargo.CargoDto]] Search(System.String) on controller PaymentPortal.Api.Controllers.CargoController (PaymentPortal.Api).
+2026-04-09 13:36:47.150 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@__awbNumber_0='?' (Size = 12)], CommandType='"Text"', CommandTimeout='30']
+SELECT "c"."Id", "c"."ArrivalDate", "c"."ArrivalTime", "c"."AwbNumber", "c"."BreakdownStatus", "c"."Consignee", "c"."CustomsStatus", "c"."Description", "c"."Destination", "c"."FlightDate", "c"."FreeTimeDays", "c"."Origin", "c"."Pieces", "c"."ReadyToPickup", "c"."StorageStartDate", "c"."Weight"
+FROM "Cargo" AS "c"
+WHERE "c"."AwbNumber" = @__awbNumber_0
+LIMIT 1
+2026-04-09 13:36:47.152 -05:00 [INF] Executing OkObjectResult, writing value of type 'PaymentPortal.Application.DTOs.Cargo.CargoDto'.
+2026-04-09 13:36:47.152 -05:00 [INF] Executed action PaymentPortal.Api.Controllers.CargoController.Search (PaymentPortal.Api) in 34.9374ms
+2026-04-09 13:36:47.152 -05:00 [INF] Executed endpoint 'PaymentPortal.Api.Controllers.CargoController.Search (PaymentPortal.Api)'
+2026-04-09 13:36:47.153 -05:00 [INF] Request finished HTTP/1.1 GET http://localhost:5209/api/cargo/search?awbNumber=020-12345678 - 200 null application/json; charset=utf-8 37.6318ms
+2026-04-09 13:50:08.674 -05:00 [INF] Request starting HTTP/1.1 GET http://localhost:5209/api/cargo/search?awbNumber=020-12345678 - null null
+2026-04-09 13:50:08.678 -05:00 [INF] Executing endpoint 'PaymentPortal.Api.Controllers.CargoController.Search (PaymentPortal.Api)'
+2026-04-09 13:50:08.679 -05:00 [INF] Route matched with {action = "Search", controller = "Cargo"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[PaymentPortal.Application.DTOs.Cargo.CargoDto]] Search(System.String) on controller PaymentPortal.Api.Controllers.CargoController (PaymentPortal.Api).
+2026-04-09 13:50:08.688 -05:00 [INF] Executed DbCommand (2ms) [Parameters=[@__awbNumber_0='?' (Size = 12)], CommandType='"Text"', CommandTimeout='30']
+SELECT "c"."Id", "c"."ArrivalDate", "c"."ArrivalTime", "c"."AwbNumber", "c"."BreakdownStatus", "c"."Consignee", "c"."CustomsStatus", "c"."Description", "c"."Destination", "c"."FlightDate", "c"."FreeTimeDays", "c"."Origin", "c"."Pieces", "c"."ReadyToPickup", "c"."StorageStartDate", "c"."Weight"
+FROM "Cargo" AS "c"
+WHERE "c"."AwbNumber" = @__awbNumber_0
+LIMIT 1
+2026-04-09 13:50:08.689 -05:00 [INF] Executing OkObjectResult, writing value of type 'PaymentPortal.Application.DTOs.Cargo.CargoDto'.
+2026-04-09 13:50:08.690 -05:00 [INF] Executed action PaymentPortal.Api.Controllers.CargoController.Search (PaymentPortal.Api) in 11.6104ms
+2026-04-09 13:50:08.691 -05:00 [INF] Executed endpoint 'PaymentPortal.Api.Controllers.CargoController.Search (PaymentPortal.Api)'
+2026-04-09 13:50:08.691 -05:00 [INF] Request finished HTTP/1.1 GET http://localhost:5209/api/cargo/search?awbNumber=020-12345678 - 200 null application/json; charset=utf-8 17.1722ms
+2026-04-09 13:50:08.742 -05:00 [INF] Request starting HTTP/1.1 GET http://localhost:5209/api/cargo/search?awbNumber=020-12345678 - null null
+2026-04-09 13:50:08.742 -05:00 [INF] Executing endpoint 'PaymentPortal.Api.Controllers.CargoController.Search (PaymentPortal.Api)'
+2026-04-09 13:50:08.743 -05:00 [INF] Route matched with {action = "Search", controller = "Cargo"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[PaymentPortal.Application.DTOs.Cargo.CargoDto]] Search(System.String) on controller PaymentPortal.Api.Controllers.CargoController (PaymentPortal.Api).
+2026-04-09 13:50:08.745 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@__awbNumber_0='?' (Size = 12)], CommandType='"Text"', CommandTimeout='30']
+SELECT "c"."Id", "c"."ArrivalDate", "c"."ArrivalTime", "c"."AwbNumber", "c"."BreakdownStatus", "c"."Consignee", "c"."CustomsStatus", "c"."Description", "c"."Destination", "c"."FlightDate", "c"."FreeTimeDays", "c"."Origin", "c"."Pieces", "c"."ReadyToPickup", "c"."StorageStartDate", "c"."Weight"
+FROM "Cargo" AS "c"
+WHERE "c"."AwbNumber" = @__awbNumber_0
+LIMIT 1
+2026-04-09 13:50:08.745 -05:00 [INF] Executing OkObjectResult, writing value of type 'PaymentPortal.Application.DTOs.Cargo.CargoDto'.
+2026-04-09 13:50:08.746 -05:00 [INF] Executed action PaymentPortal.Api.Controllers.CargoController.Search (PaymentPortal.Api) in 3.1697ms
+2026-04-09 13:50:08.746 -05:00 [INF] Executed endpoint 'PaymentPortal.Api.Controllers.CargoController.Search (PaymentPortal.Api)'
+2026-04-09 13:50:08.746 -05:00 [INF] Request finished HTTP/1.1 GET http://localhost:5209/api/cargo/search?awbNumber=020-12345678 - 200 null application/json; charset=utf-8 4.2294ms
+2026-04-09 13:50:12.164 -05:00 [INF] Request starting HTTP/1.1 POST http://localhost:5209/api/auth/login - application/json 51
+2026-04-09 13:50:12.164 -05:00 [INF] Executing endpoint 'PaymentPortal.Api.Controllers.AuthController.Login (PaymentPortal.Api)'
+2026-04-09 13:50:12.172 -05:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[PaymentPortal.Application.DTOs.Auth.AuthResponse]] Login(PaymentPortal.Application.DTOs.Auth.LoginRequest) on controller PaymentPortal.Api.Controllers.AuthController (PaymentPortal.Api).
+2026-04-09 13:50:12.262 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@__request_Email_0='?' (Size = 13)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."Id", "u"."CompanyId", "u"."CompanyRole", "u"."CreatedAt", "u"."Email", "u"."FullName", "u"."IsActive", "u"."PasswordHash", "u"."Role", "c"."Id", "c"."AccountCredit", "c"."CreatedAt", "c"."Email", "c"."Name", "c"."TaxId"
+FROM "Users" AS "u"
+LEFT JOIN "Companies" AS "c" ON "u"."CompanyId" = "c"."Id"
+WHERE "u"."Email" = @__request_Email_0
+LIMIT 1
+2026-04-09 13:50:12.576 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (DbType = DateTime), @p2='?' (DbType = Boolean), @p3='?' (Size = 88), @p4='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "RefreshTokens" ("CreatedAt", "ExpiresAt", "IsRevoked", "Token", "UserId")
+VALUES (@p0, @p1, @p2, @p3, @p4)
+RETURNING "Id";
+2026-04-09 13:50:12.585 -05:00 [INF] Executing OkObjectResult, writing value of type 'PaymentPortal.Application.DTOs.Auth.AuthResponse'.
+2026-04-09 13:50:12.591 -05:00 [INF] Executed action PaymentPortal.Api.Controllers.AuthController.Login (PaymentPortal.Api) in 418.7743ms
+2026-04-09 13:50:12.591 -05:00 [INF] Executed endpoint 'PaymentPortal.Api.Controllers.AuthController.Login (PaymentPortal.Api)'
+2026-04-09 13:50:12.592 -05:00 [INF] Request finished HTTP/1.1 POST http://localhost:5209/api/auth/login - 200 null application/json; charset=utf-8 427.9089ms
+2026-04-09 13:50:16.994 -05:00 [INF] Request starting HTTP/1.1 GET http://localhost:5209/api/billing/020-12345678 - null null
+2026-04-09 13:50:16.995 -05:00 [INF] Executing endpoint 'PaymentPortal.Api.Controllers.BillingController.GetBilling (PaymentPortal.Api)'
+2026-04-09 13:50:17.000 -05:00 [INF] Route matched with {action = "GetBilling", controller = "Billing"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[PaymentPortal.Application.DTOs.Billing.BillingDto]] GetBilling(System.String) on controller PaymentPortal.Api.Controllers.BillingController (PaymentPortal.Api).
+2026-04-09 13:50:17.016 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@__awbNumber_0='?' (Size = 12)], CommandType='"Text"', CommandTimeout='30']
+SELECT "c"."Id", "c"."ArrivalDate", "c"."ArrivalTime", "c"."AwbNumber", "c"."BreakdownStatus", "c"."Consignee", "c"."CustomsStatus", "c"."Description", "c"."Destination", "c"."FlightDate", "c"."FreeTimeDays", "c"."Origin", "c"."Pieces", "c"."ReadyToPickup", "c"."StorageStartDate", "c"."Weight", "b"."Id", "b"."CargoId", "b"."CreatedAt", "b"."DueDate", "b"."OtherCharge", "b"."ProcessingFee", "b"."ServiceFee", "b"."Status", "b"."StorageFee", "b"."Subtotal", "b"."Total", "b"."UpdatedAt"
+FROM "Cargo" AS "c"
+LEFT JOIN "BillingRecords" AS "b" ON "c"."Id" = "b"."CargoId"
+WHERE "c"."AwbNumber" = @__awbNumber_0
+LIMIT 1
+2026-04-09 13:50:17.023 -05:00 [INF] Executing OkObjectResult, writing value of type 'PaymentPortal.Application.DTOs.Billing.BillingDto'.
+2026-04-09 13:50:17.025 -05:00 [INF] Executed action PaymentPortal.Api.Controllers.BillingController.GetBilling (PaymentPortal.Api) in 24.5156ms
+2026-04-09 13:50:17.025 -05:00 [INF] Executed endpoint 'PaymentPortal.Api.Controllers.BillingController.GetBilling (PaymentPortal.Api)'
+2026-04-09 13:50:17.026 -05:00 [INF] Request finished HTTP/1.1 GET http://localhost:5209/api/billing/020-12345678 - 200 null application/json; charset=utf-8 31.3574ms
+2026-04-09 13:50:17.073 -05:00 [INF] Request starting HTTP/1.1 GET http://localhost:5209/api/billing/020-12345678 - null null
+2026-04-09 13:50:17.073 -05:00 [INF] Executing endpoint 'PaymentPortal.Api.Controllers.BillingController.GetBilling (PaymentPortal.Api)'
+2026-04-09 13:50:17.073 -05:00 [INF] Route matched with {action = "GetBilling", controller = "Billing"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[PaymentPortal.Application.DTOs.Billing.BillingDto]] GetBilling(System.String) on controller PaymentPortal.Api.Controllers.BillingController (PaymentPortal.Api).
+2026-04-09 13:50:17.076 -05:00 [INF] Executed DbCommand (0ms) [Parameters=[@__awbNumber_0='?' (Size = 12)], CommandType='"Text"', CommandTimeout='30']
+SELECT "c"."Id", "c"."ArrivalDate", "c"."ArrivalTime", "c"."AwbNumber", "c"."BreakdownStatus", "c"."Consignee", "c"."CustomsStatus", "c"."Description", "c"."Destination", "c"."FlightDate", "c"."FreeTimeDays", "c"."Origin", "c"."Pieces", "c"."ReadyToPickup", "c"."StorageStartDate", "c"."Weight", "b"."Id", "b"."CargoId", "b"."CreatedAt", "b"."DueDate", "b"."OtherCharge", "b"."ProcessingFee", "b"."ServiceFee", "b"."Status", "b"."StorageFee", "b"."Subtotal", "b"."Total", "b"."UpdatedAt"
+FROM "Cargo" AS "c"
+LEFT JOIN "BillingRecords" AS "b" ON "c"."Id" = "b"."CargoId"
+WHERE "c"."AwbNumber" = @__awbNumber_0
+LIMIT 1
+2026-04-09 13:50:17.077 -05:00 [INF] Executing OkObjectResult, writing value of type 'PaymentPortal.Application.DTOs.Billing.BillingDto'.
+2026-04-09 13:50:17.077 -05:00 [INF] Executed action PaymentPortal.Api.Controllers.BillingController.GetBilling (PaymentPortal.Api) in 3.8586ms
+2026-04-09 13:50:17.077 -05:00 [INF] Executed endpoint 'PaymentPortal.Api.Controllers.BillingController.GetBilling (PaymentPortal.Api)'
+2026-04-09 13:50:17.077 -05:00 [INF] Request finished HTTP/1.1 GET http://localhost:5209/api/billing/020-12345678 - 200 null application/json; charset=utf-8 4.7935ms
