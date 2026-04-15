@@ -1,6 +1,6 @@
 import type { CargoInfo, BillingInfo, PaymentInfo, PaymentConfirmation, PendingPayment, CompletedPayment, RevenueStats } from '../types';
 
-const BASE_URL = '/api';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 // Token management
 let accessToken: string | null = null;
