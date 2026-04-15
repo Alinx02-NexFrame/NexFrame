@@ -126,8 +126,7 @@ logs/*
 # ==============================
 # Claude / AI tooling
 # ==============================
-.claude/settings.local.json
-.claude/commands/
+.claude/
 
 # ==============================
 # IDE
