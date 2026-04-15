@@ -4,7 +4,6 @@ import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Input } from '../ui/input';
-import { mockCargoData } from '../../data/mockData';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router';
 import { globalCartState } from '../../data/cartState';
@@ -59,15 +58,7 @@ export function PendingPayments() {
       return;
     }
 
-    const cargo = mockCargoData[searchAwb.trim()];
-
-    if (!cargo) {
-      toast.error('Cargo Not Found', {
-        description: `No cargo found for AWB number "${searchAwb}". Please verify the number and try again.`
-      });
-      return;
-    }
-
+    // Navigate to AWB detail page — API validation happens there
     navigate(`/dashboard/awb/${searchAwb.trim()}`);
   };
 

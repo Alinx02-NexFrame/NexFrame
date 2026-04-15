@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace PaymentPortal.Infrastructure.Data.Migrations
+namespace PaymentPortal.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -109,6 +109,7 @@ namespace PaymentPortal.Infrastructure.Data.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    Username = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     Email = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
                     PasswordHash = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false),
                     FullName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
@@ -344,9 +345,9 @@ namespace PaymentPortal.Infrastructure.Data.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_Email",
+                name: "IX_Users_Username",
                 table: "Users",
-                column: "Email",
+                column: "Username",
                 unique: true);
 
             migrationBuilder.CreateIndex(

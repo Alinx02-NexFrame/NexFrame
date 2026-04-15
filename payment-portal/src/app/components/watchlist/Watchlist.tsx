@@ -6,7 +6,8 @@ import { toast } from 'sonner';
 import { useNavigate } from 'react-router';
 import { globalWatchlistState } from '../../data/watchlistState';
 import { useState, useEffect } from 'react';
-import { mockCargoData } from '../../data/mockData';
+import { cargoApi } from '../../services/apiClient';
+import type { CargoInfo } from '../../types';
 import { Input } from '../ui/input';
 
 export function Watchlist() {
@@ -17,6 +18,7 @@ export function Watchlist() {
   const [filterType, setFilterType] = useState<'none' | 'consignee' | 'origin' | 'destination' | 'flightDate'>('none');
   const [filterValue, setFilterValue] = useState('');
   const [showFilter, setShowFilter] = useState(false);
+  const [cargoMap, setCargoMap] = useState<Record<string, CargoInfo>>({});
 
   // Subscribe to watchlist changes
   useEffect(() => {
@@ -25,6 +27,20 @@ export function Watchlist() {
     });
     return unsubscribe;
   }, []);
+
+  // Fetch cargo data for watchlist items from API
+  useEffect(() => {
+    const missing = watchlist.filter((awb) => !cargoMap[awb]);
+    if (missing.length === 0) return;
+    Promise.allSettled(missing.map((awb) => cargoApi.search(awb)))
+      .then((results) => {
+        const newMap: Record<string, CargoInfo> = {};
+        results.forEach((result, i) => {
+          if (result.status === 'fulfilled') newMap[missing[i]] = result.value;
+        });
+        setCargoMap((prev) => ({ ...prev, ...newMap }));
+      });
+  }, [watchlist.join(',')]);
 
   const handleRemoveFromWatchlist = (awb: string) => {
     globalWatchlistState.removeFromWatchlist(awb);
@@ -60,7 +76,7 @@ export function Watchlist() {
   };
 
   const filteredWatchlist = watchlist.filter((awb) => {
-    const cargo = mockCargoData[awb];
+    const cargo = cargoMap[awb];
     if (!cargo) return false;
     switch (filterType) {
       case 'consignee':
@@ -255,7 +271,7 @@ export function Watchlist() {
                 </Card>
               ) : (
                 filteredWatchlist.map((awb) => {
-                  const cargo = mockCargoData[awb];
+                  const cargo = cargoMap[awb];
 
                   return (
                     <Card key={awb} className="overflow-hidden hover:shadow-md transition-shadow">

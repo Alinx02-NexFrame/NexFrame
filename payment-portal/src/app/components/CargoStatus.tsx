@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router';
 import { LoginModal } from './auth/LoginModal';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { generateBillingInfo } from '../data/mockData';
+import { calculateBilling } from '../services/billingCalculator';
 import { globalCartState } from '../data/cartState';
 
 interface CargoStatusProps {
@@ -29,7 +29,7 @@ export function CargoStatus({ cargo, billing, onProceedToCheckout, onBack }: Car
     navigate(`/dashboard/awb/${cargo.awbNumber}`);
 
     // Auto-add to cart
-    const billing = generateBillingInfo(cargo.awbNumber);
+    const billing = calculateBilling(cargo);
     if (billing) {
       setTimeout(() => {
         const success = globalCartState.addToCart(cargo.awbNumber, billing.total);

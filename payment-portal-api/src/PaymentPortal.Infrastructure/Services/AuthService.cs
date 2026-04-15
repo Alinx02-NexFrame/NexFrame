@@ -29,6 +29,8 @@ public class AuthService : IAuthService
 
     public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
     {
+        if (await _db.Users.AnyAsync(u => u.Username == request.Username))
+            throw new InvalidOperationException("Username already taken.");
         if (await _db.Users.AnyAsync(u => u.Email == request.Email))
             throw new InvalidOperationException("Email already registered.");
 
@@ -44,6 +46,7 @@ public class AuthService : IAuthService
 
         var user = new User
         {
+            Username = request.Username,
             Email = request.Email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
             FullName = request.FullName,
@@ -60,9 +63,9 @@ public class AuthService : IAuthService
 
     public async Task<AuthResponse> LoginAsync(LoginRequest request)
     {
-        var user = await _db.Users.Include(u => u.Company).FirstOrDefaultAsync(u => u.Email == request.Email);
+        var user = await _db.Users.Include(u => u.Company).FirstOrDefaultAsync(u => u.Username == request.Username);
         if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-            throw new UnauthorizedAccessException("Invalid email or password.");
+            throw new UnauthorizedAccessException("Invalid username or password.");
 
         if (!user.IsActive)
             throw new UnauthorizedAccessException("Account is deactivated.");

@@ -6,14 +6,17 @@ import { toast } from 'sonner';
 import { useNavigate } from 'react-router';
 import { globalCartState } from '../../data/cartState';
 import { useState, useEffect, useMemo } from 'react';
-import { mockCargoData, generateBillingInfo } from '../../data/mockData';
-import { setCheckoutData } from '../../routes';
+import { cargoApi } from '../../services/apiClient';
+import { calculateBilling } from '../../services/billingCalculator';
+import { setCheckoutData } from '../../routeWrappers';
+import type { CargoInfo } from '../../types';
 import { Input } from '../ui/input';
 
 export function Cart() {
   const navigate = useNavigate();
   const [cart, setCart] = useState(globalCartState.getCart());
   const [pickupDates, setPickupDates] = useState<Record<string, string>>({});
+  const [cargoMap, setCargoMap] = useState<Record<string, CargoInfo>>({});
 
   // Subscribe to cart changes
   useEffect(() => {
@@ -23,12 +26,25 @@ export function Cart() {
     return unsubscribe;
   }, []);
 
+  // Fetch cargo data for cart items from API
+  useEffect(() => {
+    const missing = cart.filter((item) => !cargoMap[item.awbNumber]);
+    if (missing.length === 0) return;
+    Promise.allSettled(missing.map((item) => cargoApi.search(item.awbNumber)))
+      .then((results) => {
+        const newMap: Record<string, CargoInfo> = {};
+        results.forEach((result, i) => {
+          if (result.status === 'fulfilled') newMap[missing[i].awbNumber] = result.value;
+        });
+        setCargoMap((prev) => ({ ...prev, ...newMap }));
+      });
+  }, [cart.map((c) => c.awbNumber).join(',')]);
+
   // Initialize pickup dates for cart items
   useEffect(() => {
     const initialDates: Record<string, string> = {};
     cart.forEach(item => {
       if (!pickupDates[item.awbNumber]) {
-        // Default to today
         initialDates[item.awbNumber] = new Date().toISOString().split('T')[0];
       }
     });
@@ -61,7 +77,8 @@ export function Cart() {
     // Calculate updated cart items with current pickup dates
     const updatedCartItems = cart.map(item => {
       const pickupDate = pickupDates[item.awbNumber] || new Date().toISOString().split('T')[0];
-      const billing = generateBillingInfo(item.awbNumber, pickupDate);
+      const cargo = cargoMap[item.awbNumber];
+      const billing = cargo ? calculateBilling(cargo, pickupDate) : null;
       return {
         awbNumber: item.awbNumber,
         amount: billing?.total || item.amount
@@ -71,9 +88,9 @@ export function Cart() {
     // Collect detailed billing information for each cart item
     const cartBillingDetails = cart.map(item => {
       const pickupDate = pickupDates[item.awbNumber] || new Date().toISOString().split('T')[0];
-      const billing = generateBillingInfo(item.awbNumber, pickupDate);
-      return billing!;
-    }).filter(b => b !== null);
+      const cargo = cargoMap[item.awbNumber];
+      return cargo ? calculateBilling(cargo, pickupDate) : null;
+    }).filter((b): b is import('../../types').BillingInfo => b !== null);
 
     // Set cart items for checkout
     setCheckoutData({
@@ -90,7 +107,8 @@ export function Cart() {
   const { totalAmount, processingFee, grandTotal } = useMemo(() => {
     const total = cart.reduce((sum, item) => {
       const pickupDate = pickupDates[item.awbNumber] || new Date().toISOString().split('T')[0];
-      const billing = generateBillingInfo(item.awbNumber, pickupDate);
+      const cargo = cargoMap[item.awbNumber];
+      const billing = cargo ? calculateBilling(cargo, pickupDate) : null;
       return sum + (billing?.subtotal || 0);
     }, 0);
 
@@ -102,7 +120,7 @@ export function Cart() {
       processingFee: procFee,
       grandTotal: grand
     };
-  }, [cart, pickupDates]);
+  }, [cart, pickupDates, cargoMap]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -167,9 +185,9 @@ export function Cart() {
                 {/* Table Body */}
                 <div className="divide-y">
                   {cart.map((item) => {
-                    const cargo = mockCargoData[item.awbNumber];
+                    const cargo = cargoMap[item.awbNumber];
                     const pickupDate = pickupDates[item.awbNumber] || new Date().toISOString().split('T')[0];
-                    const billing = generateBillingInfo(item.awbNumber, pickupDate);
+                    const billing = cargo ? calculateBilling(cargo, pickupDate) : null;
 
                     return (
                       <div key={item.awbNumber} className="p-4 hover:bg-gray-50 transition-colors">

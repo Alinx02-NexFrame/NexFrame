@@ -5,8 +5,9 @@ import { Card } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Input } from '../ui/input';
 import { toast } from 'sonner';
-import { mockCargoData, generateBillingInfo } from '../../data/mockData';
-import { setCheckoutData } from '../../routes';
+import { cargoApi, billingApi } from '../../services/apiClient';
+import { calculateBilling } from '../../services/billingCalculator';
+import { setCheckoutData } from '../../routeWrappers';
 import { useNavigate } from 'react-router';
 import { globalWatchlistState } from '../../data/watchlistState';
 
@@ -19,13 +20,34 @@ interface AwbSearchResultProps {
 
 export function AwbSearchResult({ awbNumber, onBack, onAddToCart, onAddToWatchlist }: AwbSearchResultProps) {
   const navigate = useNavigate();
-  const cargo = mockCargoData[awbNumber];
+  const [cargo, setCargo] = useState<import('../../types').CargoInfo | null>(null);
+  const [loading, setLoading] = useState(true);
 
   // Set default pickup date to today
-  const today = new Date('2026-03-09'); // Mock current date
+  const today = new Date();
   const [pickupDate, setPickupDate] = useState<string>(today.toISOString().split('T')[0]);
-  const [billing, setBilling] = useState(generateBillingInfo(awbNumber, pickupDate));
+  const [billing, setBilling] = useState<import('../../types').BillingInfo | null>(null);
   const [isInWatchlist, setIsInWatchlist] = useState(globalWatchlistState.isInWatchlist(awbNumber));
+
+  // Fetch cargo from API
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    Promise.all([
+      cargoApi.search(awbNumber),
+      billingApi.getByAwb(awbNumber),
+    ]).then(([cargoResult, billingResult]) => {
+      if (!cancelled) {
+        setCargo(cargoResult);
+        setBilling(billingResult);
+      }
+    }).catch(() => {
+      if (!cancelled) setCargo(null);
+    }).finally(() => {
+      if (!cancelled) setLoading(false);
+    });
+    return () => { cancelled = true; };
+  }, [awbNumber]);
 
   // Subscribe to watchlist changes
   useEffect(() => {
@@ -38,8 +60,9 @@ export function AwbSearchResult({ awbNumber, onBack, onAddToCart, onAddToWatchli
 
   const handlePickupDateChange = (date: string) => {
     setPickupDate(date);
-    const newBilling = generateBillingInfo(awbNumber, date);
-    setBilling(newBilling);
+    if (cargo) {
+      setBilling(calculateBilling(cargo, date));
+    }
   };
 
   const handleAddToCart = () => {
@@ -79,6 +102,17 @@ export function AwbSearchResult({ awbNumber, onBack, onAddToCart, onAddToWatchli
   };
 
   const storageDetails = calculateStorageDetails();
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <Card className="p-12 text-center">
+          <Package className="h-16 w-16 text-gray-300 mx-auto mb-4 animate-pulse" />
+          <p className="text-gray-600">Loading cargo information...</p>
+        </Card>
+      </div>
+    );
+  }
 
   if (!cargo) {
     return (

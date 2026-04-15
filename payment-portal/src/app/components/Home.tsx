@@ -6,6 +6,8 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Card } from './ui/card';
 import { Checkbox } from './ui/checkbox';
+import { authApi, setAccessToken } from '../services/apiClient';
+import { toast } from 'sonner';
 
 interface HomeProps {
   ghaName?: string;
@@ -17,12 +19,27 @@ export function Home({ ghaName = "Swissport", ghaLogo }: HomeProps) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSignIn = (e: React.FormEvent) => {
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock sign in - in real app would validate credentials
-    if (username && password) {
-      navigate('/dashboard');
+    if (!username || !password) return;
+
+    setIsLoading(true);
+    try {
+      const result = await authApi.login(username, password);
+      setAccessToken(result.accessToken);
+      toast.success(`Welcome, ${result.user.fullName}`);
+      if (result.user.role === 'gha_admin') {
+        navigate('/gha-dashboard');
+      } else {
+        navigate('/dashboard');
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Login failed';
+      toast.error('Login Failed', { description: message });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -137,9 +154,10 @@ export function Home({ ghaName = "Swissport", ghaLogo }: HomeProps) {
                   type="submit"
                   className="w-full cursor-pointer hover:bg-blue-700 transition-colors"
                   size="lg"
+                  disabled={isLoading}
                   data-testid="sign-in-button"
                 >
-                  Sign In
+                  {isLoading ? 'Signing in...' : 'Sign In'}
                 </Button>
               </form>
 

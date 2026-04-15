@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Download, TrendingUp, DollarSign, Calendar, BarChart3, FileText, Search } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line, Cell } from 'recharts';
-import { mockCompletedPayments } from '../../data/mockData';
+import { forwarderApi } from '../../services/apiClient';
+import type { CompletedPayment } from '../../types';
 import { toast } from 'sonner';
 
 export function TransactionReports() {
@@ -13,6 +14,14 @@ export function TransactionReports() {
   const [reportPeriod, setReportPeriod] = useState('2026-01');
   const [searchQuery, setSearchQuery] = useState('');
   const [dateFilter, setDateFilter] = useState('');
+  const [completedPayments, setCompletedPayments] = useState<CompletedPayment[]>([]);
+
+  // Fetch payment history from API
+  useEffect(() => {
+    forwarderApi.getPaymentHistory(1, 100)
+      .then((result) => setCompletedPayments(result.items))
+      .catch(() => setCompletedPayments([]));
+  }, []);
 
   // Mock chart data
   const monthlyData = [
@@ -74,7 +83,7 @@ export function TransactionReports() {
     }
   };
 
-  const filteredPayments = mockCompletedPayments.filter(payment => {
+  const filteredPayments = completedPayments.filter(payment => {
     const matchesSearch = !searchQuery ||
       payment.awbNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
       payment.id.replace('PMT-', '').includes(searchQuery);
@@ -82,8 +91,8 @@ export function TransactionReports() {
     return matchesSearch && matchesDate;
   });
 
-  const totalPaid = mockCompletedPayments.reduce((sum, p) => sum + p.amount, 0);
-  const totalProcessingFees = mockCompletedPayments.reduce((sum, p) => sum + p.processingFee, 0);
+  const totalPaid = completedPayments.reduce((sum, p) => sum + p.amount, 0);
+  const totalProcessingFees = completedPayments.reduce((sum, p) => sum + p.processingFee, 0);
 
   return (
     <div className="space-y-6">
@@ -253,7 +262,7 @@ export function TransactionReports() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500 mb-1">Total Payments</p>
-                <p className="text-3xl font-bold text-gray-900">{mockCompletedPayments.length}</p>
+                <p className="text-3xl font-bold text-gray-900">{completedPayments.length}</p>
               </div>
               <div className="bg-green-100 rounded-full p-3">
                 <FileText className="h-8 w-8 text-green-600" />

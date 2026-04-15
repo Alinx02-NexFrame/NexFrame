@@ -5,7 +5,6 @@ import { AwbSearchResult } from './AwbSearchResult';
 import { globalCartState } from '../../data/cartState';
 import { globalWatchlistState } from '../../data/watchlistState';
 import { toast } from 'sonner';
-import { generateBillingInfo } from '../../data/mockData';
 
 export function AwbDetailPage() {
   const { awbNumber } = useParams<{ awbNumber: string }>();
