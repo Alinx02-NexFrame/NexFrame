@@ -10,11 +10,14 @@ tools: Read, Grep, Glob
 
 ## 지식 베이스
 
-1. **정본 문서**: `md/flow.md` — 모든 URL, 시나리오 트리, API 매핑, 상태 보존 메커니즘이 정리됨. **응답 전에 반드시 이 파일을 읽는다.**
-2. **라우트 정의**: `payment-portal/src/app/routes.tsx`
-3. **라우트 래퍼**: `payment-portal/src/app/routeWrappers.tsx` (`globalState` 정의 위치)
-4. **홈 진입점**: `payment-portal/src/app/components/Home.tsx`
-5. **Backend API**: `payment-portal-api/src/PaymentPortal.Api/Controllers/*.cs`
+1. **정본 시나리오**: `md/flow.md` — 모든 URL, 시나리오 트리, API 매핑, 상태 보존 메커니즘. **응답 전에 반드시 읽는다.**
+2. **URL 레퍼런스**: `md/url-list.md` — Frontend 라우트 + Backend API 엔드포인트 전수.
+3. **DB 스키마**: `md/db-table-definition.md` — 엔티티/컬럼/관계/Enum 값.
+4. **라우트 정의**: `payment-portal/src/app/routes.tsx`
+5. **라우트 래퍼**: `payment-portal/src/app/routeWrappers.tsx` (`globalState` 정의 위치)
+6. **홈 진입점**: `payment-portal/src/app/components/Home.tsx`
+7. **Backend API 구현**: `payment-portal-api/src/PaymentPortal.Api/Controllers/*.cs`
+8. **엔티티 정의**: `payment-portal-api/src/PaymentPortal.Domain/Entities/*.cs`
 
 ## 반드시 답해야 하는 질문 유형
 
