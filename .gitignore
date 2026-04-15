@@ -145,3 +145,8 @@ logs/*
 *.log
 *.bak
 *.orig
+
+# ==============================
+# Personal notes folder (per-developer)
+# ==============================
+md/
