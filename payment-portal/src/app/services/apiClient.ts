@@ -52,8 +52,8 @@ export const authApi = {
       body: JSON.stringify({ username, password }),
     }),
 
-  register: (data: { email: string; password: string; fullName: string; companyName: string }) =>
-    request<{ accessToken: string; refreshToken: string; user: { id: number; email: string; fullName: string; companyName: string; role: string } }>('/auth/register', {
+  register: (data: { username: string; email: string; password: string; fullName: string; companyName: string }) =>
+    request<{ accessToken: string; refreshToken: string; user: { id: number; username: string; email: string; fullName: string; companyName: string; role: string } }>('/auth/register', {
       method: 'POST',
       body: JSON.stringify(data),
     }),

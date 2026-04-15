@@ -13,6 +13,7 @@ interface RegisterModalProps {
 }
 
 export function RegisterModal({ isOpen, onClose, onRegisterSuccess }: RegisterModalProps) {
+  const [username, setUsername] = useState('');
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [companyName, setCompanyName] = useState('');
@@ -32,7 +33,7 @@ export function RegisterModal({ isOpen, onClose, onRegisterSuccess }: RegisterMo
 
     setIsLoading(true);
     try {
-      const result = await authApi.register({ email, password, fullName, companyName });
+      const result = await authApi.register({ username, email, password, fullName, companyName });
       setAccessToken(result.accessToken);
       toast.success(`Welcome, ${result.user.fullName}! Your account has been created.`);
       onRegisterSuccess();
@@ -62,6 +63,22 @@ export function RegisterModal({ isOpen, onClose, onRegisterSuccess }: RegisterMo
 
           {/* Register Form */}
           <form onSubmit={handleRegister} className="space-y-4" data-testid="register-form">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Input
+                  type="text"
+                  placeholder="Choose a username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="pl-10"
+                  required
+                  data-testid="register-username"
+                />
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
               <div className="relative">
@@ -121,7 +138,7 @@ export function RegisterModal({ isOpen, onClose, onRegisterSuccess }: RegisterMo
                   onChange={(e) => setPassword(e.target.value)}
                   className="pl-10"
                   required
-                  minLength={6}
+                  minLength={4}
                   data-testid="register-password"
                 />
               </div>
@@ -138,7 +155,7 @@ export function RegisterModal({ isOpen, onClose, onRegisterSuccess }: RegisterMo
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="pl-10"
                   required
-                  minLength={6}
+                  minLength={4}
                   data-testid="register-confirm-password"
                 />
               </div>
