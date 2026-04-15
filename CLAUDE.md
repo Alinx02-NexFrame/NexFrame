@@ -18,3 +18,10 @@
 ## .NET / Async
 
 - Never use `GetAwaiter().GetResult()` or `.Result` in async contexts — this causes deadlocks. Always use proper async/await patterns with `ConfigureAwait` when calling async methods.
+
+## Auto Commit & Push
+
+- 의미 있는 작업 단위가 완료되면 자동으로 commit하고 push한다.
+- commit 메시지는 한국어/영어 혼용 가능하며, 변경 내용을 간결하게 요약한다.
+- push 실패 시 사용자에게 알리고 원인을 안내한다.
+- DB 파일(.db), 로그 파일(logs/), 임시 파일은 commit하지 않는다.
