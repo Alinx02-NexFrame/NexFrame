@@ -6,6 +6,7 @@ import { RevenueAnalytics } from './gha/RevenueAnalytics';
 import { CustomerManagement } from './gha/CustomerManagement';
 import { DataIntegration } from './gha/DataIntegration';
 import { ReportsManagement } from './gha/ReportsManagement';
+import { useNavigate } from 'react-router';
 
 interface GHADashboardProps {
   onBackToPortal: () => void;
@@ -13,6 +14,11 @@ interface GHADashboardProps {
 
 export function GHADashboard({ onBackToPortal }: GHADashboardProps) {
   const [currentTab, setCurrentTab] = useState('revenue');
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    navigate('/');
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -35,7 +41,7 @@ export function GHADashboard({ onBackToPortal }: GHADashboardProps) {
               <Button variant="secondary" size="sm" onClick={onBackToPortal}>
                 Public Portal
               </Button>
-              <Button variant="ghost" size="sm" className="text-white hover:text-white hover:bg-blue-700">
+              <Button variant="ghost" size="sm" onClick={handleLogout} className="text-white hover:text-white hover:bg-blue-700">
                 <LogOut className="h-4 w-4 mr-2" />
                 Logout
               </Button>
