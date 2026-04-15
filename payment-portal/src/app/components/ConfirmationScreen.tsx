@@ -3,6 +3,7 @@ import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Separator } from './ui/separator';
 import { PaymentConfirmation } from '../types';
+import { paymentApi } from '../services/apiClient';
 
 interface ConfirmationScreenProps {
   confirmation: PaymentConfirmation;
@@ -11,8 +12,7 @@ interface ConfirmationScreenProps {
 
 export function ConfirmationScreen({ confirmation, onNewSearch }: ConfirmationScreenProps) {
   const handleDownloadReceipt = () => {
-    // Mock PDF download
-    alert('Receipt download feature (PDF will be generated in production environment)');
+    window.open(paymentApi.getReceiptUrl(confirmation.confirmationNumber), '_blank');
   };
 
   // Calculate fees (reverse calculation from total)
