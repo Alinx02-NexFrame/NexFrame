@@ -111,6 +111,17 @@ appsettings.*.json
 secrets.json
 credentials.json
 
+# Azure deployment credentials
+publish-profile.xml
+*.publishsettings
+*.PublishSettings
+
+# Runtime logs (keep folder structure, ignore contents)
+logs/*
+!logs/.gitkeep
+**/logs/*
+!**/logs/.gitkeep
+
 # ==============================
 # Claude / AI tooling
 # ==============================
