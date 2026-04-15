@@ -8,6 +8,7 @@ import { Card } from './ui/card';
 import { Checkbox } from './ui/checkbox';
 import { authApi, setAccessToken } from '../services/apiClient';
 import { toast } from 'sonner';
+import { RegisterModal } from './auth/RegisterModal';
 
 interface HomeProps {
   ghaName?: string;
@@ -20,6 +21,7 @@ export function Home({ ghaName = "Swissport", ghaLogo }: HomeProps) {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -169,6 +171,7 @@ export function Home({ ghaName = "Swissport", ghaLogo }: HomeProps) {
                   variant="outline"
                   className="w-full"
                   data-testid="create-account-button"
+                  onClick={() => setShowRegister(true)}
                 >
                   Create Account
                 </Button>
@@ -238,6 +241,15 @@ export function Home({ ghaName = "Swissport", ghaLogo }: HomeProps) {
           </div>
         </div>
       </main>
+
+      <RegisterModal
+        isOpen={showRegister}
+        onClose={() => setShowRegister(false)}
+        onRegisterSuccess={() => {
+          setShowRegister(false);
+          navigate('/dashboard');
+        }}
+      />
 
       {/* Footer */}
       <footer className="mt-16 border-t border-gray-200 bg-white" data-testid="footer">
