@@ -15,30 +15,47 @@ export function TransactionReports() {
   const [searchQuery, setSearchQuery] = useState('');
   const [dateFilter, setDateFilter] = useState('');
   const [completedPayments, setCompletedPayments] = useState<CompletedPayment[]>([]);
+  const [monthlyData, setMonthlyData] = useState<{ month: string; amount: number; transactions: number }[]>([]);
+  const [categoryData, setCategoryData] = useState<{ name: string; value: number }[]>([]);
+  const [summary, setSummary] = useState<{
+    monthlyTotal: number;
+    monthlyTotalGrowthPercent: number;
+    transactionCount: number;
+    transactionCountGrowthPercent: number;
+    averageTransaction: number;
+    periodMonths: number;
+    periodLabel: string;
+  } | null>(null);
 
-  // Fetch payment history from API
+  // Fetch all report data from API
   useEffect(() => {
     forwarderApi.getPaymentHistory(1, 100)
       .then((result) => setCompletedPayments(result.items))
       .catch(() => setCompletedPayments([]));
+
+    forwarderApi.getTransactionChart()
+      .then((rows) => {
+        const mapped = rows.map((r) => {
+          const [, mm] = r.month.split('-');
+          const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+          const label = mm ? monthNames[Number(mm) - 1] ?? r.month : r.month;
+          return { month: label, amount: r.amount, transactions: r.count };
+        });
+        setMonthlyData(mapped);
+      })
+      .catch(() => setMonthlyData([]));
+
+    forwarderApi.getFeeCategoryBreakdown()
+      .then(setCategoryData)
+      .catch(() => setCategoryData([]));
+
+    forwarderApi.getTransactionSummary()
+      .then(setSummary)
+      .catch(() => setSummary(null));
   }, []);
 
-  // Mock chart data
-  const monthlyData = [
-    { month: 'Jul', amount: 12500, transactions: 42 },
-    { month: 'Aug', amount: 15800, transactions: 51 },
-    { month: 'Sep', amount: 14200, transactions: 48 },
-    { month: 'Oct', amount: 18900, transactions: 63 },
-    { month: 'Nov', amount: 21300, transactions: 71 },
-    { month: 'Dec', amount: 19700, transactions: 65 },
-  ];
-
-  const categoryData = [
-    { name: 'Service Fee', value: 8500 },
-    { name: 'Storage Fee', value: 12300 },
-    { name: 'Processing Fee', value: 3200 },
-    { name: 'Other Charges', value: 2100 },
-  ];
+  const formatCurrency = (v: number) => `$${v.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+  const formatGrowth = (v: number) => `${v >= 0 ? '↑' : '↓'} ${Math.abs(v)}% from last month`;
 
   const handleExportExcel = () => {
     toast.success('Report Download', {
@@ -159,8 +176,10 @@ export function TransactionReports() {
             <TrendingUp className="h-5 w-5 text-green-600" />
           </div>
           <p className="text-sm text-gray-500 mb-1">Monthly Total</p>
-          <p className="text-2xl font-bold text-gray-900">$26,100</p>
-          <p className="text-xs text-green-600 mt-1">↑ 12% from last month</p>
+          <p className="text-2xl font-bold text-gray-900">{summary ? formatCurrency(summary.monthlyTotal) : '—'}</p>
+          <p className={`text-xs mt-1 ${summary && summary.monthlyTotalGrowthPercent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            {summary ? formatGrowth(summary.monthlyTotalGrowthPercent) : '\u00A0'}
+          </p>
         </Card>
 
         <Card
@@ -171,8 +190,10 @@ export function TransactionReports() {
             <BarChart3 className="h-8 w-8 text-green-600" />
           </div>
           <p className="text-sm text-gray-500 mb-1">Total Transactions</p>
-          <p className="text-2xl font-bold text-gray-900">89</p>
-          <p className="text-xs text-green-600 mt-1">↑ 8% from last month</p>
+          <p className="text-2xl font-bold text-gray-900">{summary ? summary.transactionCount : '—'}</p>
+          <p className={`text-xs mt-1 ${summary && summary.transactionCountGrowthPercent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            {summary ? formatGrowth(summary.transactionCountGrowthPercent) : '\u00A0'}
+          </p>
         </Card>
 
         <Card
@@ -183,7 +204,7 @@ export function TransactionReports() {
             <DollarSign className="h-8 w-8 text-purple-600" />
           </div>
           <p className="text-sm text-gray-500 mb-1">Average Transaction</p>
-          <p className="text-2xl font-bold text-gray-900">$293</p>
+          <p className="text-2xl font-bold text-gray-900">{summary ? formatCurrency(summary.averageTransaction) : '—'}</p>
           <p className="text-xs text-gray-600 mt-1">per transaction</p>
         </Card>
 
@@ -195,8 +216,8 @@ export function TransactionReports() {
             <Calendar className="h-8 w-8 text-orange-600" />
           </div>
           <p className="text-sm text-gray-500 mb-1">Report Period</p>
-          <p className="text-2xl font-bold text-gray-900">6 months</p>
-          <p className="text-xs text-gray-600 mt-1">Jul - Dec 2025</p>
+          <p className="text-2xl font-bold text-gray-900">{summary ? `${summary.periodMonths} months` : '—'}</p>
+          <p className="text-xs text-gray-600 mt-1">{summary?.periodLabel ?? '\u00A0'}</p>
         </Card>
       </div>
 

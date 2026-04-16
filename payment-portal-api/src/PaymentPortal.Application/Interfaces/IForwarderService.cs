@@ -9,6 +9,8 @@ public interface IForwarderService
     Task<List<PendingPaymentDto>> GetPendingPaymentsAsync(int userId);
     Task<PagedResult<CompletedPaymentDto>> GetPaymentHistoryAsync(int userId, int page = 1, int pageSize = 10, string? search = null);
     Task<List<TransactionChartDto>> GetTransactionChartDataAsync(int userId);
+    Task<List<FeeCategoryDto>> GetFeeCategoryBreakdownAsync(int userId);
+    Task<TransactionSummaryDto> GetTransactionSummaryAsync(int userId);
     Task<byte[]> ExportReportAsync(int userId, string format);
     Task<WatchlistDto> GetWatchlistAsync(int userId);
     Task<WatchlistItemDto> AddWatchlistItemAsync(int userId, string awbNumber);

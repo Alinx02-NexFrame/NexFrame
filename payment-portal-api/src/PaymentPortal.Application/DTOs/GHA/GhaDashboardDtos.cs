@@ -70,3 +70,11 @@ public class ReportDto
     public string? FileUrl { get; set; }
     public string GeneratedAt { get; set; } = string.Empty;
 }
+
+public class MonthlyInsightsDto
+{
+    public decimal RevenueGrowthPercent { get; set; }
+    public int NewCustomersThisMonth { get; set; }
+    public string TopCustomerName { get; set; } = string.Empty;
+    public decimal TopCustomerSpent { get; set; }
+}

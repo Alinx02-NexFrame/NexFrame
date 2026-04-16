@@ -105,6 +105,73 @@ public class ForwarderService : IForwarderService
             }).ToList();
     }
 
+    public async Task<List<FeeCategoryDto>> GetFeeCategoryBreakdownAsync(int userId)
+    {
+        var user = await _db.Users.FindAsync(userId) ?? throw new KeyNotFoundException("User not found.");
+
+        var sixMonthsAgo = DateTime.UtcNow.AddMonths(-6);
+        var billings = await _db.BillingRecords
+            .Where(b => b.Status == BillingStatus.Paid
+                && _db.Payments.Any(p => p.AwbNumber == b.Cargo.AwbNumber
+                    && p.CompanyId == user.CompanyId
+                    && p.PaymentStatus == PaymentStatus.Completed
+                    && p.PaymentDate >= sixMonthsAgo))
+            .ToListAsync();
+
+        return new List<FeeCategoryDto>
+        {
+            new() { Name = "Service Fee", Value = billings.Sum(b => b.ServiceFee) },
+            new() { Name = "Storage Fee", Value = billings.Sum(b => b.StorageFee) },
+            new() { Name = "Processing Fee", Value = billings.Sum(b => b.ProcessingFee) },
+            new() { Name = "Other Charges", Value = billings.Sum(b => b.OtherCharge) },
+        };
+    }
+
+    public async Task<TransactionSummaryDto> GetTransactionSummaryAsync(int userId)
+    {
+        var user = await _db.Users.FindAsync(userId) ?? throw new KeyNotFoundException("User not found.");
+
+        var now = DateTime.UtcNow;
+        var currentMonthStart = new DateTime(now.Year, now.Month, 1);
+        var prevMonthStart = currentMonthStart.AddMonths(-1);
+        var sixMonthsAgo = now.AddMonths(-6);
+
+        var payments = await _db.Payments
+            .Where(p => p.CompanyId == user.CompanyId
+                && p.PaymentStatus == PaymentStatus.Completed
+                && p.PaymentDate >= sixMonthsAgo)
+            .ToListAsync();
+
+        var currentMonth = payments.Where(p => p.PaymentDate >= currentMonthStart).ToList();
+        var prevMonth = payments.Where(p => p.PaymentDate >= prevMonthStart && p.PaymentDate < currentMonthStart).ToList();
+
+        var currentTotal = currentMonth.Sum(p => p.Amount);
+        var prevTotal = prevMonth.Sum(p => p.Amount);
+        var totalGrowth = prevTotal > 0 ? Math.Round((currentTotal - prevTotal) / prevTotal * 100, 1) : 0;
+
+        var currentCount = currentMonth.Count;
+        var prevCount = prevMonth.Count;
+        var countGrowth = prevCount > 0 ? Math.Round(((decimal)(currentCount - prevCount)) / prevCount * 100, 1) : 0;
+
+        var periodTotal = payments.Sum(p => p.Amount);
+        var periodCount = payments.Count;
+        var avg = periodCount > 0 ? Math.Round(periodTotal / periodCount, 0) : 0;
+
+        var startLabel = sixMonthsAgo.ToString("MMM yyyy");
+        var endLabel = now.ToString("MMM yyyy");
+
+        return new TransactionSummaryDto
+        {
+            MonthlyTotal = currentTotal,
+            MonthlyTotalGrowthPercent = totalGrowth,
+            TransactionCount = currentCount,
+            TransactionCountGrowthPercent = countGrowth,
+            AverageTransaction = avg,
+            PeriodMonths = 6,
+            PeriodLabel = $"{startLabel} - {endLabel}"
+        };
+    }
+
     public async Task<byte[]> ExportReportAsync(int userId, string format)
     {
         var user = await _db.Users.FindAsync(userId) ?? throw new KeyNotFoundException("User not found.");

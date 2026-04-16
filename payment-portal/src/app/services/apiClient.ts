@@ -108,6 +108,20 @@ export const forwarderApi = {
   getTransactionChart: () =>
     request<{ month: string; amount: number; count: number }[]>('/forwarder/reports/transactions'),
 
+  getFeeCategoryBreakdown: () =>
+    request<{ name: string; value: number }[]>('/forwarder/reports/categories'),
+
+  getTransactionSummary: () =>
+    request<{
+      monthlyTotal: number;
+      monthlyTotalGrowthPercent: number;
+      transactionCount: number;
+      transactionCountGrowthPercent: number;
+      averageTransaction: number;
+      periodMonths: number;
+      periodLabel: string;
+    }>('/forwarder/reports/summary'),
+
   exportReport: (format: string) => {
     // Direct download - open in new tab
     window.open(`${BASE_URL}/forwarder/reports/export?format=${format}`, '_blank');
@@ -151,4 +165,10 @@ export const ghaApi = {
 
   getRecentActivity: (count = 20) =>
     request<{ type: string; description: string; timestamp: string }[]>(`/gha/customers/activity?count=${count}`),
+
+  getReportsList: (count = 10) =>
+    request<{ id: number; name: string; reportType: string; format: string; fileUrl?: string; generatedAt: string }[]>(`/gha/reports/list?count=${count}`),
+
+  getMonthlyInsights: () =>
+    request<{ revenueGrowthPercent: number; newCustomersThisMonth: number; topCustomerName: string; topCustomerSpent: number }>('/gha/insights/monthly'),
 };

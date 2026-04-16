@@ -195,6 +195,44 @@ public class GhaService : IGhaService
         return _mapper.Map<ReportDto>(report);
     }
 
+    public async Task<List<ReportDto>> GetReportsListAsync(int count = 10)
+    {
+        var reports = await _db.Reports
+            .OrderByDescending(r => r.GeneratedAt)
+            .Take(count)
+            .ToListAsync();
+
+        return reports.Select(r => _mapper.Map<ReportDto>(r)).ToList();
+    }
+
+    public async Task<MonthlyInsightsDto> GetMonthlyInsightsAsync()
+    {
+        var now = DateTime.UtcNow;
+        var currentMonthStart = new DateTime(now.Year, now.Month, 1);
+        var prevMonthStart = currentMonthStart.AddMonths(-1);
+
+        var payments = await _db.Payments
+            .Where(p => p.PaymentStatus == PaymentStatus.Completed && p.PaymentDate >= prevMonthStart)
+            .ToListAsync();
+
+        var currentRevenue = payments.Where(p => p.PaymentDate >= currentMonthStart).Sum(p => p.Amount);
+        var prevRevenue = payments.Where(p => p.PaymentDate < currentMonthStart).Sum(p => p.Amount);
+        var growth = prevRevenue > 0 ? Math.Round((currentRevenue - prevRevenue) / prevRevenue * 100, 1) : 0;
+
+        var newCustomers = await _db.Companies
+            .CountAsync(c => c.CreatedAt >= currentMonthStart);
+
+        var topCustomer = (await GetTopCustomersAsync(1)).FirstOrDefault();
+
+        return new MonthlyInsightsDto
+        {
+            RevenueGrowthPercent = growth,
+            NewCustomersThisMonth = newCustomers,
+            TopCustomerName = topCustomer?.CompanyName ?? "N/A",
+            TopCustomerSpent = topCustomer?.TotalSpent ?? 0
+        };
+    }
+
     public async Task<int> UploadDataAsync(Stream fileStream, string fileName, int userId)
     {
         var upload = new UploadHistory

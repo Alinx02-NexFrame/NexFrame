@@ -51,6 +51,14 @@ public class GhaController : ControllerBase
     public async Task<ActionResult<ReportDto>> GenerateReport([FromBody] GenerateReportRequest request)
         => Ok(await _gha.GenerateReportAsync(request, UserId));
 
+    [HttpGet("reports/list")]
+    public async Task<ActionResult<List<ReportDto>>> GetReportsList([FromQuery] int count = 10)
+        => Ok(await _gha.GetReportsListAsync(count));
+
+    [HttpGet("insights/monthly")]
+    public async Task<ActionResult<MonthlyInsightsDto>> GetMonthlyInsights()
+        => Ok(await _gha.GetMonthlyInsightsAsync());
+
     [HttpPost("data/upload")]
     public async Task<IActionResult> UploadData(IFormFile file)
     {

@@ -35,6 +35,14 @@ public class ForwarderController : ControllerBase
     public async Task<ActionResult<List<TransactionChartDto>>> GetTransactionChart()
         => Ok(await _forwarder.GetTransactionChartDataAsync(UserId));
 
+    [HttpGet("reports/categories")]
+    public async Task<ActionResult<List<FeeCategoryDto>>> GetFeeCategoryBreakdown()
+        => Ok(await _forwarder.GetFeeCategoryBreakdownAsync(UserId));
+
+    [HttpGet("reports/summary")]
+    public async Task<ActionResult<TransactionSummaryDto>> GetTransactionSummary()
+        => Ok(await _forwarder.GetTransactionSummaryAsync(UserId));
+
     [HttpGet("reports/export")]
     public async Task<IActionResult> ExportReport([FromQuery] string format = "pdf")
     {

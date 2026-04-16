@@ -13,5 +13,7 @@ public interface IGhaService
     Task<PagedResult<CustomerDto>> GetCustomersAsync(int page = 1, int pageSize = 10, string? search = null);
     Task<List<ActivityDto>> GetRecentActivityAsync(int count = 20);
     Task<ReportDto> GenerateReportAsync(GenerateReportRequest request, int userId);
+    Task<List<ReportDto>> GetReportsListAsync(int count = 10);
+    Task<MonthlyInsightsDto> GetMonthlyInsightsAsync();
     Task<int> UploadDataAsync(Stream fileStream, string fileName, int userId);
 }

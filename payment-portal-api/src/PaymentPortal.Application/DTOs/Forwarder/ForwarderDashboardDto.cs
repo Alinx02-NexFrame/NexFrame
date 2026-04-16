@@ -33,6 +33,23 @@ public class TransactionChartDto
     public int Count { get; set; }
 }
 
+public class FeeCategoryDto
+{
+    public string Name { get; set; } = string.Empty;
+    public decimal Value { get; set; }
+}
+
+public class TransactionSummaryDto
+{
+    public decimal MonthlyTotal { get; set; }
+    public decimal MonthlyTotalGrowthPercent { get; set; }
+    public int TransactionCount { get; set; }
+    public decimal TransactionCountGrowthPercent { get; set; }
+    public decimal AverageTransaction { get; set; }
+    public int PeriodMonths { get; set; }
+    public string PeriodLabel { get; set; } = string.Empty;
+}
+
 public class WatchlistDto
 {
     public int Id { get; set; }
