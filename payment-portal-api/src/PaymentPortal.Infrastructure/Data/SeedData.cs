@@ -15,7 +15,8 @@ public static class SeedData
         var globalFreight = new Company { Name = "Global Freight Solutions", Email = "contact@globalfreight.com", TaxId = "12-3456789", AccountCredit = 100000.00m };
         var pacificLog = new Company { Name = "Pacific Logistics Inc.", Email = "info@pacificlog.com", TaxId = "98-7654321", AccountCredit = 100000.00m };
         var expressAir = new Company { Name = "Express Air Cargo", Email = "support@expressair.com", TaxId = "55-1234567", AccountCredit = 100000.00m };
-        context.Companies.AddRange(globalFreight, pacificLog, expressAir);
+        var playwrightCo = new Company { Name = "Playwright Co.", Email = "contact@playwrite.test", TaxId = "00-0000001", AccountCredit = 100000.00m };
+        context.Companies.AddRange(globalFreight, pacificLog, expressAir, playwrightCo);
         await context.SaveChangesAsync();
 
         // 2. Users (password: "1234")
@@ -24,7 +25,8 @@ public static class SeedData
         var john = new User { Username = "john", Email = "john@globalfreight.com", PasswordHash = passwordHash, FullName = "John Smith", Role = UserRole.Forwarder, Company = globalFreight, CompanyRole = "Manager", IsActive = true };
         var jane = new User { Username = "jane", Email = "jane@pacificlog.com", PasswordHash = passwordHash, FullName = "Jane Doe", Role = UserRole.Forwarder, Company = pacificLog, CompanyRole = "Admin", IsActive = true };
         var mike = new User { Username = "mike", Email = "mike@expressair.com", PasswordHash = passwordHash, FullName = "Mike Johnson", Role = UserRole.Forwarder, Company = expressAir, CompanyRole = "Manager", IsActive = true };
-        context.Users.AddRange(admin, john, jane, mike);
+        var playwrite = new User { Username = "playwrite", Email = "playwrite@test.com", PasswordHash = passwordHash, FullName = "Playwright User", Role = UserRole.Forwarder, Company = playwrightCo, CompanyRole = "Admin", IsActive = true };
+        context.Users.AddRange(admin, john, jane, mike, playwrite);
         await context.SaveChangesAsync();
 
         // 3. Cargo (26 AWBs, dates: Apr 10 ~ Apr 20, 2026)
