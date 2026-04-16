@@ -33,11 +33,16 @@ public class GhaService : IGhaService
             .Where(p => p.PaymentStatus == PaymentStatus.Completed)
             .ToListAsync();
 
+        var storageFees = await _db.BillingRecords
+            .Where(b => b.Status == BillingStatus.Paid)
+            .Select(b => b.StorageFee)
+            .ToListAsync();
+
         return new RevenueStatsDto
         {
             TotalRevenue = payments.Sum(p => p.Amount),
             ProcessingFeeRevenue = payments.Sum(p => p.ProcessingFee),
-            StorageFeeRevenue = await _db.BillingRecords.Where(b => b.Status == BillingStatus.Paid).SumAsync(b => b.StorageFee),
+            StorageFeeRevenue = storageFees.Sum(),
             TransactionCount = payments.Count,
             Period = now.ToString("MMMM yyyy")
         };
@@ -83,9 +88,13 @@ public class GhaService : IGhaService
 
     public async Task<SettlementDto> GetSettlementAsync()
     {
-        var totalProcessingFees = await _db.Payments
+        // SQLite cannot aggregate decimal on the DB side, so materialize first.
+        var processingFees = await _db.Payments
             .Where(p => p.PaymentStatus == PaymentStatus.Completed)
-            .SumAsync(p => p.ProcessingFee);
+            .Select(p => p.ProcessingFee)
+            .ToListAsync();
+
+        var totalProcessingFees = processingFees.Sum();
 
         return new SettlementDto
         {
@@ -97,9 +106,15 @@ public class GhaService : IGhaService
 
     public async Task<List<TopCustomerDto>> GetTopCustomersAsync(int count = 5)
     {
-        var customers = await _db.Payments
+        // SQLite cannot aggregate decimal on the DB side, so materialize first
+        // and group in memory.
+        var rows = await _db.Payments
             .Where(p => p.PaymentStatus == PaymentStatus.Completed && p.CompanyId != null)
-            .GroupBy(p => p.CompanyId)
+            .Select(p => new { p.CompanyId, p.Amount })
+            .ToListAsync();
+
+        var customers = rows
+            .GroupBy(p => p.CompanyId!.Value)
             .Select(g => new
             {
                 CompanyId = g.Key,
@@ -108,7 +123,7 @@ public class GhaService : IGhaService
             })
             .OrderByDescending(x => x.TotalSpent)
             .Take(count)
-            .ToListAsync();
+            .ToList();
 
         var result = new List<TopCustomerDto>();
         foreach (var c in customers)
