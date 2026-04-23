@@ -231,14 +231,22 @@ export function Home({ ghaName = "Swissport", ghaLogo }: HomeProps) {
                     </div>
                   </div>
 
-                  {/* CTA Button */}
+                  {/* CTA Button — explicit onClick so Playwright / React
+                      synthetic events fire reliably even if the parent Card's
+                      bubbled onClick doesn't trigger. stopPropagation avoids
+                      double-navigate when the parent handler also fires. */}
                   <div className="pt-2">
-                    <div
-                      className="flex items-center justify-center bg-blue-600 text-white font-bold py-4 px-6 rounded-lg hover:bg-blue-700 transition-colors shadow-lg"
+                    <button
+                      type="button"
+                      className="w-full flex items-center justify-center bg-blue-600 text-white font-bold py-4 px-6 rounded-lg hover:bg-blue-700 transition-colors shadow-lg"
                       data-testid="start-quick-payment-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate('/search');
+                      }}
                     >
                       <span className="text-lg">Start Quick Payment</span>
-                    </div>
+                    </button>
                   </div>
                 </div>
               </Card>
