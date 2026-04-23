@@ -2,11 +2,33 @@ import type { CargoInfo, BillingInfo, PaymentInfo, PaymentConfirmation, PendingP
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
-// Token management
-let accessToken: string | null = null;
+// Token + currentUser persistence: localStorage so a page refresh doesn't
+// silently sign the user out. SSR-safe (typeof window guard).
+const TOKEN_KEY = 'gha.accessToken';
+const USER_KEY = 'gha.currentUser';
+const hasStorage = typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
+
+function readStored<T>(key: string): T | null {
+  if (!hasStorage) return null;
+  try {
+    const raw = window.localStorage.getItem(key);
+    return raw ? (JSON.parse(raw) as T) : null;
+  } catch { return null; }
+}
+
+function writeStored(key: string, value: unknown) {
+  if (!hasStorage) return;
+  try {
+    if (value === null || value === undefined) window.localStorage.removeItem(key);
+    else window.localStorage.setItem(key, JSON.stringify(value));
+  } catch { /* quota / disabled — best-effort only */ }
+}
+
+let accessToken: string | null = readStored<string>(TOKEN_KEY);
 
 export function setAccessToken(token: string | null) {
   accessToken = token;
+  writeStored(TOKEN_KEY, token);
 }
 
 export function getAccessToken() {
@@ -24,14 +46,22 @@ export interface CurrentUser {
   role: string;
 }
 
-let currentUser: CurrentUser | null = null;
+let currentUser: CurrentUser | null = readStored<CurrentUser>(USER_KEY);
 
 export function setCurrentUser(user: CurrentUser | null) {
   currentUser = user;
+  writeStored(USER_KEY, user);
 }
 
 export function getCurrentUser(): CurrentUser | null {
   return currentUser;
+}
+
+// Sign out helper: clears token + user. Components should also clear any
+// in-memory state (cart/watchlist) and navigate to '/' separately.
+export function clearAuth() {
+  setAccessToken(null);
+  setCurrentUser(null);
 }
 
 async function request<T>(url: string, options?: RequestInit): Promise<T> {
@@ -50,6 +80,12 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> {
   });
 
   if (!response.ok) {
+    // Server rejected the bearer (expired / revoked / signing key mismatch).
+    // Clear cached auth so the user is forced back through login instead of
+    // looping on a dead token.
+    if (response.status === 401 && accessToken) {
+      clearAuth();
+    }
     const error = await response.json().catch(() => ({ error: response.statusText }));
     throw new Error(error.error || error.title || `Request failed: ${response.status}`);
   }
