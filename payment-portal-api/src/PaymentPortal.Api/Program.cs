@@ -58,8 +58,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-// AutoMapper
-builder.Services.AddAutoMapper(typeof(MappingProfile));
+// AutoMapper — explicit profile registration (avoids assembly-scanning crash on Linux runtime)
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<MappingProfile>();
+});
 
 // FluentValidation
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
