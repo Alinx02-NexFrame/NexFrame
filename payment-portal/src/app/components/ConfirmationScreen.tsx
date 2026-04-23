@@ -36,15 +36,14 @@ export function ConfirmationScreen({ confirmation, confirmations, onNewSearch }:
     }
   };
 
-  // Calculate fees (reverse calculation from total)
-  // Total = Subtotal + Credit Card Fee (2.9%)
-  // Total = Subtotal * 1.029
-  const subtotal = confirmation.amount / 1.029;
-  const creditCardFee = confirmation.amount - subtotal;
+  // Credit Card adds a 2.9% surcharge on top; ACH and Account Credit do not.
+  const isCreditCard = confirmation.paymentMethod?.toLowerCase().includes('credit') ?? false;
 
-  // Calculate individual fees from subtotal
-  // Subtotal = Base + Processing Fee (2.5%)
-  // Subtotal = Base * 1.025
+  // Subtotal (after Processing Fee, before Credit Card Fee)
+  const subtotal = isCreditCard ? confirmation.amount / 1.029 : confirmation.amount;
+  const creditCardFee = isCreditCard ? confirmation.amount - subtotal : 0;
+
+  // Base (before Processing Fee 2.5%)
   const baseAmount = subtotal / 1.025;
   const processingFee = subtotal - baseAmount;
 
@@ -133,12 +132,16 @@ export function ConfirmationScreen({ confirmation, confirmations, onNewSearch }:
 
               <Separator />
 
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600">Credit Card Fee (2.9%)</span>
-                <span className="font-semibold text-gray-900">${creditCardFee.toFixed(2)}</span>
-              </div>
+              {isCreditCard && (
+                <>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Credit Card Fee (2.9%)</span>
+                    <span className="font-semibold text-gray-900">${creditCardFee.toFixed(2)}</span>
+                  </div>
 
-              <Separator />
+                  <Separator />
+                </>
+              )}
 
               <div className="flex items-center justify-between py-3 bg-green-50 px-4 rounded-lg">
                 <span className="font-semibold text-gray-900">Payment Amount</span>
