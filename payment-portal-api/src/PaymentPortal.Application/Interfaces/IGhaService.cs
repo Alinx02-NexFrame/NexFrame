@@ -16,5 +16,11 @@ public interface IGhaService
     Task<List<ReportDto>> GetReportsListAsync(int count = 10);
     Task<(byte[] Content, string ContentType, string FileName)> GetReportFileAsync(int reportId);
     Task<MonthlyInsightsDto> GetMonthlyInsightsAsync();
-    Task<int> UploadDataAsync(Stream fileStream, string fileName, int userId);
+
+    /// <summary>
+    /// Bulk-upload Cargo records from an Excel (.xlsx) or CSV file.
+    /// Returns per-row outcome plus an UploadHistory record id.
+    /// Throws ArgumentException for unsupported extensions or malformed files.
+    /// </summary>
+    Task<CargoUploadResultDto> UploadDataAsync(Stream fileStream, string fileName, int userId);
 }

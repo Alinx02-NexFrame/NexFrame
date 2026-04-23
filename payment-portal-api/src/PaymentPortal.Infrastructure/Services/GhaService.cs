@@ -739,33 +739,478 @@ public class GhaService : IGhaService
         };
     }
 
-    public async Task<int> UploadDataAsync(Stream fileStream, string fileName, int userId)
+    // ---------------------------------------------------------------------
+    // Cargo bulk upload (Excel / CSV)
+    // ---------------------------------------------------------------------
+
+    private static readonly System.Text.RegularExpressions.Regex AwbRegex =
+        new(@"^\d{3}-\d{8}$", System.Text.RegularExpressions.RegexOptions.Compiled);
+
+    /// <summary>
+    /// Parse an uploaded .xlsx or .csv file into Cargo rows, validate each row,
+    /// insert valid rows in a single transaction, and persist an UploadHistory record.
+    /// </summary>
+    public async Task<CargoUploadResultDto> UploadDataAsync(Stream fileStream, string fileName, int userId)
     {
+        var ext = Path.GetExtension(fileName).ToLowerInvariant();
+        if (ext != ".xlsx" && ext != ".csv")
+            throw new ArgumentException($"Unsupported file extension '{ext}'. Only .xlsx and .csv are accepted.");
+
+        // Always create the UploadHistory row first so we have a stable id even on failure.
         var upload = new UploadHistory
         {
             FileName = fileName,
-            Status = UploadStatus.Completed,
+            Status = UploadStatus.Processing,
             RecordCount = 0,
-            UploadedById = userId
+            UploadedById = userId,
+            UploadedAt = DateTime.UtcNow
+        };
+        _db.UploadHistory.Add(upload);
+        await _db.SaveChangesAsync();
+
+        var result = new CargoUploadResultDto
+        {
+            UploadId = upload.Id,
+            FileName = fileName
         };
 
-        // Parse file based on extension
-        var ext = Path.GetExtension(fileName).ToLowerInvariant();
-        if (ext == ".xlsx" || ext == ".xls")
+        List<List<string>> rows;
+        List<string> headers;
+        try
         {
-            using var workbook = new XLWorkbook(fileStream);
-            var ws = workbook.Worksheets.First();
-            upload.RecordCount = ws.RowsUsed().Count() - 1; // exclude header
+            (headers, rows) = ext == ".xlsx"
+                ? ReadExcelRows(fileStream)
+                : ReadCsvRows(fileStream);
+        }
+        catch (Exception ex)
+        {
+            upload.Status = UploadStatus.Failed;
+            upload.RecordCount = 0;
+            upload.ErrorMessage = $"Failed to parse file: {ex.Message}";
+            await _db.SaveChangesAsync();
+
+            await _audit.LogAsync(userId, "DataUpload", "Cargo", null,
+                $"fileName={fileName}, parseError={ex.Message}");
+
+            result.Status = "Failed";
+            result.RecordCount = 0;
+            result.SuccessCount = 0;
+            result.ErrorCount = 0;
+            result.Errors.Add(new CargoUploadErrorDto { Row = 0, Reason = $"File could not be parsed: {ex.Message}" });
+            return result;
+        }
+
+        var headerMap = BuildHeaderMap(headers);
+        var requiredHeaders = new[] { "awbnumber", "origin", "destination", "flightdate", "arrivaldate", "pieces", "weight" };
+        var missingHeaders = requiredHeaders.Where(h => !headerMap.ContainsKey(h)).ToList();
+        if (missingHeaders.Count > 0)
+        {
+            var msg = $"Missing required column(s): {string.Join(", ", missingHeaders)}";
+            upload.Status = UploadStatus.Failed;
+            upload.RecordCount = 0;
+            upload.ErrorMessage = msg;
+            await _db.SaveChangesAsync();
+
+            await _audit.LogAsync(userId, "DataUpload", "Cargo", null, $"fileName={fileName}, {msg}");
+
+            result.Status = "Failed";
+            result.Errors.Add(new CargoUploadErrorDto { Row = 1, Reason = msg });
+            return result;
+        }
+
+        // Snapshot existing AWBs once to keep per-row checks O(1) and avoid repeated DB hits.
+        var existingAwbs = new HashSet<string>(
+            await _db.Cargo.Select(c => c.AwbNumber).ToListAsync(),
+            StringComparer.OrdinalIgnoreCase);
+
+        var validCargo = new List<Domain.Entities.Cargo>();
+        var pendingAwbsThisFile = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var errors = new List<CargoUploadErrorDto>();
+
+        for (var i = 0; i < rows.Count; i++)
+        {
+            var rowNumber = i + 2; // header is row 1
+            var row = rows[i];
+            if (row.All(string.IsNullOrWhiteSpace)) continue;
+
+            string Get(string key) => headerMap.TryGetValue(key, out var idx) && idx < row.Count
+                ? (row[idx] ?? string.Empty).Trim()
+                : string.Empty;
+
+            var awb = Get("awbnumber");
+
+            try
+            {
+                // AWB format
+                if (string.IsNullOrWhiteSpace(awb))
+                    throw new FormatException("AwbNumber is required.");
+                if (!AwbRegex.IsMatch(awb))
+                    throw new FormatException($"Invalid AWB format '{awb}'. Expected NNN-NNNNNNNN.");
+
+                // Duplicate detection (DB or earlier row in this file).
+                if (existingAwbs.Contains(awb))
+                    throw new InvalidOperationException("Duplicate AWB (already exists in database).");
+                if (!pendingAwbsThisFile.Add(awb))
+                    throw new InvalidOperationException("Duplicate AWB within the uploaded file.");
+
+                var origin = RequireNonEmpty(Get("origin"), "Origin");
+                var destination = RequireNonEmpty(Get("destination"), "Destination");
+                var flightDate = ParseDate(RequireNonEmpty(Get("flightdate"), "FlightDate"), "FlightDate");
+                var arrivalDate = ParseDate(RequireNonEmpty(Get("arrivaldate"), "ArrivalDate"), "ArrivalDate");
+                var pieces = ParseInt(RequireNonEmpty(Get("pieces"), "Pieces"), "Pieces");
+                var weight = ParseDecimal(RequireNonEmpty(Get("weight"), "Weight"), "Weight");
+
+                var breakdown = ParseBreakdownStatus(Get("breakdownstatus"));
+                var customs = ParseCustomsStatus(Get("customsstatus"));
+                var freeTimeRaw = Get("freetimedays");
+                var freeTime = string.IsNullOrWhiteSpace(freeTimeRaw) ? 0 : ParseInt(freeTimeRaw, "FreeTimeDays");
+                var ready = ParseBool(Get("readytopickup"));
+
+                validCargo.Add(new Domain.Entities.Cargo
+                {
+                    AwbNumber = awb,
+                    Origin = origin,
+                    Destination = destination,
+                    FlightDate = flightDate,
+                    ArrivalDate = arrivalDate,
+                    ArrivalTime = string.Empty,
+                    BreakdownStatus = breakdown,
+                    CustomsStatus = customs,
+                    StorageStartDate = arrivalDate,
+                    FreeTimeDays = freeTime,
+                    Pieces = pieces,
+                    Weight = weight,
+                    Description = string.Empty,
+                    Consignee = string.Empty,
+                    ReadyToPickup = ready
+                });
+            }
+            catch (Exception ex)
+            {
+                errors.Add(new CargoUploadErrorDto
+                {
+                    Row = rowNumber,
+                    Awb = string.IsNullOrWhiteSpace(awb) ? null : awb,
+                    Reason = ex.Message
+                });
+            }
+        }
+
+        // Persist valid rows in a single batch (single SaveChanges = single transaction).
+        if (validCargo.Count > 0)
+        {
+            try
+            {
+                _db.Cargo.AddRange(validCargo);
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                // Roll back the in-memory tracker and mark the whole upload failed.
+                foreach (var c in validCargo) _db.Entry(c).State = EntityState.Detached;
+
+                upload.Status = UploadStatus.Failed;
+                upload.RecordCount = 0;
+                upload.ErrorMessage = $"Database insert failed: {ex.Message}";
+                await _db.SaveChangesAsync();
+
+                await _audit.LogAsync(userId, "DataUpload", "Cargo", null,
+                    $"fileName={fileName}, dbError={ex.Message}");
+
+                result.Status = "Failed";
+                result.RecordCount = 0;
+                result.SuccessCount = 0;
+                result.ErrorCount = rows.Count;
+                result.Errors.Add(new CargoUploadErrorDto { Row = 0, Reason = $"Database insert failed: {ex.Message}" });
+                return result;
+            }
+        }
+
+        var successCount = validCargo.Count;
+        var errorCount = errors.Count;
+        var status = (errorCount, successCount) switch
+        {
+            (0, _) when successCount > 0 => UploadStatus.Completed,
+            ( > 0, 0) => UploadStatus.Failed,
+            ( > 0, > 0) => UploadStatus.PartialSuccess,
+            _ => UploadStatus.Completed // empty file (no data rows)
+        };
+
+        upload.Status = status;
+        upload.RecordCount = successCount;
+        if (errors.Count > 0)
+        {
+            // Keep the message bounded — first 10 errors is enough for ops triage.
+            var preview = errors.Take(10).Select(e =>
+                $"row {e.Row}{(e.Awb != null ? $" (AWB {e.Awb})" : "")}: {e.Reason}");
+            upload.ErrorMessage = string.Join(" | ", preview);
+            if (errors.Count > 10)
+                upload.ErrorMessage += $" | ... and {errors.Count - 10} more";
         }
         else
         {
-            using var reader = new StreamReader(fileStream);
-            var content = await reader.ReadToEndAsync();
-            upload.RecordCount = content.Split('\n', StringSplitOptions.RemoveEmptyEntries).Length - 1;
+            upload.ErrorMessage = null;
         }
-
-        _db.UploadHistory.Add(upload);
         await _db.SaveChangesAsync();
-        return upload.RecordCount;
+
+        await _audit.LogAsync(userId, "DataUpload", "Cargo", null,
+            $"fileName={fileName}, success={successCount}, errors={errorCount}, status={status}");
+
+        result.Status = status.ToString();
+        result.RecordCount = successCount;
+        result.SuccessCount = successCount;
+        result.ErrorCount = errorCount;
+        // Cap returned errors to keep the response payload small.
+        result.Errors = errors.Take(50).ToList();
+        return result;
+    }
+
+    // ---------------------------------------------------------------------
+    // Upload helpers — file readers
+    // ---------------------------------------------------------------------
+
+    private static (List<string> headers, List<List<string>> rows) ReadExcelRows(Stream fileStream)
+    {
+        using var workbook = new XLWorkbook(fileStream);
+        var ws = workbook.Worksheets.First();
+        var used = ws.RangeUsed();
+        if (used == null)
+            return (new List<string>(), new List<List<string>>());
+
+        var rows = used.RowsUsed().ToList();
+        if (rows.Count == 0)
+            return (new List<string>(), new List<List<string>>());
+
+        var firstRow = rows[0];
+        var colCount = firstRow.CellCount();
+        var headers = new List<string>(colCount);
+        for (var c = 1; c <= colCount; c++)
+            headers.Add(firstRow.Cell(c).GetString().Trim());
+
+        var dataRows = new List<List<string>>(rows.Count - 1);
+        for (var i = 1; i < rows.Count; i++)
+        {
+            var r = rows[i];
+            var cells = new List<string>(colCount);
+            for (var c = 1; c <= colCount; c++)
+            {
+                var cell = r.Cell(c);
+                // Preserve dates as ISO so downstream parsers handle them uniformly.
+                if (cell.DataType == XLDataType.DateTime && cell.TryGetValue<DateTime>(out var dt))
+                    cells.Add(dt.ToString("yyyy-MM-dd"));
+                else
+                    cells.Add(cell.GetString().Trim());
+            }
+            dataRows.Add(cells);
+        }
+        return (headers, dataRows);
+    }
+
+    private static (List<string> headers, List<List<string>> rows) ReadCsvRows(Stream fileStream)
+    {
+        using var reader = new StreamReader(fileStream);
+        var lines = new List<string>();
+        string? line;
+        while ((line = reader.ReadLine()) != null)
+            lines.Add(line);
+
+        // Drop trailing blank lines but keep blanks in middle (caller skips all-empty rows).
+        while (lines.Count > 0 && string.IsNullOrWhiteSpace(lines[^1]))
+            lines.RemoveAt(lines.Count - 1);
+
+        if (lines.Count == 0) return (new List<string>(), new List<List<string>>());
+
+        var headers = SplitCsvLine(lines[0]).Select(h => h.Trim()).ToList();
+        var data = new List<List<string>>(Math.Max(0, lines.Count - 1));
+        for (var i = 1; i < lines.Count; i++)
+            data.Add(SplitCsvLine(lines[i]));
+        return (headers, data);
+    }
+
+    /// <summary>
+    /// Minimal RFC-4180-ish splitter: handles quoted fields containing commas
+    /// and "" escape sequences. No multi-line field support (sufficient for our schema).
+    /// </summary>
+    private static List<string> SplitCsvLine(string line)
+    {
+        var fields = new List<string>();
+        var sb = new System.Text.StringBuilder();
+        var inQuotes = false;
+        for (var i = 0; i < line.Length; i++)
+        {
+            var ch = line[i];
+            if (inQuotes)
+            {
+                if (ch == '"')
+                {
+                    if (i + 1 < line.Length && line[i + 1] == '"')
+                    {
+                        sb.Append('"');
+                        i++;
+                    }
+                    else
+                    {
+                        inQuotes = false;
+                    }
+                }
+                else
+                {
+                    sb.Append(ch);
+                }
+            }
+            else
+            {
+                if (ch == ',')
+                {
+                    fields.Add(sb.ToString());
+                    sb.Clear();
+                }
+                else if (ch == '"' && sb.Length == 0)
+                {
+                    inQuotes = true;
+                }
+                else
+                {
+                    sb.Append(ch);
+                }
+            }
+        }
+        fields.Add(sb.ToString());
+        return fields;
+    }
+
+    /// <summary>
+    /// Build a normalized header lookup. Keys are lowercase with spaces/underscores stripped.
+    /// Aliases are folded onto the canonical key (e.g. "AWB", "AWB Number" → "awbnumber").
+    /// </summary>
+    private static Dictionary<string, int> BuildHeaderMap(List<string> headers)
+    {
+        var map = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        for (var i = 0; i < headers.Count; i++)
+        {
+            var raw = headers[i] ?? string.Empty;
+            var key = NormalizeHeader(raw);
+            if (string.IsNullOrEmpty(key)) continue;
+
+            // Canonical aliases.
+            var canonical = key switch
+            {
+                "awb" => "awbnumber",
+                "awbno" => "awbnumber",
+                "airwaybill" => "awbnumber",
+                "airwaybillnumber" => "awbnumber",
+                "from" => "origin",
+                "to" => "destination",
+                "qty" => "pieces",
+                "quantity" => "pieces",
+                "weightlbs" => "weight",
+                "ready" => "readytopickup",
+                "readyforpickup" => "readytopickup",
+                _ => key
+            };
+
+            // First occurrence wins so duplicate header names don't override.
+            map.TryAdd(canonical, i);
+        }
+        return map;
+    }
+
+    private static string NormalizeHeader(string s)
+    {
+        var sb = new System.Text.StringBuilder(s.Length);
+        foreach (var ch in s)
+        {
+            if (char.IsLetterOrDigit(ch))
+                sb.Append(char.ToLowerInvariant(ch));
+        }
+        return sb.ToString();
+    }
+
+    // ---------------------------------------------------------------------
+    // Upload helpers — value parsers
+    // ---------------------------------------------------------------------
+
+    private static string RequireNonEmpty(string value, string fieldName)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            throw new FormatException($"{fieldName} is required.");
+        return value;
+    }
+
+    private static DateTime ParseDate(string value, string fieldName)
+    {
+        // Try common US + ISO formats; fall back to invariant general parsing.
+        var formats = new[]
+        {
+            "yyyy-MM-dd", "yyyy-MM-ddTHH:mm:ss", "yyyy-MM-dd HH:mm:ss",
+            "MM/dd/yyyy", "M/d/yyyy", "MM-dd-yyyy",
+            "yyyy/MM/dd", "dd-MMM-yyyy"
+        };
+        if (DateTime.TryParseExact(value, formats, System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AdjustToUniversal,
+                out var exact))
+            return DateTime.SpecifyKind(exact, DateTimeKind.Utc);
+        if (DateTime.TryParse(value, System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AdjustToUniversal,
+                out var any))
+            return DateTime.SpecifyKind(any, DateTimeKind.Utc);
+        throw new FormatException($"{fieldName} '{value}' is not a recognized date.");
+    }
+
+    private static int ParseInt(string value, string fieldName)
+    {
+        if (int.TryParse(value, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var i))
+            return i;
+        throw new FormatException($"{fieldName} '{value}' is not a valid integer.");
+    }
+
+    private static decimal ParseDecimal(string value, string fieldName)
+    {
+        // Strip thousand separators that Excel sometimes writes when GetString() is used.
+        var cleaned = value.Replace(",", string.Empty);
+        if (decimal.TryParse(cleaned, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var d))
+            return d;
+        throw new FormatException($"{fieldName} '{value}' is not a valid number.");
+    }
+
+    private static bool ParseBool(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return false;
+        var v = value.Trim().ToLowerInvariant();
+        return v switch
+        {
+            "true" or "yes" or "y" or "1" => true,
+            "false" or "no" or "n" or "0" or "" => false,
+            _ => false
+        };
+    }
+
+    private static BreakdownStatus ParseBreakdownStatus(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return BreakdownStatus.InProgress;
+        var normalized = value.Replace(" ", string.Empty);
+        if (Enum.TryParse<BreakdownStatus>(normalized, ignoreCase: true, out var parsed))
+            return parsed;
+        // Tolerate the synonyms the spec mentions even though the enum doesn't define them.
+        return normalized.ToLowerInvariant() switch
+        {
+            "pending" or "hold" or "onhold" => BreakdownStatus.InProgress,
+            "complete" or "done" or "finished" => BreakdownStatus.Completed,
+            _ => throw new FormatException($"Invalid BreakdownStatus '{value}'. Allowed: InProgress, Completed.")
+        };
+    }
+
+    private static CustomsStatus ParseCustomsStatus(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return CustomsStatus.PNF;
+        var normalized = value.Replace(" ", string.Empty);
+        if (Enum.TryParse<CustomsStatus>(normalized, ignoreCase: true, out var parsed))
+            return parsed;
+        return normalized.ToLowerInvariant() switch
+        {
+            "pending" or "notfiled" => CustomsStatus.PNF,
+            "cleared" or "clear" => CustomsStatus.Released,
+            _ => throw new FormatException($"Invalid CustomsStatus '{value}'. Allowed: PNF, Hold, Released.")
+        };
     }
 }

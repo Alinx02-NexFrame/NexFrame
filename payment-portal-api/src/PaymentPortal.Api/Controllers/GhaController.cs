@@ -66,14 +66,27 @@ public class GhaController : ControllerBase
     public async Task<ActionResult<MonthlyInsightsDto>> GetMonthlyInsights()
         => Ok(await _gha.GetMonthlyInsightsAsync());
 
+    /// <summary>
+    /// Bulk-upload Cargo records from an Excel (.xlsx) or CSV file.
+    /// Max file size: 10 MB. See <see cref="CargoUploadResultDto"/> for the response shape.
+    /// </summary>
     [HttpPost("data/upload")]
-    public async Task<IActionResult> UploadData(IFormFile file)
+    [RequestSizeLimit(10 * 1024 * 1024)]
+    [RequestFormLimits(MultipartBodyLengthLimit = 10 * 1024 * 1024)]
+    public async Task<ActionResult<CargoUploadResultDto>> UploadData(IFormFile file)
     {
         if (file == null || file.Length == 0)
             return BadRequest(new { error = "No file uploaded." });
 
-        using var stream = file.OpenReadStream();
-        var recordCount = await _gha.UploadDataAsync(stream, file.FileName, UserId);
-        return Ok(new { recordCount, fileName = file.FileName });
+        if (file.Length > 10 * 1024 * 1024)
+            return BadRequest(new { error = "File exceeds the 10 MB upload limit." });
+
+        var ext = System.IO.Path.GetExtension(file.FileName).ToLowerInvariant();
+        if (ext != ".xlsx" && ext != ".csv")
+            return BadRequest(new { error = $"Unsupported file extension '{ext}'. Only .xlsx and .csv are accepted." });
+
+        await using var stream = file.OpenReadStream();
+        var result = await _gha.UploadDataAsync(stream, file.FileName, UserId);
+        return Ok(result);
     }
 }
