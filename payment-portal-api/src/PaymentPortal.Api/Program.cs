@@ -1,7 +1,6 @@
 using System.Text;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -25,17 +24,12 @@ Log.Logger = new LoggerConfiguration()
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog();
 
-// Database (SQLite — local file based, included with deployment).
-// Resolve a relative Data Source against AppContext.BaseDirectory so the
-// .db file lives next to the executable both in Debug and after publish.
-var sqliteBuilder = new SqliteConnectionStringBuilder(
-    builder.Configuration.GetConnectionString("DefaultConnection"));
-if (!Path.IsPathRooted(sqliteBuilder.DataSource))
-{
-    sqliteBuilder.DataSource = Path.Combine(AppContext.BaseDirectory, sqliteBuilder.DataSource);
-}
+// Database (SQL Server). Connection string is supplied via configuration —
+// locally via appsettings.json (LocalDB), in Azure via App Service Configuration.
+var connStr = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("ConnectionString 'DefaultConnection' not configured");
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(sqliteBuilder.ToString()));
+    options.UseSqlServer(connStr, sql => sql.EnableRetryOnFailure(3)));
 
 // JWT
 var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>()!;

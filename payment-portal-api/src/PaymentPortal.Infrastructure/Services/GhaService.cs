@@ -90,7 +90,7 @@ public class GhaService : IGhaService
 
     public async Task<SettlementDto> GetSettlementAsync()
     {
-        // SQLite cannot aggregate decimal on the DB side, so materialize first.
+        // Materialize then aggregate in memory (works for any provider).
         var processingFees = await _db.Payments
             .Where(p => p.PaymentStatus == PaymentStatus.Completed)
             .Select(p => p.ProcessingFee)
@@ -108,8 +108,7 @@ public class GhaService : IGhaService
 
     public async Task<List<TopCustomerDto>> GetTopCustomersAsync(int count = 5)
     {
-        // SQLite cannot aggregate decimal on the DB side, so materialize first
-        // and group in memory.
+        // Materialize then group in memory (works for any provider).
         var rows = await _db.Payments
             .Where(p => p.PaymentStatus == PaymentStatus.Completed && p.CompanyId != null)
             .Select(p => new { p.CompanyId, p.Amount })
