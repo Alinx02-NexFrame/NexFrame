@@ -114,6 +114,7 @@ credentials.json
 # Azure deployment credentials
 publish-profile.xml
 azure-credentials.json
+sp-creds.json
 *.publishsettings
 *.PublishSettings
 

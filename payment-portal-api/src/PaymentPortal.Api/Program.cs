@@ -111,7 +111,7 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(
                 "http://localhost:5173",
                 "http://localhost:3000",
-                "https://wonderful-tree-0b4f0e700.7.azurestaticapps.net")
+                "https://polite-wave-0f114830f.7.azurestaticapps.net")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();

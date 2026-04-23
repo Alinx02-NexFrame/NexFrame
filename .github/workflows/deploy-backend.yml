@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: gha-payment-api-nex01
+  AZURE_WEBAPP_NAME: sellas-payment-api
   DOTNET_VERSION: '8.0.x'
   PROJECT_PATH: 'payment-portal-api/src/PaymentPortal.Api/PaymentPortal.Api.csproj'
   PUBLISH_DIR: ${{ github.workspace }}/publish
