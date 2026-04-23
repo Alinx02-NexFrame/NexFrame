@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using PaymentPortal.Application.Exceptions;
 
 namespace PaymentPortal.Api.Middleware;
 
@@ -32,6 +33,7 @@ public class ExceptionMiddleware
         var (statusCode, message) = exception switch
         {
             KeyNotFoundException => (HttpStatusCode.NotFound, exception.Message),
+            ConflictException => (HttpStatusCode.Conflict, exception.Message),
             UnauthorizedAccessException => (HttpStatusCode.Unauthorized, exception.Message),
             InvalidOperationException => (HttpStatusCode.BadRequest, exception.Message),
             ArgumentException => (HttpStatusCode.BadRequest, exception.Message),
