@@ -74,6 +74,10 @@ builder.Services.AddScoped<IBillingService, BillingService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IForwarderService, ForwarderService>();
 builder.Services.AddScoped<IGhaService, GhaService>();
+builder.Services.AddScoped<IAuditLogService, AuditLogService>();
+
+// HttpContextAccessor (used by AuditLogService to capture client IP)
+builder.Services.AddHttpContextAccessor();
 
 // Controllers
 builder.Services.AddControllers();

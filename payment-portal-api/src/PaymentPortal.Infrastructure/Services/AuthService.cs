@@ -19,12 +19,14 @@ public class AuthService : IAuthService
     private readonly AppDbContext _db;
     private readonly JwtSettings _jwt;
     private readonly IMapper _mapper;
+    private readonly IAuditLogService _audit;
 
-    public AuthService(AppDbContext db, IOptions<JwtSettings> jwt, IMapper mapper)
+    public AuthService(AppDbContext db, IOptions<JwtSettings> jwt, IMapper mapper, IAuditLogService audit)
     {
         _db = db;
         _jwt = jwt.Value;
         _mapper = mapper;
+        _audit = audit;
     }
 
     public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
@@ -58,6 +60,9 @@ public class AuthService : IAuthService
         await _db.SaveChangesAsync();
 
         user.Company = company;
+
+        await _audit.LogAsync(user.Id, "Register", "User", user.Id.ToString(), $"username={user.Username}, email={user.Email}");
+
         return await GenerateAuthResponse(user);
     }
 
@@ -65,10 +70,18 @@ public class AuthService : IAuthService
     {
         var user = await _db.Users.Include(u => u.Company).FirstOrDefaultAsync(u => u.Username == request.Username);
         if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+        {
+            await _audit.LogAsync(null, "LoginFailed", "User", null, $"username={request.Username}");
             throw new UnauthorizedAccessException("Invalid username or password.");
+        }
 
         if (!user.IsActive)
+        {
+            await _audit.LogAsync(user.Id, "LoginFailed", "User", user.Id.ToString(), $"username={request.Username}, reason=deactivated");
             throw new UnauthorizedAccessException("Account is deactivated.");
+        }
+
+        await _audit.LogAsync(user.Id, "Login", "User", user.Id.ToString(), $"username={user.Username}");
 
         return await GenerateAuthResponse(user);
     }
@@ -84,6 +97,8 @@ public class AuthService : IAuthService
 
         stored.IsRevoked = true;
         await _db.SaveChangesAsync();
+
+        await _audit.LogAsync(stored.User.Id, "TokenRefresh", "User", stored.User.Id.ToString());
 
         return await GenerateAuthResponse(stored.User);
     }

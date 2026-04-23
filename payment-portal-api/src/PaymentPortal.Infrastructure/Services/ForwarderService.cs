@@ -17,11 +17,13 @@ public class ForwarderService : IForwarderService
 {
     private readonly AppDbContext _db;
     private readonly IMapper _mapper;
+    private readonly IAuditLogService _audit;
 
-    public ForwarderService(AppDbContext db, IMapper mapper)
+    public ForwarderService(AppDbContext db, IMapper mapper, IAuditLogService audit)
     {
         _db = db;
         _mapper = mapper;
+        _audit = audit;
     }
 
     public async Task<ForwarderDashboardDto> GetDashboardAsync(int userId)
@@ -221,6 +223,8 @@ public class ForwarderService : IForwarderService
         _db.WatchlistItems.Add(item);
         await _db.SaveChangesAsync();
 
+        await _audit.LogAsync(userId, "WatchlistAdd", "WatchlistItem", item.Id.ToString(), $"awb={awbNumber}");
+
         return _mapper.Map<WatchlistItemDto>(item);
     }
 
@@ -234,6 +238,8 @@ public class ForwarderService : IForwarderService
 
         _db.WatchlistItems.Remove(item);
         await _db.SaveChangesAsync();
+
+        await _audit.LogAsync(userId, "WatchlistRemove", "WatchlistItem", itemId.ToString());
     }
 
     public async Task<List<CompanyUserDto>> GetCompanyUsersAsync(int userId)
@@ -262,6 +268,8 @@ public class ForwarderService : IForwarderService
         _db.Users.Add(newUser);
         await _db.SaveChangesAsync();
 
+        await _audit.LogAsync(userId, "UserCreate", "User", newUser.Id.ToString(), $"byUser={userId}, username={request.Email}");
+
         return _mapper.Map<CompanyUserDto>(newUser);
     }
 
@@ -276,6 +284,9 @@ public class ForwarderService : IForwarderService
         if (request.IsActive.HasValue) target.IsActive = request.IsActive.Value;
 
         await _db.SaveChangesAsync();
+
+        await _audit.LogAsync(userId, "UserUpdate", "User", targetUserId.ToString(), $"byUser={userId}");
+
         return _mapper.Map<CompanyUserDto>(target);
     }
 
@@ -289,6 +300,8 @@ public class ForwarderService : IForwarderService
 
         target.IsActive = false;
         await _db.SaveChangesAsync();
+
+        await _audit.LogAsync(userId, "UserDelete", "User", targetUserId.ToString(), $"byUser={userId}");
     }
 
     private static byte[] GenerateExcel(List<Payment> payments)

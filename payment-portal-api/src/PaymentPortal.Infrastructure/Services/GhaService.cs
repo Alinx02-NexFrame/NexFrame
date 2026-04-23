@@ -17,11 +17,13 @@ public class GhaService : IGhaService
 {
     private readonly AppDbContext _db;
     private readonly IMapper _mapper;
+    private readonly IAuditLogService _audit;
 
-    public GhaService(AppDbContext db, IMapper mapper)
+    public GhaService(AppDbContext db, IMapper mapper, IAuditLogService audit)
     {
         _db = db;
         _mapper = mapper;
+        _audit = audit;
     }
 
     public async Task<RevenueStatsDto> GetRevenueStatsAsync()
@@ -207,6 +209,9 @@ public class GhaService : IGhaService
 
         _db.Reports.Add(report);
         await _db.SaveChangesAsync();
+
+        await _audit.LogAsync(userId, "ReportGenerate", "Report", report.Id.ToString(), $"type={report.ReportType}, format={report.Format}");
+
         return _mapper.Map<ReportDto>(report);
     }
 

@@ -17,12 +17,14 @@ public class PaymentService : IPaymentService
     private readonly AppDbContext _db;
     private readonly BillingCalculationService _calc;
     private readonly IMapper _mapper;
+    private readonly IAuditLogService _audit;
 
-    public PaymentService(AppDbContext db, BillingCalculationService calc, IMapper mapper)
+    public PaymentService(AppDbContext db, BillingCalculationService calc, IMapper mapper, IAuditLogService audit)
     {
         _db = db;
         _calc = calc;
         _mapper = mapper;
+        _audit = audit;
     }
 
     public async Task<PaymentConfirmationDto> ProcessPaymentAsync(CreatePaymentRequest request, int? userId = null)
@@ -64,11 +66,20 @@ public class PaymentService : IPaymentService
         }
 
         await _db.SaveChangesAsync();
+
+        await _audit.LogAsync(
+            userId,
+            "Payment",
+            "Payment",
+            payment.ConfirmationNumber,
+            $"awb={payment.AwbNumber}, amount={payment.Amount}, method={payment.PaymentMethod}");
+
         return _mapper.Map<PaymentConfirmationDto>(payment);
     }
 
     public async Task<PaymentConfirmationDto> ProcessAuthenticatedPaymentAsync(CreatePaymentRequest request, int userId)
     {
+        // ProcessPaymentAsync already writes a "Payment" audit entry.
         return await ProcessPaymentAsync(request, userId);
     }
 
@@ -86,6 +97,15 @@ public class PaymentService : IPaymentService
             var result = await ProcessPaymentAsync(paymentRequest, userId);
             results.Add(result);
         }
+
+        var totalAmount = results.Sum(r => r.Amount);
+        await _audit.LogAsync(
+            userId,
+            "BulkPayment",
+            "Payment",
+            null,
+            $"count={results.Count}, totalAmount={totalAmount}");
+
         return results;
     }
 
