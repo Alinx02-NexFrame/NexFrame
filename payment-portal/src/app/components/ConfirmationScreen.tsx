@@ -22,8 +22,12 @@ export function ConfirmationScreen({ confirmation, confirmations, onNewSearch }:
 
   const handleDownloadReceipt = async () => {
     if (isBulk && confirmations) {
-      const numbers = confirmations.map((c) => c.confirmationNumber);
-      const url = paymentApi.getBulkReceiptUrl(numbers);
+      // Prefer the batchId route (single indexed lookup). Every row in a
+      // bulk response carries the same batchId, so pick from the first.
+      const batchId = confirmations.find((c) => c.batchId)?.batchId ?? null;
+      const url = batchId
+        ? paymentApi.getBulkReceiptUrlByBatch(batchId)
+        : paymentApi.getBulkReceiptUrl(confirmations.map((c) => c.confirmationNumber));
       const filename = `BulkReceipt-${confirmation.confirmationNumber}.pdf`;
       const ok = await downloadAuthenticatedPdf(url, filename);
       if (!ok) {

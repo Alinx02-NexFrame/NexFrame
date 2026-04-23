@@ -194,6 +194,13 @@ export const paymentApi = {
 
   // Bulk-receipt endpoint is [Authorize] — use downloadAuthenticatedPdf() to
   // attach the JWT, NOT window.open().
+  //
+  // Prefer batchId (single indexed lookup, O(1) regardless of count). The
+  // confirmation-list variant is kept as a fallback for older records that
+  // pre-date Payment.BatchId.
+  getBulkReceiptUrlByBatch: (batchId: string) =>
+    `${BASE_URL}/payments/bulk-receipt?batchId=${encodeURIComponent(batchId)}`,
+
   getBulkReceiptUrl: (confirmationNumbers: string[]) =>
     `${BASE_URL}/payments/bulk-receipt?confirmations=${confirmationNumbers
       .map(encodeURIComponent)

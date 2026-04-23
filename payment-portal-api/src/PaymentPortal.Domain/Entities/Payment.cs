@@ -18,6 +18,14 @@ public class Payment
     public int? CargoId { get; set; }
     public DateTime PaymentDate { get; set; } = DateTime.UtcNow;
 
+    /// <summary>
+    /// Unique per bulk-payment submission. NULL for single-AWB payments.
+    /// Set by PaymentService.ProcessBulkPaymentAsync (one Guid per call,
+    /// shared across every row in that batch). Indexed for bulk-receipt
+    /// lookups.
+    /// </summary>
+    public Guid? BatchId { get; set; }
+
     public User? User { get; set; }
     public Company? Company { get; set; }
     public Cargo? Cargo { get; set; }

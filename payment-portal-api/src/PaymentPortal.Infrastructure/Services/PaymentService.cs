@@ -29,7 +29,7 @@ public class PaymentService : IPaymentService
         _cart = cart;
     }
 
-    public async Task<PaymentConfirmationDto> ProcessPaymentAsync(CreatePaymentRequest request, int? userId = null)
+    public async Task<PaymentConfirmationDto> ProcessPaymentAsync(CreatePaymentRequest request, int? userId = null, Guid? batchId = null)
     {
         var cargo = await _db.Cargo.FirstOrDefaultAsync(c => c.AwbNumber == request.AwbNumber)
             ?? throw new KeyNotFoundException($"Cargo not found for AWB: {request.AwbNumber}");
@@ -69,7 +69,8 @@ public class PaymentService : IPaymentService
             UserId = userId,
             CompanyId = user?.CompanyId,
             CargoId = cargo.Id,
-            PaymentDate = DateTime.UtcNow
+            PaymentDate = DateTime.UtcNow,
+            BatchId = batchId
         };
 
         _db.Payments.Add(payment);
@@ -116,6 +117,11 @@ public class PaymentService : IPaymentService
         var fallbackEmail = (await _db.Users.FindAsync(userId))?.Email ?? "";
         var email = !string.IsNullOrWhiteSpace(request.Email) ? request.Email! : fallbackEmail;
 
+        // One BatchId per submission — stamped on every Payment row in this
+        // bulk call so the bulk-receipt endpoint can look them up with a
+        // single indexed WHERE instead of a confirmation-list IN(...).
+        var batchId = Guid.NewGuid();
+
         var results = new List<PaymentConfirmationDto>();
         foreach (var awb in request.AwbNumbers)
         {
@@ -125,7 +131,7 @@ public class PaymentService : IPaymentService
                 PaymentMethod = request.PaymentMethod,
                 Email = email
             };
-            var result = await ProcessPaymentAsync(paymentRequest, userId);
+            var result = await ProcessPaymentAsync(paymentRequest, userId, batchId);
             results.Add(result);
         }
 
@@ -134,8 +140,8 @@ public class PaymentService : IPaymentService
             userId,
             "BulkPayment",
             "Payment",
-            null,
-            $"count={results.Count}, totalAmount={totalAmount}");
+            batchId.ToString(),
+            $"count={results.Count}, totalAmount={totalAmount}, batchId={batchId}");
 
         return results;
     }
@@ -302,6 +308,26 @@ public class PaymentService : IPaymentService
         });
 
         return document.GeneratePdf();
+    }
+
+    public async Task<byte[]> GenerateBulkReceiptPdfByBatchAsync(Guid batchId, int userId)
+    {
+        // Look up the batch via the indexed BatchId column, authorize the
+        // owner, then delegate to the confirmation-number path so the PDF
+        // rendering stays in one place.
+        var confirmations = await _db.Payments
+            .AsNoTracking()
+            .Where(p => p.BatchId == batchId)
+            .Select(p => new { p.ConfirmationNumber, p.UserId })
+            .ToListAsync();
+
+        if (confirmations.Count == 0)
+            throw new KeyNotFoundException("No payments found for this batch.");
+
+        if (confirmations.Any(c => c.UserId != userId))
+            throw new KeyNotFoundException("No payments found for this batch."); // leak-resistant 404
+
+        return await GenerateBulkReceiptPdfAsync(confirmations.Select(c => c.ConfirmationNumber), userId);
     }
 
     public async Task<byte[]> GenerateBulkReceiptPdfAsync(IEnumerable<string> confirmationNumbers, int userId)

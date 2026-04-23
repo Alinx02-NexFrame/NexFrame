@@ -18,6 +18,7 @@ public class PaymentConfiguration : IEntityTypeConfiguration<Payment>
         builder.Property(p => p.PaymentStatus).HasConversion<string>().HasMaxLength(20);
         builder.Property(p => p.Email).HasMaxLength(200).IsRequired();
         builder.Property(p => p.CardLast4).HasMaxLength(4);
+        builder.HasIndex(p => p.BatchId);
 
         builder.HasOne(p => p.User)
             .WithMany(u => u.Payments)

@@ -47,6 +47,8 @@ export interface PaymentConfirmation {
   amount: number;
   paymentDate: string;
   paymentMethod: string;
+  /** Set only when this row came from a bulk submission. */
+  batchId?: string | null;
 }
 
 // 사용자 타입

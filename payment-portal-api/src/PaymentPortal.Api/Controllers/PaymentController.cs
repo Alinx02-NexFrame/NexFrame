@@ -47,22 +47,36 @@ public class PaymentController : ControllerBase
     }
 
     /// <summary>
-    /// Combined PDF receipt for a bulk payment. Pass the confirmation numbers as a
-    /// comma-separated query parameter (e.g. ?confirmations=PMT-1,PMT-2,PMT-3).
+    /// Combined PDF receipt for a bulk payment. Prefer <paramref name="batchId"/>
+    /// (single indexed lookup) — returned by ProcessBulkPaymentAsync on every
+    /// row. <paramref name="confirmations"/> is kept for backwards compatibility
+    /// with clients from before Payment.BatchId existed.
     /// </summary>
     [HttpGet("bulk-receipt")]
     [Authorize]
-    public async Task<IActionResult> DownloadBulkReceipt([FromQuery] string confirmations)
+    public async Task<IActionResult> DownloadBulkReceipt(
+        [FromQuery] Guid? batchId = null,
+        [FromQuery] string? confirmations = null)
     {
-        var ids = confirmations?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                  ?? Array.Empty<string>();
-        if (ids.Length == 0)
-            return BadRequest(new { error = "confirmations query parameter required" });
-        if (ids.Length > 100)
-            return BadRequest(new { error = "Maximum 100 confirmations per request" });
-
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var pdf = await _payment.GenerateBulkReceiptPdfAsync(ids, userId);
+
+        byte[] pdf;
+        if (batchId.HasValue)
+        {
+            pdf = await _payment.GenerateBulkReceiptPdfByBatchAsync(batchId.Value, userId);
+        }
+        else
+        {
+            var ids = confirmations?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                      ?? Array.Empty<string>();
+            if (ids.Length == 0)
+                return BadRequest(new { error = "batchId or confirmations query parameter required" });
+            if (ids.Length > 100)
+                return BadRequest(new { error = "Maximum 100 confirmations per request" });
+
+            pdf = await _payment.GenerateBulkReceiptPdfAsync(ids, userId);
+        }
+
         var filename = $"BulkReceipt-{DateTime.UtcNow:yyyyMMdd-HHmmss}.pdf";
         return File(pdf, "application/pdf", filename);
     }
