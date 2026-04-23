@@ -15,6 +15,9 @@ public class AppDbContext : DbContext
     public DbSet<Payment> Payments => Set<Payment>();
     public DbSet<Watchlist> Watchlists => Set<Watchlist>();
     public DbSet<WatchlistItem> WatchlistItems => Set<WatchlistItem>();
+    public DbSet<Cart> Carts => Set<Cart>();
+    public DbSet<CartItem> CartItems => Set<CartItem>();
+    public DbSet<SavedCard> SavedCards => Set<SavedCard>();
     public DbSet<Report> Reports => Set<Report>();
     public DbSet<UploadHistory> UploadHistory => Set<UploadHistory>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();

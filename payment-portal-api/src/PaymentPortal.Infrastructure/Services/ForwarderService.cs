@@ -3,6 +3,7 @@ using ClosedXML.Excel;
 using Microsoft.EntityFrameworkCore;
 using PaymentPortal.Application.DTOs.Common;
 using PaymentPortal.Application.DTOs.Forwarder;
+using PaymentPortal.Application.Exceptions;
 using PaymentPortal.Application.Interfaces;
 using PaymentPortal.Domain.Entities;
 using PaymentPortal.Domain.Enums;
@@ -65,8 +66,9 @@ public class ForwarderService : IForwarderService
     {
         var user = await _db.Users.FindAsync(userId) ?? throw new KeyNotFoundException("User not found.");
 
-        var query = _db.Payments
-            .Where(p => p.CompanyId == user.CompanyId && p.PaymentStatus == PaymentStatus.Completed);
+        var query = user.CompanyRole == Domain.Enums.CompanyRole.Admin
+            ? _db.Payments.Where(p => p.CompanyId == user.CompanyId && p.PaymentStatus == PaymentStatus.Completed)
+            : _db.Payments.Where(p => p.UserId == userId && p.PaymentStatus == PaymentStatus.Completed);
 
         if (!string.IsNullOrWhiteSpace(search))
             query = query.Where(p => p.AwbNumber.Contains(search) || p.ConfirmationNumber.Contains(search));
@@ -90,6 +92,7 @@ public class ForwarderService : IForwarderService
     public async Task<List<TransactionChartDto>> GetTransactionChartDataAsync(int userId)
     {
         var user = await _db.Users.FindAsync(userId) ?? throw new KeyNotFoundException("User not found.");
+        EnsureReportAccess(user);
 
         var sixMonthsAgo = DateTime.UtcNow.AddMonths(-6);
         var payments = await _db.Payments
@@ -110,6 +113,7 @@ public class ForwarderService : IForwarderService
     public async Task<List<FeeCategoryDto>> GetFeeCategoryBreakdownAsync(int userId)
     {
         var user = await _db.Users.FindAsync(userId) ?? throw new KeyNotFoundException("User not found.");
+        EnsureReportAccess(user);
 
         var sixMonthsAgo = DateTime.UtcNow.AddMonths(-6);
         var billings = await _db.BillingRecords
@@ -132,6 +136,7 @@ public class ForwarderService : IForwarderService
     public async Task<TransactionSummaryDto> GetTransactionSummaryAsync(int userId)
     {
         var user = await _db.Users.FindAsync(userId) ?? throw new KeyNotFoundException("User not found.");
+        EnsureReportAccess(user);
 
         var now = DateTime.UtcNow;
         var currentMonthStart = new DateTime(now.Year, now.Month, 1);
@@ -177,6 +182,7 @@ public class ForwarderService : IForwarderService
     public async Task<byte[]> ExportReportAsync(int userId, string format)
     {
         var user = await _db.Users.FindAsync(userId) ?? throw new KeyNotFoundException("User not found.");
+        EnsureReportAccess(user);
         var payments = await _db.Payments
             .Where(p => p.CompanyId == user.CompanyId && p.PaymentStatus == PaymentStatus.Completed)
             .OrderByDescending(p => p.PaymentDate)
@@ -252,6 +258,7 @@ public class ForwarderService : IForwarderService
     public async Task<CompanyUserDto> CreateCompanyUserAsync(int userId, CreateCompanyUserRequest request)
     {
         var admin = await _db.Users.FindAsync(userId) ?? throw new KeyNotFoundException("User not found.");
+        EnsureCompanyAdmin(admin);
 
         if (await _db.Users.AnyAsync(u => u.Email == request.Email))
             throw new InvalidOperationException("Email already registered.");
@@ -263,7 +270,7 @@ public class ForwarderService : IForwarderService
             FullName = request.FullName,
             Role = UserRole.Forwarder,
             CompanyId = admin.CompanyId,
-            CompanyRole = request.CompanyRole
+            CompanyRole = request.CompanyRole ?? Domain.Enums.CompanyRole.Member
         };
         _db.Users.Add(newUser);
         await _db.SaveChangesAsync();
@@ -276,11 +283,12 @@ public class ForwarderService : IForwarderService
     public async Task<CompanyUserDto> UpdateCompanyUserAsync(int userId, int targetUserId, UpdateCompanyUserRequest request)
     {
         var admin = await _db.Users.FindAsync(userId) ?? throw new KeyNotFoundException("Admin not found.");
+        EnsureCompanyAdmin(admin);
         var target = await _db.Users.FirstOrDefaultAsync(u => u.Id == targetUserId && u.CompanyId == admin.CompanyId)
             ?? throw new KeyNotFoundException("User not found in your company.");
 
         if (request.FullName != null) target.FullName = request.FullName;
-        if (request.CompanyRole != null) target.CompanyRole = request.CompanyRole;
+        if (request.CompanyRole.HasValue) target.CompanyRole = request.CompanyRole.Value;
         if (request.IsActive.HasValue) target.IsActive = request.IsActive.Value;
 
         await _db.SaveChangesAsync();
@@ -293,6 +301,7 @@ public class ForwarderService : IForwarderService
     public async Task DeleteCompanyUserAsync(int userId, int targetUserId)
     {
         var admin = await _db.Users.FindAsync(userId) ?? throw new KeyNotFoundException("Admin not found.");
+        EnsureCompanyAdmin(admin);
         if (userId == targetUserId) throw new InvalidOperationException("Cannot delete yourself.");
 
         var target = await _db.Users.FirstOrDefaultAsync(u => u.Id == targetUserId && u.CompanyId == admin.CompanyId)
@@ -302,6 +311,18 @@ public class ForwarderService : IForwarderService
         await _db.SaveChangesAsync();
 
         await _audit.LogAsync(userId, "UserDelete", "User", targetUserId.ToString(), $"byUser={userId}");
+    }
+
+    private static void EnsureCompanyAdmin(User user)
+    {
+        if (user.CompanyRole != Domain.Enums.CompanyRole.Admin)
+            throw new ForbiddenException("Only company admins can manage users.");
+    }
+
+    private static void EnsureReportAccess(User user)
+    {
+        if (user.CompanyRole != Domain.Enums.CompanyRole.Admin)
+            throw new ForbiddenException("Reports are available to company admins only.");
     }
 
     private static byte[] GenerateExcel(List<Payment> payments)

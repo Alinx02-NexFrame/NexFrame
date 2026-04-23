@@ -37,6 +37,8 @@ export function getAccessToken() {
 
 // Current user (set after login/register so callers can access email, role, etc.
 // without re-fetching /auth/me).
+export type CompanyRole = 'Admin' | 'Manager' | 'Member';
+
 export interface CurrentUser {
   id: number;
   username?: string;
@@ -44,6 +46,7 @@ export interface CurrentUser {
   fullName: string;
   companyName: string;
   role: string;
+  companyRole?: CompanyRole | null;
 }
 
 let currentUser: CurrentUser | null = readStored<CurrentUser>(USER_KEY);
@@ -102,20 +105,30 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> {
 }
 
 // Auth API
+type AuthUserResponse = {
+  id: number;
+  username: string;
+  email: string;
+  fullName: string;
+  companyName: string;
+  role: string;
+  companyRole?: CompanyRole | null;
+};
+
 export const authApi = {
   login: (username: string, password: string) =>
-    request<{ accessToken: string; refreshToken: string; user: { id: number; username: string; email: string; fullName: string; companyName: string; role: string } }>('/auth/login', {
+    request<{ accessToken: string; refreshToken: string; user: AuthUserResponse }>('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ username, password }),
     }),
 
   register: (data: { username: string; email: string; password: string; fullName: string; companyName: string }) =>
-    request<{ accessToken: string; refreshToken: string; user: { id: number; username: string; email: string; fullName: string; companyName: string; role: string } }>('/auth/register', {
+    request<{ accessToken: string; refreshToken: string; user: AuthUserResponse }>('/auth/register', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
 
-  me: () => request<{ id: number; email: string; fullName: string; companyName: string; role: string }>('/auth/me'),
+  me: () => request<AuthUserResponse>('/auth/me'),
 };
 
 // Cargo API
@@ -260,6 +273,71 @@ export const forwarderApi = {
 
   removeWatchlistItem: (itemId: number) =>
     request<void>(`/forwarder/watchlist/${itemId}`, { method: 'DELETE' }),
+
+  // Company user management (Admin-only on the backend)
+  getCompanyUsers: () =>
+    request<{ id: number; email: string; fullName: string; companyRole: CompanyRole | null; isActive: boolean }[]>('/forwarder/users'),
+
+  createCompanyUser: (data: { email: string; fullName: string; password: string; companyRole: CompanyRole }) =>
+    request<{ id: number; email: string; fullName: string; companyRole: CompanyRole | null; isActive: boolean }>('/forwarder/users', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  updateCompanyUser: (targetUserId: number, data: { fullName?: string; companyRole?: CompanyRole; isActive?: boolean }) =>
+    request<{ id: number; email: string; fullName: string; companyRole: CompanyRole | null; isActive: boolean }>(`/forwarder/users/${targetUserId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+  deleteCompanyUser: (targetUserId: number) =>
+    request<void>(`/forwarder/users/${targetUserId}`, { method: 'DELETE' }),
+};
+
+// Cart API (persisted, User-scoped)
+export const cartApi = {
+  get: () =>
+    request<{ id: number; items: { id: number; awbNumber: string; amount: number; addedAt: string }[] }>('/forwarder/cart'),
+
+  addItem: (awbNumber: string, amount: number) =>
+    request<{ id: number; awbNumber: string; amount: number; addedAt: string }>('/forwarder/cart', {
+      method: 'POST',
+      body: JSON.stringify({ awbNumber, amount }),
+    }),
+
+  removeItem: (itemId: number) =>
+    request<void>(`/forwarder/cart/${itemId}`, { method: 'DELETE' }),
+
+  clear: () =>
+    request<void>('/forwarder/cart', { method: 'DELETE' }),
+};
+
+// Saved-card API (Company-scoped — shared by all forwarder users, admin-managed)
+export type SavedCard = {
+  id: number;
+  cardLast4: string;
+  cardBrand: string;
+  cardHolderName: string;
+  expiryMonth: number;
+  expiryYear: number;
+  isDefault: boolean;
+  createdAt: string;
+};
+
+export const savedCardApi = {
+  list: () => request<SavedCard[]>('/forwarder/saved-cards'),
+
+  add: (data: { cardNumber: string; cardBrand: string; cardHolderName: string; expiryMonth: number; expiryYear: number; isDefault: boolean }) =>
+    request<SavedCard>('/forwarder/saved-cards', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  setDefault: (cardId: number) =>
+    request<void>(`/forwarder/saved-cards/${cardId}/default`, { method: 'POST' }),
+
+  remove: (cardId: number) =>
+    request<void>(`/forwarder/saved-cards/${cardId}`, { method: 'DELETE' }),
 };
 
 // GHA Admin API

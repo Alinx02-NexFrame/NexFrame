@@ -72,12 +72,19 @@ builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IForwarderService, ForwarderService>();
 builder.Services.AddScoped<IGhaService, GhaService>();
 builder.Services.AddScoped<IAuditLogService, AuditLogService>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<ISavedCardService, SavedCardService>();
 
 // HttpContextAccessor (used by AuditLogService to capture client IP)
 builder.Services.AddHttpContextAccessor();
 
-// Controllers
-builder.Services.AddControllers();
+// Controllers — enums serialize as strings (e.g. CompanyRole "Admin" not 0)
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(
+            new System.Text.Json.Serialization.JsonStringEnumConverter());
+    });
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();

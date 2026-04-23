@@ -10,6 +10,13 @@ public class CreatePaymentRequest
     public string? CardCVV { get; set; }
     public string? AccountNumber { get; set; }
     public string? RoutingNumber { get; set; }
+
+    /// <summary>
+    /// Optional — when set, the company's stored SavedCard is used instead
+    /// of raw Card fields. PaymentService uses the saved card's GatewayToken
+    /// and CardLast4; raw PAN is never required in this flow.
+    /// </summary>
+    public int? SavedCardId { get; set; }
 }
 
 public class BulkPaymentRequest

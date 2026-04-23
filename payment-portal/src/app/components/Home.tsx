@@ -7,6 +7,7 @@ import { Label } from './ui/label';
 import { Card } from './ui/card';
 import { Checkbox } from './ui/checkbox';
 import { authApi, setAccessToken, setCurrentUser } from '../services/apiClient';
+import { globalCartState } from '../data/cartState';
 import { toast } from 'sonner';
 import { RegisterModal } from './auth/RegisterModal';
 
@@ -36,6 +37,8 @@ export function Home({ ghaName = "Swissport", ghaLogo }: HomeProps) {
       if (result.user.role === 'gha_admin') {
         navigate('/gha-dashboard');
       } else {
+        globalCartState.reset();
+        await globalCartState.load();
         navigate('/dashboard');
       }
     } catch (err) {

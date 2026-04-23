@@ -31,8 +31,8 @@ export function CargoStatus({ cargo, billing, onProceedToCheckout, onBack }: Car
     // Auto-add to cart
     const billing = calculateBilling(cargo);
     if (billing) {
-      setTimeout(() => {
-        const success = globalCartState.addToCart(cargo.awbNumber, billing.total);
+      setTimeout(async () => {
+        const success = await globalCartState.addToCart(cargo.awbNumber, billing.total);
         if (success) {
           toast.success(`AWB ${cargo.awbNumber} added to cart`, {
             description: `Amount: $${billing.total.toFixed(2)}`,

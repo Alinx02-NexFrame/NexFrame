@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { UserPlus, Mail, Shield, Edit, Trash2, Users, Info } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { UserPlus, Mail, Shield, Trash2, Users, Info } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Input } from '../ui/input';
@@ -8,156 +8,139 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { toast } from 'sonner';
+import { forwarderApi, getCurrentUser, type CompanyRole } from '../../services/apiClient';
 
-interface User {
-  id: string;
-  name: string;
+interface CompanyUser {
+  id: number;
   email: string;
-  role: 'admin' | 'payment' | 'view';
-  lastActive: string;
+  fullName: string;
+  companyRole: CompanyRole | null;
+  isActive: boolean;
 }
 
+const ROLE_OPTIONS: CompanyRole[] = ['Admin', 'Manager', 'Member'];
+
 export function UserManagement() {
-  const [users, setUsers] = useState<User[]>([
-    {
-      id: '1',
-      name: 'John Kim',
-      email: 'john.kim@globalfreight.com',
-      role: 'admin',
-      lastActive: '2026-01-09'
-    },
-    {
-      id: '2',
-      name: 'Sarah Lee',
-      email: 'sarah.lee@globalfreight.com',
-      role: 'payment',
-      lastActive: '2026-01-08'
-    },
-    {
-      id: '3',
-      name: 'Michael Park',
-      email: 'michael.park@globalfreight.com',
-      role: 'view',
-      lastActive: '2026-01-07'
-    }
-  ]);
-
+  const [users, setUsers] = useState<CompanyUser[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
-  const [newUserName, setNewUserName] = useState('');
+  const [newUserFullName, setNewUserFullName] = useState('');
   const [newUserEmail, setNewUserEmail] = useState('');
-  const [newUserRole, setNewUserRole] = useState<'admin' | 'payment' | 'view'>('view');
+  const [newUserPassword, setNewUserPassword] = useState('');
+  const [newUserRole, setNewUserRole] = useState<CompanyRole>('Member');
   const [isRoleInfoOpen, setIsRoleInfoOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const currentUser = getCurrentUser();
 
-  const handleAddUser = () => {
-    if (!newUserName || !newUserEmail) {
+  const loadUsers = async () => {
+    setLoading(true);
+    try {
+      const list = await forwarderApi.getCompanyUsers();
+      setUsers(list);
+    } catch (err) {
+      toast.error('Failed to load company users', {
+        description: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  const handleAddUser = async () => {
+    if (!newUserFullName || !newUserEmail || !newUserPassword) {
       toast.error('Please fill in all fields');
       return;
     }
 
-    const newUser: User = {
-      id: String(users.length + 1),
-      name: newUserName,
-      email: newUserEmail,
-      role: newUserRole,
-      lastActive: new Date().toISOString().split('T')[0]
-    };
-
-    setUsers([...users, newUser]);
-    toast.success('User has been added', {
-      description: `Invitation email has been sent to ${newUserEmail}.`
-    });
-
-    setNewUserName('');
-    setNewUserEmail('');
-    setNewUserRole('view');
-    setIsAddUserOpen(false);
+    setSubmitting(true);
+    try {
+      await forwarderApi.createCompanyUser({
+        email: newUserEmail,
+        fullName: newUserFullName,
+        password: newUserPassword,
+        companyRole: newUserRole,
+      });
+      toast.success('User has been added', {
+        description: `${newUserEmail} (${newUserRole}) joined your company.`,
+      });
+      setNewUserFullName('');
+      setNewUserEmail('');
+      setNewUserPassword('');
+      setNewUserRole('Member');
+      setIsAddUserOpen(false);
+      await loadUsers();
+    } catch (err) {
+      toast.error('Failed to add user', {
+        description: err instanceof Error ? err.message : 'Unknown error',
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const handleDeleteUser = (id: string, name: string) => {
-    setUsers(users.filter(u => u.id !== id));
-    toast.success('User has been deleted', {
-      description: `${name}'s account has been removed.`
-    });
+  const handleDeleteUser = async (user: CompanyUser) => {
+    if (currentUser && user.id === currentUser.id) {
+      toast.error('You cannot remove yourself.');
+      return;
+    }
+    try {
+      await forwarderApi.deleteCompanyUser(user.id);
+      toast.success('User deactivated', {
+        description: `${user.fullName}'s account has been deactivated.`,
+      });
+      await loadUsers();
+    } catch (err) {
+      toast.error('Failed to delete user', {
+        description: err instanceof Error ? err.message : 'Unknown error',
+      });
+    }
   };
 
-  const getRoleBadge = (role: string) => {
+  const handleRoleChange = async (user: CompanyUser, nextRole: CompanyRole) => {
+    try {
+      await forwarderApi.updateCompanyUser(user.id, { companyRole: nextRole });
+      toast.success(`${user.fullName} is now ${nextRole}`);
+      await loadUsers();
+    } catch (err) {
+      toast.error('Failed to update role', {
+        description: err instanceof Error ? err.message : 'Unknown error',
+      });
+    }
+  };
+
+  const getRoleBadge = (role: CompanyRole | null) => {
     switch (role) {
-      case 'admin':
+      case 'Admin':
         return <Badge className="bg-purple-100 text-purple-800">Administrator</Badge>;
-      case 'payment':
-        return <Badge className="bg-blue-100 text-blue-800">Payment Access</Badge>;
-      case 'view':
-        return <Badge className="bg-gray-100 text-gray-800">View Only</Badge>;
+      case 'Manager':
+        return <Badge className="bg-blue-100 text-blue-800">Manager</Badge>;
+      case 'Member':
+        return <Badge className="bg-gray-100 text-gray-800">Member</Badge>;
       default:
-        return <Badge>{role}</Badge>;
+        return <Badge className="bg-gray-100 text-gray-600">—</Badge>;
     }
   };
 
-  const getRoleDescription = (role: string) => {
+  const getRoleDescription = (role: CompanyRole) => {
     switch (role) {
-      case 'admin':
-        return 'Full access to all features and user management';
-      case 'payment':
-        return 'Can make payments and view records';
-      case 'view':
-        return 'Can only view records';
-      default:
-        return '';
+      case 'Admin':
+        return 'Full access: manage users, view all receipts, access reports, manage saved cards.';
+      case 'Manager':
+        return 'Can make payments and view the entire company\'s receipts; cannot manage users or reports.';
+      case 'Member':
+        return 'Can make payments. Sees own receipts only.';
     }
   };
 
-  const getRelativeTime = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date('2026-03-09'); // Mock current date
-    const diffInMs = now.getTime() - date.getTime();
-    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-
-    if (diffInDays === 0) {
-      return 'Today';
-    } else if (diffInDays === 1) {
-      return '1 day ago';
-    } else if (diffInDays < 7) {
-      return `${diffInDays} days ago`;
-    } else if (diffInDays < 30) {
-      const weeks = Math.floor(diffInDays / 7);
-      return weeks === 1 ? '1 week ago' : `${weeks} weeks ago`;
-    } else if (diffInDays < 365) {
-      const months = Math.floor(diffInDays / 30);
-      return months === 1 ? '1 month ago' : `${months} months ago`;
-    } else {
-      const years = Math.floor(diffInDays / 365);
-      return years === 1 ? '1 year ago' : `${years} years ago`;
-    }
-  };
+  const adminCount = users.filter(u => u.companyRole === 'Admin').length;
+  const activeCount = users.filter(u => u.isActive).length;
 
   return (
     <div className="space-y-6">
-      {/* Company Info */}
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Company Information</h3>
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <Label>Company Name</Label>
-            <Input defaultValue="Global Freight Solutions" className="mt-2" />
-          </div>
-          <div>
-            <Label>Tax ID / EIN</Label>
-            <Input defaultValue="123-45-67890" className="mt-2" />
-          </div>
-          <div>
-            <Label>Address</Label>
-            <Input defaultValue="123 Business St, Los Angeles, CA 90001" className="mt-2" />
-          </div>
-          <div>
-            <Label>Phone Number</Label>
-            <Input defaultValue="+1-800-123-4567" className="mt-2" />
-          </div>
-        </div>
-        <div className="mt-4">
-          <Button variant="outline">Update Information</Button>
-        </div>
-      </Card>
-
       {/* User Statistics */}
       <div className="grid md:grid-cols-3 gap-6">
         <Card className="p-6">
@@ -176,9 +159,7 @@ export function UserManagement() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-500 mb-1">Administrators</p>
-              <p className="text-3xl font-bold text-gray-900">
-                {users.filter(u => u.role === 'admin').length}
-              </p>
+              <p className="text-3xl font-bold text-gray-900">{adminCount}</p>
             </div>
             <div className="bg-purple-100 rounded-full p-3">
               <Shield className="h-8 w-8 text-purple-600" />
@@ -189,10 +170,8 @@ export function UserManagement() {
         <Card className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500 mb-1">Payment Access</p>
-              <p className="text-3xl font-bold text-gray-900">
-                {users.filter(u => u.role === 'payment' || u.role === 'admin').length}
-              </p>
+              <p className="text-sm text-gray-500 mb-1">Active</p>
+              <p className="text-3xl font-bold text-gray-900">{activeCount}</p>
             </div>
             <div className="bg-green-100 rounded-full p-3">
               <Mail className="h-8 w-8 text-green-600" />
@@ -217,18 +196,12 @@ export function UserManagement() {
                   <DialogTitle>Role Descriptions</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-3 mt-4">
-                  <div>
-                    <p className="font-semibold text-gray-900">• Administrator</p>
-                    <p className="text-sm text-gray-600 ml-4">{getRoleDescription('admin')}</p>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-gray-900">• Payment Access</p>
-                    <p className="text-sm text-gray-600 ml-4">{getRoleDescription('payment')}</p>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-gray-900">• View Only</p>
-                    <p className="text-sm text-gray-600 ml-4">{getRoleDescription('view')}</p>
-                  </div>
+                  {ROLE_OPTIONS.map(role => (
+                    <div key={role}>
+                      <p className="font-semibold text-gray-900">• {role}</p>
+                      <p className="text-sm text-gray-600 ml-4">{getRoleDescription(role)}</p>
+                    </div>
+                  ))}
                 </div>
               </DialogContent>
             </Dialog>
@@ -246,11 +219,11 @@ export function UserManagement() {
               </DialogHeader>
               <div className="space-y-4 mt-4">
                 <div>
-                  <Label htmlFor="userName">Name</Label>
+                  <Label htmlFor="userName">Full Name</Label>
                   <Input
                     id="userName"
-                    value={newUserName}
-                    onChange={(e) => setNewUserName(e.target.value)}
+                    value={newUserFullName}
+                    onChange={(e) => setNewUserFullName(e.target.value)}
                     placeholder="John Doe"
                     className="mt-2"
                   />
@@ -267,20 +240,31 @@ export function UserManagement() {
                   />
                 </div>
                 <div>
+                  <Label htmlFor="userPassword">Temporary Password</Label>
+                  <Input
+                    id="userPassword"
+                    type="password"
+                    value={newUserPassword}
+                    onChange={(e) => setNewUserPassword(e.target.value)}
+                    placeholder="Initial password"
+                    className="mt-2"
+                  />
+                </div>
+                <div>
                   <Label htmlFor="userRole">Role</Label>
-                  <Select value={newUserRole} onValueChange={(value: any) => setNewUserRole(value)}>
+                  <Select value={newUserRole} onValueChange={(value) => setNewUserRole(value as CompanyRole)}>
                     <SelectTrigger className="mt-2">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="admin">Administrator - Full Access</SelectItem>
-                      <SelectItem value="payment">Payment Access - Payment & View</SelectItem>
-                      <SelectItem value="view">View Only - Read Only</SelectItem>
+                      {ROLE_OPTIONS.map(r => (
+                        <SelectItem key={r} value={r}>{r}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
-                <Button onClick={handleAddUser} className="w-full">
-                  Send Invitation Email
+                <Button onClick={handleAddUser} className="w-full" disabled={submitting}>
+                  {submitting ? 'Adding...' : 'Create User'}
                 </Button>
               </div>
             </DialogContent>
@@ -293,31 +277,63 @@ export function UserManagement() {
             <span>Name</span>
             <span>Email</span>
             <span>Role</span>
-            <span>Last Active</span>
+            <span>Status</span>
             <span className="text-center">Actions</span>
           </div>
 
+          {loading && (
+            <div className="py-8 text-center text-gray-500">Loading users…</div>
+          )}
+          {!loading && users.length === 0 && (
+            <div className="py-8 text-center text-gray-500">No users yet.</div>
+          )}
+
           {/* User Items */}
-          {users.map((user) => (
+          {!loading && users.map((user) => (
             <div
               key={user.id}
               className="grid grid-cols-5 gap-4 py-3 items-center hover:bg-gray-50 rounded-lg px-2 transition-colors"
             >
-              <span className="font-semibold text-gray-900">{user.name}</span>
+              <span className="font-semibold text-gray-900">{user.fullName}</span>
               <span className="text-gray-600 text-sm">{user.email}</span>
-              <div>{getRoleBadge(user.role)}</div>
-              <span className="text-sm text-gray-600 cursor-help" title={user.lastActive}>
-                {getRelativeTime(user.lastActive)}
+              <div className="flex items-center space-x-2">
+                {getRoleBadge(user.companyRole)}
+                {currentUser && user.id !== currentUser.id && (
+                  <Select
+                    value={user.companyRole ?? 'Member'}
+                    onValueChange={(value) => handleRoleChange(user, value as CompanyRole)}
+                  >
+                    <SelectTrigger className="h-7 w-[110px] text-xs">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {ROLE_OPTIONS.map(r => (
+                        <SelectItem key={r} value={r}>{r}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
+              <span className="text-sm">
+                {user.isActive
+                  ? <Badge className="bg-green-100 text-green-800">Active</Badge>
+                  : <Badge className="bg-gray-200 text-gray-700">Inactive</Badge>}
               </span>
               <div className="flex justify-center space-x-2">
-                <Button variant="ghost" size="sm">
-                  <Edit className="h-4 w-4" />
-                </Button>
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => handleDeleteUser(user.id, user.name)}
-                  disabled={user.role === 'admin' && users.filter(u => u.role === 'admin').length === 1}
+                  onClick={() => handleDeleteUser(user)}
+                  disabled={
+                    !user.isActive ||
+                    (user.companyRole === 'Admin' && adminCount === 1) ||
+                    (currentUser && user.id === currentUser.id) || false
+                  }
+                  title={
+                    user.companyRole === 'Admin' && adminCount === 1
+                      ? 'Cannot remove the only Admin'
+                      : 'Deactivate user'
+                  }
                 >
                   <Trash2 className="h-4 w-4 text-red-600" />
                 </Button>

@@ -21,6 +21,14 @@ public class Cargo
     public string Consignee { get; set; } = string.Empty;
     public bool ReadyToPickup { get; set; }
 
+    /// <summary>
+    /// Owning company (forwarder). Nullable for legacy rows imported before
+    /// this FK existed; new uploads and bulk-imports should always populate it.
+    /// Backfilled from Payment history in migration AddCartSavedCardCargoOwnerAndRoleEnum.
+    /// </summary>
+    public int? CompanyId { get; set; }
+
+    public Company? Company { get; set; }
     public BillingRecord? BillingRecord { get; set; }
     public ICollection<Payment> Payments { get; set; } = new List<Payment>();
 }

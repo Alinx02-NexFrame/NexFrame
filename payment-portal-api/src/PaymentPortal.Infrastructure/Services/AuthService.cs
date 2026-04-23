@@ -54,7 +54,7 @@ public class AuthService : IAuthService
             FullName = request.FullName,
             Role = UserRole.Forwarder,
             CompanyId = company.Id,
-            CompanyRole = "Admin"
+            CompanyRole = Domain.Enums.CompanyRole.Admin
         };
         _db.Users.Add(user);
         await _db.SaveChangesAsync();

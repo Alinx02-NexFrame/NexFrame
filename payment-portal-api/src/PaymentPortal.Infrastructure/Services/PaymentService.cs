@@ -18,13 +18,15 @@ public class PaymentService : IPaymentService
     private readonly BillingCalculationService _calc;
     private readonly IMapper _mapper;
     private readonly IAuditLogService _audit;
+    private readonly ICartService _cart;
 
-    public PaymentService(AppDbContext db, BillingCalculationService calc, IMapper mapper, IAuditLogService audit)
+    public PaymentService(AppDbContext db, BillingCalculationService calc, IMapper mapper, IAuditLogService audit, ICartService cart)
     {
         _db = db;
         _calc = calc;
         _mapper = mapper;
         _audit = audit;
+        _cart = cart;
     }
 
     public async Task<PaymentConfirmationDto> ProcessPaymentAsync(CreatePaymentRequest request, int? userId = null)
@@ -39,6 +41,21 @@ public class PaymentService : IPaymentService
             ? await _db.Users.Include(u => u.Company).FirstOrDefaultAsync(u => u.Id == userId.Value)
             : null;
 
+        // Resolve card last4: prefer SavedCard, fall back to raw CardNumber.
+        string? cardLast4 = null;
+        if (request.SavedCardId.HasValue && user?.CompanyId != null)
+        {
+            var savedCard = await _db.SavedCards
+                .FirstOrDefaultAsync(c => c.Id == request.SavedCardId.Value && c.CompanyId == user.CompanyId)
+                ?? throw new KeyNotFoundException("Saved card not found for your company.");
+            cardLast4 = savedCard.CardLast4;
+            // TODO: pass savedCard.GatewayToken to real payment gateway (Stripe etc.)
+        }
+        else if (request.CardNumber?.Length >= 4)
+        {
+            cardLast4 = request.CardNumber[^4..];
+        }
+
         var payment = new Payment
         {
             ConfirmationNumber = $"PMT-{DateTime.UtcNow:yyyyMMddHHmmss}{Random.Shared.Next(100, 999)}",
@@ -48,7 +65,7 @@ public class PaymentService : IPaymentService
             PaymentMethod = method,
             PaymentStatus = PaymentStatus.Completed,
             Email = request.Email,
-            CardLast4 = request.CardNumber?.Length >= 4 ? request.CardNumber[^4..] : null,
+            CardLast4 = cardLast4,
             UserId = userId,
             CompanyId = user?.CompanyId,
             CargoId = cargo.Id,
@@ -65,6 +82,13 @@ public class PaymentService : IPaymentService
             existingBilling.UpdatedAt = DateTime.UtcNow;
         }
 
+        // Associate cargo with the paying company (first payment wins — keeps
+        // legacy CompanyId stable if paid again later).
+        if (cargo.CompanyId == null && user?.CompanyId != null)
+        {
+            cargo.CompanyId = user.CompanyId;
+        }
+
         await _db.SaveChangesAsync();
 
         await _audit.LogAsync(
@@ -73,6 +97,9 @@ public class PaymentService : IPaymentService
             "Payment",
             payment.ConfirmationNumber,
             $"awb={payment.AwbNumber}, amount={payment.Amount}, method={payment.PaymentMethod}");
+
+        if (userId.HasValue)
+            await _cart.RemoveByAwbAsync(userId.Value, request.AwbNumber);
 
         return _mapper.Map<PaymentConfirmationDto>(payment);
     }

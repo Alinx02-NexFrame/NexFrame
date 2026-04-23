@@ -73,7 +73,7 @@ public class CompanyUserDto
     public int Id { get; set; }
     public string Email { get; set; } = string.Empty;
     public string FullName { get; set; } = string.Empty;
-    public string? CompanyRole { get; set; }
+    public PaymentPortal.Domain.Enums.CompanyRole? CompanyRole { get; set; }
     public bool IsActive { get; set; }
 }
 
@@ -82,12 +82,12 @@ public class CreateCompanyUserRequest
     public string Email { get; set; } = string.Empty;
     public string FullName { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
-    public string? CompanyRole { get; set; }
+    public PaymentPortal.Domain.Enums.CompanyRole? CompanyRole { get; set; }
 }
 
 public class UpdateCompanyUserRequest
 {
     public string? FullName { get; set; }
-    public string? CompanyRole { get; set; }
+    public PaymentPortal.Domain.Enums.CompanyRole? CompanyRole { get; set; }
     public bool? IsActive { get; set; }
 }

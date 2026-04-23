@@ -41,8 +41,8 @@ export function AwbDetailPage() {
     }
   };
 
-  const handleAddToCart = (awb: string, amount: number) => {
-    const success = globalCartState.addToCart(awb, amount);
+  const handleAddToCart = async (awb: string, amount: number) => {
+    const success = await globalCartState.addToCart(awb, amount);
 
     if (!success) {
       toast.error('This AWB is already in your cart');

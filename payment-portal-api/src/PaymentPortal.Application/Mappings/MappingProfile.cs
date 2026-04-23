@@ -2,9 +2,11 @@ using AutoMapper;
 using PaymentPortal.Application.DTOs.Auth;
 using PaymentPortal.Application.DTOs.Billing;
 using PaymentPortal.Application.DTOs.Cargo;
+using PaymentPortal.Application.DTOs.Cart;
 using PaymentPortal.Application.DTOs.Forwarder;
 using PaymentPortal.Application.DTOs.GHA;
 using PaymentPortal.Application.DTOs.Payment;
+using PaymentPortal.Application.DTOs.SavedCard;
 using PaymentPortal.Domain.Entities;
 using PaymentPortal.Domain.Enums;
 
@@ -40,7 +42,8 @@ public class MappingProfile : Profile
         // User -> UserDto
         CreateMap<User, UserDto>()
             .ForMember(d => d.CompanyName, o => o.MapFrom(s => s.Company != null ? s.Company.Name : ""))
-            .ForMember(d => d.Role, o => o.MapFrom(s => s.Role == UserRole.Forwarder ? "forwarder" : "gha_admin"));
+            .ForMember(d => d.Role, o => o.MapFrom(s => s.Role == UserRole.Forwarder ? "forwarder" : "gha_admin"))
+            .ForMember(d => d.CompanyRole, o => o.MapFrom(s => s.CompanyRole));
 
         // User -> CompanyUserDto
         CreateMap<User, CompanyUserDto>();
@@ -51,6 +54,17 @@ public class MappingProfile : Profile
 
         // Watchlist -> WatchlistDto
         CreateMap<Watchlist, WatchlistDto>();
+
+        // CartItem -> CartItemDto
+        CreateMap<CartItem, CartItemDto>()
+            .ForMember(d => d.AddedAt, o => o.MapFrom(s => s.AddedAt.ToString("yyyy-MM-dd HH:mm")));
+
+        // Cart -> CartDto
+        CreateMap<Cart, CartDto>();
+
+        // SavedCard -> SavedCardDto
+        CreateMap<SavedCard, SavedCardDto>()
+            .ForMember(d => d.CreatedAt, o => o.MapFrom(s => s.CreatedAt.ToString("yyyy-MM-dd")));
 
         // Company -> CustomerDto
         CreateMap<Company, CustomerDto>()

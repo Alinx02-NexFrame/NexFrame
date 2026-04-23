@@ -4,6 +4,7 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Card } from '../ui/card';
 import { authApi, setAccessToken, setCurrentUser } from '../../services/apiClient';
+import { globalCartState } from '../../data/cartState';
 import { toast } from 'sonner';
 
 interface RegisterModalProps {
@@ -36,6 +37,8 @@ export function RegisterModal({ isOpen, onClose, onRegisterSuccess }: RegisterMo
       const result = await authApi.register({ username, email, password, fullName, companyName });
       setAccessToken(result.accessToken);
       setCurrentUser(result.user);
+      globalCartState.reset();
+      await globalCartState.load();
       toast.success(`Welcome, ${result.user.fullName}! Your account has been created.`);
       onRegisterSuccess();
     } catch (err) {

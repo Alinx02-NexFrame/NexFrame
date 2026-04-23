@@ -22,10 +22,10 @@ public static class SeedData
         // 2. Users (password: "1234")
         var passwordHash = BCrypt.Net.BCrypt.HashPassword("1234");
         var admin = new User { Username = "admin", Email = "admin@gha.com", PasswordHash = passwordHash, FullName = "GHA Administrator", Role = UserRole.GhaAdmin, IsActive = true };
-        var john = new User { Username = "john", Email = "john@globalfreight.com", PasswordHash = passwordHash, FullName = "John Smith", Role = UserRole.Forwarder, Company = globalFreight, CompanyRole = "Manager", IsActive = true };
-        var jane = new User { Username = "jane", Email = "jane@pacificlog.com", PasswordHash = passwordHash, FullName = "Jane Doe", Role = UserRole.Forwarder, Company = pacificLog, CompanyRole = "Admin", IsActive = true };
-        var mike = new User { Username = "mike", Email = "mike@expressair.com", PasswordHash = passwordHash, FullName = "Mike Johnson", Role = UserRole.Forwarder, Company = expressAir, CompanyRole = "Manager", IsActive = true };
-        var playwrite = new User { Username = "playwrite", Email = "playwrite@test.com", PasswordHash = passwordHash, FullName = "Playwright User", Role = UserRole.Forwarder, Company = playwrightCo, CompanyRole = "Admin", IsActive = true };
+        var john = new User { Username = "john", Email = "john@globalfreight.com", PasswordHash = passwordHash, FullName = "John Smith", Role = UserRole.Forwarder, Company = globalFreight, CompanyRole = Domain.Enums.CompanyRole.Manager, IsActive = true };
+        var jane = new User { Username = "jane", Email = "jane@pacificlog.com", PasswordHash = passwordHash, FullName = "Jane Doe", Role = UserRole.Forwarder, Company = pacificLog, CompanyRole = Domain.Enums.CompanyRole.Admin, IsActive = true };
+        var mike = new User { Username = "mike", Email = "mike@expressair.com", PasswordHash = passwordHash, FullName = "Mike Johnson", Role = UserRole.Forwarder, Company = expressAir, CompanyRole = Domain.Enums.CompanyRole.Manager, IsActive = true };
+        var playwrite = new User { Username = "playwrite", Email = "playwrite@test.com", PasswordHash = passwordHash, FullName = "Playwright User", Role = UserRole.Forwarder, Company = playwrightCo, CompanyRole = Domain.Enums.CompanyRole.Admin, IsActive = true };
         context.Users.AddRange(admin, john, jane, mike, playwrite);
         await context.SaveChangesAsync();
 
@@ -66,6 +66,12 @@ public static class SeedData
             new BillingRecord { Cargo = cargo5, ServiceFee = 250m, StorageFee = 0m, OtherCharge = 0m, Subtotal = 250m, ProcessingFee = 6.25m, Total = 256.25m, DueDate = new DateTime(2026, 3, 15), Status = BillingStatus.Pending }
         );
         await context.SaveChangesAsync();
+
+        // Cargo ownership: completed payments establish Company ownership.
+        cargo6.Company = globalFreight;
+        cargo7.Company = pacificLog;
+        cargo10.Company = expressAir;
+        cargo8.Company = globalFreight;
 
         // 5. Completed Payments (from mockCompletedPayments)
         context.Payments.AddRange(

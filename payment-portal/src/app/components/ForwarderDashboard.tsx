@@ -8,6 +8,7 @@ import { UserManagement } from './dashboard/UserManagement';
 import { Badge } from './ui/badge';
 import { globalCartState } from '../data/cartState';
 import { globalAccountState } from '../data/accountState';
+import { getCurrentUser } from '../services/apiClient';
 import { useNavigate } from 'react-router';
 
 interface ForwarderDashboardProps {
@@ -19,12 +20,15 @@ export function ForwarderDashboard({ onBackToPortal }: ForwarderDashboardProps) 
   const [cartCount, setCartCount] = useState(globalCartState.getCartCount());
   const [accountBalance, setAccountBalance] = useState(globalAccountState.getBalance());
   const navigate = useNavigate();
+  const isCompanyAdmin = getCurrentUser()?.companyRole === 'Admin';
 
-  // Subscribe to cart changes
+  // Subscribe to cart changes + fetch persisted cart on mount so a direct
+  // URL load / refresh doesn't show a phantom-empty cart.
   useEffect(() => {
     const unsubscribe = globalCartState.subscribe(() => {
       setCartCount(globalCartState.getCartCount());
     });
+    globalCartState.load();
     return unsubscribe;
   }, []);
 
@@ -37,6 +41,7 @@ export function ForwarderDashboard({ onBackToPortal }: ForwarderDashboardProps) 
   }, []);
 
   const handleLogout = () => {
+    globalCartState.reset();
     navigate('/');
   };
 
@@ -87,32 +92,40 @@ export function ForwarderDashboard({ onBackToPortal }: ForwarderDashboardProps) 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
+          <TabsList className={`grid w-full ${isCompanyAdmin ? 'grid-cols-3' : 'grid-cols-2'} mb-8`}>
             <TabsTrigger value="dashboard" className="flex items-center space-x-2">
               <LayoutDashboard className="h-4 w-4" />
               <span className="hidden sm:inline">Dashboard</span>
             </TabsTrigger>
-            <TabsTrigger value="reports" className="flex items-center space-x-2">
-              <FileText className="h-4 w-4" />
-              <span className="hidden sm:inline">Reports</span>
-            </TabsTrigger>
-            <TabsTrigger value="users" className="flex items-center space-x-2">
-              <Users className="h-4 w-4" />
-              <span className="hidden sm:inline">User Management</span>
-            </TabsTrigger>
+            {isCompanyAdmin && (
+              <TabsTrigger value="reports" className="flex items-center space-x-2">
+                <FileText className="h-4 w-4" />
+                <span className="hidden sm:inline">Reports</span>
+              </TabsTrigger>
+            )}
+            {isCompanyAdmin && (
+              <TabsTrigger value="users" className="flex items-center space-x-2">
+                <Users className="h-4 w-4" />
+                <span className="hidden sm:inline">User Management</span>
+              </TabsTrigger>
+            )}
           </TabsList>
 
           <TabsContent value="dashboard">
             <PendingPayments />
           </TabsContent>
 
-          <TabsContent value="reports">
-            <TransactionReports />
-          </TabsContent>
+          {isCompanyAdmin && (
+            <TabsContent value="reports">
+              <TransactionReports />
+            </TabsContent>
+          )}
 
-          <TabsContent value="users">
-            <UserManagement />
-          </TabsContent>
+          {isCompanyAdmin && (
+            <TabsContent value="users">
+              <UserManagement />
+            </TabsContent>
+          )}
         </Tabs>
       </main>
     </div>

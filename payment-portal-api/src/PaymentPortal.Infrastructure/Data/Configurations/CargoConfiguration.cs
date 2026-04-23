@@ -18,5 +18,11 @@ public class CargoConfiguration : IEntityTypeConfiguration<Cargo>
         builder.Property(c => c.Description).HasMaxLength(500);
         builder.Property(c => c.BreakdownStatus).HasConversion<string>().HasMaxLength(20);
         builder.Property(c => c.CustomsStatus).HasConversion<string>().HasMaxLength(20);
+
+        builder.HasOne(c => c.Company)
+            .WithMany()
+            .HasForeignKey(c => c.CompanyId)
+            .OnDelete(DeleteBehavior.Restrict);
+        builder.HasIndex(c => c.CompanyId);
     }
 }

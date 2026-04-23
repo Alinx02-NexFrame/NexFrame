@@ -34,6 +34,7 @@ public class ExceptionMiddleware
         {
             KeyNotFoundException => (HttpStatusCode.NotFound, exception.Message),
             ConflictException => (HttpStatusCode.Conflict, exception.Message),
+            ForbiddenException => (HttpStatusCode.Forbidden, exception.Message),
             UnauthorizedAccessException => (HttpStatusCode.Unauthorized, exception.Message),
             InvalidOperationException => (HttpStatusCode.BadRequest, exception.Message),
             ArgumentException => (HttpStatusCode.BadRequest, exception.Message),
