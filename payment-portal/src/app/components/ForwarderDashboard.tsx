@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Package, LayoutDashboard, History, FileText, Users, LogOut, Menu, ShoppingCart, Search, Wallet } from 'lucide-react';
+import { Package, LayoutDashboard, History, FileText, Users, LogOut, Menu, ShoppingCart, Search, Wallet, CreditCard } from 'lucide-react';
 import { Button } from './ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { PendingPayments } from './dashboard/PendingPayments';
 import { TransactionReports } from './dashboard/TransactionReports';
 import { UserManagement } from './dashboard/UserManagement';
+import { SavedCards } from './dashboard/SavedCards';
 import { Badge } from './ui/badge';
 import { globalCartState } from '../data/cartState';
 import { globalAccountState } from '../data/accountState';
@@ -92,10 +93,14 @@ export function ForwarderDashboard({ onBackToPortal }: ForwarderDashboardProps) 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
-          <TabsList className={`grid w-full ${isCompanyAdmin ? 'grid-cols-3' : 'grid-cols-2'} mb-8`}>
+          <TabsList className={`grid w-full ${isCompanyAdmin ? 'grid-cols-4' : 'grid-cols-2'} mb-8`}>
             <TabsTrigger value="dashboard" className="flex items-center space-x-2">
               <LayoutDashboard className="h-4 w-4" />
               <span className="hidden sm:inline">Dashboard</span>
+            </TabsTrigger>
+            <TabsTrigger value="cards" className="flex items-center space-x-2">
+              <CreditCard className="h-4 w-4" />
+              <span className="hidden sm:inline">Saved Cards</span>
             </TabsTrigger>
             {isCompanyAdmin && (
               <TabsTrigger value="reports" className="flex items-center space-x-2">
@@ -113,6 +118,10 @@ export function ForwarderDashboard({ onBackToPortal }: ForwarderDashboardProps) 
 
           <TabsContent value="dashboard">
             <PendingPayments />
+          </TabsContent>
+
+          <TabsContent value="cards">
+            <SavedCards />
           </TabsContent>
 
           {isCompanyAdmin && (

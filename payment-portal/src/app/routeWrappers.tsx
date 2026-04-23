@@ -209,6 +209,7 @@ export function DashboardCheckoutWrapper() {
     accountNumber?: string;
     routingNumber?: string;
     accountName?: string;
+    savedCardId?: number;
   }) => {
     // ---- Account Credit: client-side only (backend has no credit ledger). ----
     if (paymentInfo.paymentMethod === 'Account Credit') {
@@ -282,6 +283,7 @@ export function DashboardCheckoutWrapper() {
           cardCVV: paymentInfo.cardCVV,
           accountNumber: paymentInfo.accountNumber,
           routingNumber: paymentInfo.routingNumber,
+          savedCardId: paymentInfo.savedCardId,
         });
 
         // Synthesize a "header" confirmation for the summary card. The full
@@ -312,6 +314,7 @@ export function DashboardCheckoutWrapper() {
           cardCVV: paymentInfo.cardCVV,
           accountNumber: paymentInfo.accountNumber,
           routingNumber: paymentInfo.routingNumber,
+          savedCardId: paymentInfo.savedCardId,
         });
         globalState.confirmation = confirmation;
         globalState.confirmationList = [];

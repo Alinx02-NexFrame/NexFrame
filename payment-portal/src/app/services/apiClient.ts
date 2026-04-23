@@ -166,6 +166,7 @@ export const paymentApi = {
     cardCVV?: string;
     accountNumber?: string;
     routingNumber?: string;
+    savedCardId?: number;
   }) =>
     request<PaymentConfirmation>('/payments/authenticated', {
       method: 'POST',
@@ -181,6 +182,7 @@ export const paymentApi = {
     cardCVV?: string;
     accountNumber?: string;
     routingNumber?: string;
+    savedCardId?: number;
   }) =>
     request<PaymentConfirmation[]>('/payments/bulk', {
       method: 'POST',

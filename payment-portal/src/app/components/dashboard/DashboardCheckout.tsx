@@ -5,8 +5,10 @@ import { Card } from '../ui/card';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { BillingInfo } from '../../types';
 import { globalAccountState } from '../../data/accountState';
+import { savedCardApi, type SavedCard } from '../../services/apiClient';
 
 export interface DashboardCheckoutPaymentInfo {
   paymentMethod: string;
@@ -17,6 +19,7 @@ export interface DashboardCheckoutPaymentInfo {
   accountNumber?: string;
   routingNumber?: string;
   accountName?: string;
+  savedCardId?: number;
 }
 
 interface DashboardCheckoutProps {
@@ -30,6 +33,11 @@ export function DashboardCheckout({ billing, onConfirmPayment, onBack }: Dashboa
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentBalance, setCurrentBalance] = useState(globalAccountState.getBalance());
 
+  // Saved cards (Company-scoped). When one is selected, the Credit Card form
+  // is collapsed and backend uses the saved card's gateway token.
+  const [savedCards, setSavedCards] = useState<SavedCard[]>([]);
+  const [selectedCardId, setSelectedCardId] = useState<string>('new');  // 'new' = enter new card
+
   // Credit Card form state
   const [cardNumber, setCardNumber] = useState('');
   const [cardExpiry, setCardExpiry] = useState('');
@@ -40,6 +48,20 @@ export function DashboardCheckout({ billing, onConfirmPayment, onBack }: Dashboa
   const [accountNumber, setAccountNumber] = useState('');
   const [routingNumber, setRoutingNumber] = useState('');
   const [accountName, setAccountName] = useState('');
+
+  // Load saved cards on mount so they're ready for selection.
+  useEffect(() => {
+    let cancelled = false;
+    savedCardApi.list()
+      .then(list => {
+        if (cancelled) return;
+        setSavedCards(list);
+        const def = list.find(c => c.isDefault);
+        if (def) setSelectedCardId(String(def.id));
+      })
+      .catch(() => { /* unauth or empty — silently leave list empty */ });
+    return () => { cancelled = true; };
+  }, []);
 
   // Subscribe to account balance changes
   useEffect(() => {
@@ -72,11 +94,16 @@ export function DashboardCheckout({ billing, onConfirmPayment, onBack }: Dashboa
     // pass no card/ACH fields (the wrapper short-circuits on this method).
     const paymentInfo: DashboardCheckoutPaymentInfo = { paymentMethod: methodName };
     if (paymentMethod === 'credit') {
-      // Strip display-only spaces from the card number before transmitting.
-      paymentInfo.cardNumber = cardNumber.replace(/\s+/g, '');
-      paymentInfo.cardExpiry = cardExpiry;
-      paymentInfo.cardCVV = cardCVV;
-      paymentInfo.cardName = cardName;
+      if (selectedCardId !== 'new') {
+        // Using a saved card: backend uses the gateway token. No raw PAN sent.
+        paymentInfo.savedCardId = parseInt(selectedCardId, 10);
+      } else {
+        // Strip display-only spaces from the card number before transmitting.
+        paymentInfo.cardNumber = cardNumber.replace(/\s+/g, '');
+        paymentInfo.cardExpiry = cardExpiry;
+        paymentInfo.cardCVV = cardCVV;
+        paymentInfo.cardName = cardName;
+      }
     } else if (paymentMethod === 'ach') {
       paymentInfo.accountNumber = accountNumber;
       paymentInfo.routingNumber = routingNumber;
@@ -169,6 +196,37 @@ export function DashboardCheckout({ billing, onConfirmPayment, onBack }: Dashboa
                 <Card className="p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Card Details</h3>
 
+                  {savedCards.length > 0 && (
+                    <div className="mb-4">
+                      <Label htmlFor="savedCard">Use Saved Card</Label>
+                      <Select value={selectedCardId} onValueChange={setSelectedCardId}>
+                        <SelectTrigger className="mt-2">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {savedCards.map(c => (
+                            <SelectItem key={c.id} value={String(c.id)}>
+                              {c.cardBrand} •••• {c.cardLast4}
+                              {c.isDefault ? ' (Default)' : ''}
+                            </SelectItem>
+                          ))}
+                          <SelectItem value="new">+ Enter a new card</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Saved cards are shared across your company.
+                      </p>
+                    </div>
+                  )}
+
+                  {selectedCardId !== 'new' ? (
+                    <p className="text-sm text-gray-600">
+                      Using saved card ending in{' '}
+                      <strong>
+                        {savedCards.find(c => String(c.id) === selectedCardId)?.cardLast4}
+                      </strong>.
+                    </p>
+                  ) : (
                   <div className="space-y-4">
                     <div>
                       <Label htmlFor="cardNumber">Card Number</Label>
@@ -219,6 +277,7 @@ export function DashboardCheckout({ billing, onConfirmPayment, onBack }: Dashboa
                       />
                     </div>
                   </div>
+                  )}
                 </Card>
               )}
 
