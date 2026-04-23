@@ -16,4 +16,9 @@ public class BulkPaymentRequest
 {
     public List<string> AwbNumbers { get; set; } = new();
     public string PaymentMethod { get; set; } = string.Empty;
+    /// <summary>
+    /// Optional override email for the receipt. Falls back to the authenticated user's email.
+    /// Useful when the payer wants the receipt sent to a different address (e.g. accounting).
+    /// </summary>
+    public string? Email { get; set; }
 }

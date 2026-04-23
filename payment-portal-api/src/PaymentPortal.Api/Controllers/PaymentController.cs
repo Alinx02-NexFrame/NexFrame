@@ -45,4 +45,25 @@ public class PaymentController : ControllerBase
         var pdf = await _payment.GenerateReceiptPdfAsync(confirmationNumber);
         return File(pdf, "application/pdf", $"{confirmationNumber}.pdf");
     }
+
+    /// <summary>
+    /// Combined PDF receipt for a bulk payment. Pass the confirmation numbers as a
+    /// comma-separated query parameter (e.g. ?confirmations=PMT-1,PMT-2,PMT-3).
+    /// </summary>
+    [HttpGet("bulk-receipt")]
+    [Authorize]
+    public async Task<IActionResult> DownloadBulkReceipt([FromQuery] string confirmations)
+    {
+        var ids = confirmations?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                  ?? Array.Empty<string>();
+        if (ids.Length == 0)
+            return BadRequest(new { error = "confirmations query parameter required" });
+        if (ids.Length > 100)
+            return BadRequest(new { error = "Maximum 100 confirmations per request" });
+
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var pdf = await _payment.GenerateBulkReceiptPdfAsync(ids, userId);
+        var filename = $"BulkReceipt-{DateTime.UtcNow:yyyyMMdd-HHmmss}.pdf";
+        return File(pdf, "application/pdf", filename);
+    }
 }

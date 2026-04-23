@@ -8,4 +8,5 @@ public interface IPaymentService
     Task<PaymentConfirmationDto> ProcessAuthenticatedPaymentAsync(CreatePaymentRequest request, int userId);
     Task<List<PaymentConfirmationDto>> ProcessBulkPaymentAsync(BulkPaymentRequest request, int userId);
     Task<byte[]> GenerateReceiptPdfAsync(string confirmationNumber);
+    Task<byte[]> GenerateBulkReceiptPdfAsync(IEnumerable<string> confirmationNumbers, int userId);
 }
