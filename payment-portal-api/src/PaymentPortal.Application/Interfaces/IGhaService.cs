@@ -14,6 +14,7 @@ public interface IGhaService
     Task<List<ActivityDto>> GetRecentActivityAsync(int count = 20);
     Task<ReportDto> GenerateReportAsync(GenerateReportRequest request, int userId);
     Task<List<ReportDto>> GetReportsListAsync(int count = 10);
+    Task<(byte[] Content, string ContentType, string FileName)> GetReportFileAsync(int reportId);
     Task<MonthlyInsightsDto> GetMonthlyInsightsAsync();
     Task<int> UploadDataAsync(Stream fileStream, string fileName, int userId);
 }

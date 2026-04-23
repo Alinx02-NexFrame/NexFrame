@@ -124,6 +124,10 @@ logs/*
 **/logs/*
 !**/logs/.gitkeep
 
+# Generated reports (PDF/Excel) — created at runtime per deployment
+reports/
+**/reports/
+
 # ==============================
 # Claude / AI tooling
 # ==============================

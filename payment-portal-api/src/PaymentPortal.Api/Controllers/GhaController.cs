@@ -55,6 +55,13 @@ public class GhaController : ControllerBase
     public async Task<ActionResult<List<ReportDto>>> GetReportsList([FromQuery] int count = 10)
         => Ok(await _gha.GetReportsListAsync(count));
 
+    [HttpGet("reports/{id}/download")]
+    public async Task<IActionResult> DownloadReport(int id)
+    {
+        var (content, contentType, fileName) = await _gha.GetReportFileAsync(id);
+        return File(content, contentType, fileName);
+    }
+
     [HttpGet("insights/monthly")]
     public async Task<ActionResult<MonthlyInsightsDto>> GetMonthlyInsights()
         => Ok(await _gha.GetMonthlyInsightsAsync());
