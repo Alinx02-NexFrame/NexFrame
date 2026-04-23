@@ -6,7 +6,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Card } from './ui/card';
 import { Checkbox } from './ui/checkbox';
-import { authApi, setAccessToken } from '../services/apiClient';
+import { authApi, setAccessToken, setCurrentUser } from '../services/apiClient';
 import { toast } from 'sonner';
 import { RegisterModal } from './auth/RegisterModal';
 
@@ -31,6 +31,7 @@ export function Home({ ghaName = "Swissport", ghaLogo }: HomeProps) {
     try {
       const result = await authApi.login(username, password);
       setAccessToken(result.accessToken);
+      setCurrentUser(result.user);
       toast.success(`Welcome, ${result.user.fullName}`);
       if (result.user.role === 'gha_admin') {
         navigate('/gha-dashboard');

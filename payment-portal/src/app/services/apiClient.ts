@@ -13,6 +13,27 @@ export function getAccessToken() {
   return accessToken;
 }
 
+// Current user (set after login/register so callers can access email, role, etc.
+// without re-fetching /auth/me).
+export interface CurrentUser {
+  id: number;
+  username?: string;
+  email: string;
+  fullName: string;
+  companyName: string;
+  role: string;
+}
+
+let currentUser: CurrentUser | null = null;
+
+export function setCurrentUser(user: CurrentUser | null) {
+  currentUser = user;
+}
+
+export function getCurrentUser(): CurrentUser | null {
+  return currentUser;
+}
+
 async function request<T>(url: string, options?: RequestInit): Promise<T> {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -74,6 +95,12 @@ export const billingApi = {
 };
 
 // Payment API
+//
+// Field naming follows the backend DTO `CreatePaymentRequest` exactly
+// (CardExpiry / CardCVV — NOT CardExpiryDate / CardCvv). Bulk endpoint
+// currently only consumes AwbNumbers + PaymentMethod on the backend, but we
+// pass card/ACH fields too so future expansion is one-sided (backend can
+// start consuming them without a frontend change).
 export const paymentApi = {
   process: (data: { awbNumber: string; paymentMethod: string; email: string; cardNumber?: string; cardExpiry?: string; cardCVV?: string; accountNumber?: string; routingNumber?: string }) =>
     request<PaymentConfirmation>('/payments', {
@@ -81,8 +108,32 @@ export const paymentApi = {
       body: JSON.stringify(data),
     }),
 
-  processAuthenticated: (data: { awbNumber: string; paymentMethod: string; email: string }) =>
+  processAuthenticated: (data: {
+    awbNumber: string;
+    paymentMethod: string;
+    email: string;
+    cardNumber?: string;
+    cardExpiry?: string;
+    cardCVV?: string;
+    accountNumber?: string;
+    routingNumber?: string;
+  }) =>
     request<PaymentConfirmation>('/payments/authenticated', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  processBulk: (data: {
+    awbNumbers: string[];
+    paymentMethod: string;
+    email: string;
+    cardNumber?: string;
+    cardExpiry?: string;
+    cardCVV?: string;
+    accountNumber?: string;
+    routingNumber?: string;
+  }) =>
+    request<PaymentConfirmation[]>('/payments/bulk', {
       method: 'POST',
       body: JSON.stringify(data),
     }),

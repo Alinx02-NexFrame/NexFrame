@@ -11,7 +11,7 @@ import { globalAccountState } from '../../data/accountState';
 
 interface DashboardCheckoutProps {
   billing: BillingInfo;
-  onConfirmPayment: (paymentInfo: { paymentMethod: string }) => void;
+  onConfirmPayment: (paymentInfo: { paymentMethod: string }) => void | Promise<void>;
   onBack: () => void;
 }
 
@@ -38,13 +38,20 @@ export function DashboardCheckout({ billing, onConfirmPayment, onBack }: Dashboa
     e.preventDefault();
     setIsProcessing(true);
 
+    // Use the literal strings the backend's PaymentService.ParsePaymentMethod
+    // recognizes ("Credit Card", "ACH"). "Account Credit" is handled
+    // client-side and never reaches the backend, so the label is for display
+    // only.
     const methodName = paymentMethod === 'credit' ? 'Credit Card'
-                     : paymentMethod === 'ach' ? 'ACH Transfer'
+                     : paymentMethod === 'ach' ? 'ACH'
                      : 'Account Credit';
 
-    setTimeout(() => {
-      onConfirmPayment({ paymentMethod: methodName });
-    }, 1500);
+    // The backend call may take a few hundred ms; let it run without an
+    // artificial delay. If it errors, the wrapper calls back through
+    // onConfirmPayment's caller and we re-enable the button.
+    Promise.resolve(onConfirmPayment({ paymentMethod: methodName })).finally(() => {
+      setIsProcessing(false);
+    });
   };
 
   return (

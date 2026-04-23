@@ -3,7 +3,7 @@ import { X, User, Lock } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Card } from '../ui/card';
-import { authApi, setAccessToken } from '../../services/apiClient';
+import { authApi, setAccessToken, setCurrentUser } from '../../services/apiClient';
 import { toast } from 'sonner';
 
 interface LoginModalProps {
@@ -26,6 +26,7 @@ export function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginModalProps)
     try {
       const result = await authApi.login(email, password);
       setAccessToken(result.accessToken);
+      setCurrentUser(result.user);
       toast.success(`Welcome, ${result.user.fullName}`);
       onLoginSuccess();
     } catch (err) {

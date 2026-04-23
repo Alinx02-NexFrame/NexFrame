@@ -3,7 +3,7 @@ import { X, Mail, Lock, User, Building2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Card } from '../ui/card';
-import { authApi, setAccessToken } from '../../services/apiClient';
+import { authApi, setAccessToken, setCurrentUser } from '../../services/apiClient';
 import { toast } from 'sonner';
 
 interface RegisterModalProps {
@@ -35,6 +35,7 @@ export function RegisterModal({ isOpen, onClose, onRegisterSuccess }: RegisterMo
     try {
       const result = await authApi.register({ username, email, password, fullName, companyName });
       setAccessToken(result.accessToken);
+      setCurrentUser(result.user);
       toast.success(`Welcome, ${result.user.fullName}! Your account has been created.`);
       onRegisterSuccess();
     } catch (err) {

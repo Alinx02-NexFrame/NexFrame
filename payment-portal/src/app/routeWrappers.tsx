@@ -15,7 +15,7 @@ import { ConfirmationScreen } from './components/ConfirmationScreen';
 import { ForwarderDashboard } from './components/ForwarderDashboard';
 import { GHADashboard } from './components/GHADashboard';
 import { DashboardCheckout } from './components/dashboard/DashboardCheckout';
-import { cargoApi, billingApi, paymentApi } from './services/apiClient';
+import { cargoApi, billingApi, paymentApi, getCurrentUser } from './services/apiClient';
 import { globalCartState } from './data/cartState';
 import { globalAccountState } from './data/accountState';
 import { globalWatchlistState } from './data/watchlistState';
@@ -190,25 +190,20 @@ export function DashboardCheckoutWrapper() {
 
   if (!isCartCheckout && !globalState.billingInfo) return null;
 
-  const handleConfirmPayment = (paymentInfo: { paymentMethod: string }) => {
-    setTimeout(() => {
+  const handleConfirmPayment = async (paymentInfo: { paymentMethod: string }) => {
+    // ---- Account Credit: client-side only (backend has no credit ledger). ----
+    if (paymentInfo.paymentMethod === 'Account Credit') {
       if (isCartCheckout) {
+        const subtotal = globalState.cartBillingDetails.reduce((sum, b) => sum + b.subtotal, 0);
         const total = globalState.cartItems.reduce((sum, item) => sum + item.amount, 0);
-
-        if (paymentInfo.paymentMethod === 'Account Credit') {
-          const subtotal = globalState.cartBillingDetails.reduce((sum, b) => sum + b.subtotal, 0);
-          const success = globalAccountState.deductBalance(subtotal);
-          if (!success) {
-            toast.error('Insufficient account balance');
-            return;
-          }
+        if (!globalAccountState.deductBalance(subtotal)) {
+          toast.error('Insufficient account balance');
+          return;
         }
-
         globalState.cartItems.forEach((item) => {
           globalWatchlistState.removeFromWatchlist(item.awbNumber);
         });
-
-        const confirmationData: PaymentConfirmation = {
+        globalState.confirmation = {
           confirmationNumber: `PMT-${Date.now()}`,
           awbNumber: `${globalState.cartItems.length} AWBs`,
           amount: total,
@@ -218,22 +213,16 @@ export function DashboardCheckoutWrapper() {
           }),
           paymentMethod: paymentInfo.paymentMethod,
         };
-        globalState.confirmation = confirmationData;
         globalState.cartItems = [];
         globalState.cartBillingDetails = [];
         globalCartState.clearCart();
       } else {
-        if (paymentInfo.paymentMethod === 'Account Credit') {
-          const success = globalAccountState.deductBalance(globalState.billingInfo!.subtotal);
-          if (!success) {
-            toast.error('Insufficient account balance');
-            return;
-          }
+        if (!globalAccountState.deductBalance(globalState.billingInfo!.subtotal)) {
+          toast.error('Insufficient account balance');
+          return;
         }
-
         globalWatchlistState.removeFromWatchlist(globalState.billingInfo!.awbNumber);
-
-        const confirmationData: PaymentConfirmation = {
+        globalState.confirmation = {
           confirmationNumber: `PMT-${Date.now()}`,
           awbNumber: globalState.billingInfo!.awbNumber,
           amount: globalState.billingInfo!.total,
@@ -243,12 +232,62 @@ export function DashboardCheckoutWrapper() {
           }),
           paymentMethod: paymentInfo.paymentMethod,
         };
-        globalState.confirmation = confirmationData;
+      }
+      navigate('/dashboard/confirmation');
+      toast.success('Payment completed successfully!');
+      return;
+    }
+
+    // ---- Credit Card / ACH: backend handles persistence + receipt. ----
+    const user = getCurrentUser();
+    if (!user) {
+      toast.error('You must be signed in to complete payment.');
+      return;
+    }
+
+    try {
+      if (isCartCheckout) {
+        const awbNumbers = globalState.cartItems.map((i) => i.awbNumber);
+        const results = await paymentApi.processBulk({
+          awbNumbers,
+          paymentMethod: paymentInfo.paymentMethod,
+          email: user.email,
+        });
+
+        // Use the most recent confirmation as the "header" for the bulk
+        // receipt. The list contains one entry per AWB; the wrapper currently
+        // only displays one confirmation card on the screen.
+        const total = results.reduce((sum, r) => sum + r.amount, 0);
+        const last = results[results.length - 1];
+        globalState.confirmation = {
+          confirmationNumber: last?.confirmationNumber ?? `PMT-${Date.now()}`,
+          awbNumber: `${results.length} AWBs`,
+          amount: total,
+          paymentDate: last?.paymentDate ?? new Date().toLocaleString('en-US'),
+          paymentMethod: paymentInfo.paymentMethod,
+        };
+
+        awbNumbers.forEach((awb) => globalWatchlistState.removeFromWatchlist(awb));
+        globalState.cartItems = [];
+        globalState.cartBillingDetails = [];
+        globalCartState.clearCart();
+      } else {
+        const confirmation = await paymentApi.processAuthenticated({
+          awbNumber: globalState.billingInfo!.awbNumber,
+          paymentMethod: paymentInfo.paymentMethod,
+          email: user.email,
+        });
+        globalState.confirmation = confirmation;
+        globalWatchlistState.removeFromWatchlist(globalState.billingInfo!.awbNumber);
       }
 
       navigate('/dashboard/confirmation');
       toast.success('Payment completed successfully!');
-    }, 1000);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      toast.error('Payment failed', { description: message });
+      // Stay on checkout — caller's `finally` resets the button.
+    }
   };
 
   const billingInfo = isCartCheckout
