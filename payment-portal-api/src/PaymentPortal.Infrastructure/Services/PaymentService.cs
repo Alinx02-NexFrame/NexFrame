@@ -111,36 +111,162 @@ public class PaymentService : IPaymentService
 
     public async Task<byte[]> GenerateReceiptPdfAsync(string confirmationNumber)
     {
-        var payment = await _db.Payments.FirstOrDefaultAsync(p => p.ConfirmationNumber == confirmationNumber)
+        var payment = await _db.Payments
+            .Include(p => p.Cargo)
+            .Include(p => p.Company)
+            .FirstOrDefaultAsync(p => p.ConfirmationNumber == confirmationNumber)
             ?? throw new KeyNotFoundException($"Payment not found: {confirmationNumber}");
 
         QuestPDF.Settings.License = LicenseType.Community;
+
+        // US receipt conventions: MM/dd/yyyy h:mm tt format, USD, US English labels.
+        var paymentDateLocal = TimeZoneInfo.ConvertTimeFromUtc(
+            DateTime.SpecifyKind(payment.PaymentDate, DateTimeKind.Utc),
+            TimeZoneInfo.FindSystemTimeZoneById(OperatingSystem.IsWindows() ? "Eastern Standard Time" : "America/New_York"));
+        var paymentDateStr = $"{paymentDateLocal:MM/dd/yyyy h:mm tt} ET";
+
+        var totalCharged = payment.Amount + payment.ProcessingFee;
+        var paymentMethodDisplay = payment.PaymentMethod switch
+        {
+            PaymentMethod.CreditCard => payment.CardLast4 != null ? $"Credit Card ending in ****{payment.CardLast4}" : "Credit Card",
+            PaymentMethod.ACH => "ACH Bank Transfer",
+            PaymentMethod.InternationalWire => "International Wire Transfer",
+            _ => payment.PaymentMethod.ToString()
+        };
+        var statusText = payment.PaymentStatus.ToString();
 
         var document = Document.Create(container =>
         {
             container.Page(page =>
             {
-                page.Size(PageSizes.A4);
+                page.Size(PageSizes.Letter);  // US standard
                 page.Margin(50);
+                page.DefaultTextStyle(t => t.FontSize(10).FontColor(Colors.Grey.Darken4));
 
-                page.Header().Text("Payment Receipt").FontSize(24).Bold().AlignCenter();
-
-                page.Content().PaddingVertical(20).Column(col =>
+                // Header: merchant identity
+                page.Header().Column(headerCol =>
                 {
-                    col.Spacing(10);
-
-                    col.Item().Text($"Confirmation: {payment.ConfirmationNumber}").FontSize(14);
-                    col.Item().Text($"AWB Number: {payment.AwbNumber}").FontSize(12);
-                    col.Item().Text($"Payment Date: {payment.PaymentDate:yyyy-MM-dd HH:mm}").FontSize(12);
-                    col.Item().Text($"Payment Method: {payment.PaymentMethod}").FontSize(12);
-                    col.Item().LineHorizontal(1);
-                    col.Item().Text($"Amount: ${payment.Amount:N2}").FontSize(14).Bold();
-                    col.Item().Text($"Processing Fee: ${payment.ProcessingFee:N2}").FontSize(12);
-                    col.Item().LineHorizontal(1);
-                    col.Item().Text($"Email: {payment.Email}").FontSize(12);
+                    headerCol.Item().Text("GHA Payment Portal").FontSize(20).Bold().FontColor(Colors.Blue.Darken3);
+                    headerCol.Item().Text("Ground Handling Agent Cargo Services").FontSize(9).Italic();
+                    headerCol.Item().Text("support@ghapaymentportal.com").FontSize(9);
+                    headerCol.Item().PaddingTop(8).LineHorizontal(1).LineColor(Colors.Grey.Medium);
                 });
 
-                page.Footer().AlignCenter().Text("GHA Payment Portal - Thank you for your payment.");
+                page.Content().PaddingVertical(15).Column(col =>
+                {
+                    col.Spacing(12);
+
+                    // Title + status badge
+                    col.Item().Row(row =>
+                    {
+                        row.RelativeItem().Text("PAYMENT RECEIPT").FontSize(18).Bold();
+                        row.ConstantItem(120).AlignRight().Background(Colors.Green.Lighten4)
+                            .Padding(6).Text(statusText.ToUpper()).FontSize(11).Bold().FontColor(Colors.Green.Darken3);
+                    });
+
+                    // Receipt meta
+                    col.Item().Row(row =>
+                    {
+                        row.RelativeItem().Column(c =>
+                        {
+                            c.Item().Text("Confirmation Number").FontSize(8).FontColor(Colors.Grey.Darken1);
+                            c.Item().Text(payment.ConfirmationNumber).FontSize(11).Bold();
+                        });
+                        row.RelativeItem().Column(c =>
+                        {
+                            c.Item().Text("Receipt Date").FontSize(8).FontColor(Colors.Grey.Darken1);
+                            c.Item().Text(paymentDateStr).FontSize(11);
+                        });
+                    });
+
+                    // Bill-to / Customer
+                    col.Item().PaddingTop(6).Background(Colors.Grey.Lighten3).Padding(10).Column(c =>
+                    {
+                        c.Item().Text("BILL TO").FontSize(8).Bold().FontColor(Colors.Grey.Darken2);
+                        if (payment.Company != null)
+                            c.Item().Text(payment.Company.Name).FontSize(11).Bold();
+                        c.Item().Text(payment.Email).FontSize(10);
+                    });
+
+                    // Cargo details
+                    if (payment.Cargo != null)
+                    {
+                        col.Item().PaddingTop(4).Column(c =>
+                        {
+                            c.Item().Text("CARGO DETAILS").FontSize(9).Bold();
+                            c.Item().PaddingTop(4).Border(1).BorderColor(Colors.Grey.Lighten1).Padding(8).Column(inner =>
+                            {
+                                inner.Item().Row(row =>
+                                {
+                                    row.RelativeItem().Text($"AWB: {payment.AwbNumber}").FontSize(10);
+                                    row.RelativeItem().Text($"Flight Date: {payment.Cargo.FlightDate:MM/dd/yyyy}").FontSize(10);
+                                });
+                                inner.Item().PaddingTop(2).Row(row =>
+                                {
+                                    row.RelativeItem().Text($"Origin: {payment.Cargo.Origin}").FontSize(10);
+                                    row.RelativeItem().Text($"Destination: {payment.Cargo.Destination}").FontSize(10);
+                                });
+                                inner.Item().PaddingTop(2).Row(row =>
+                                {
+                                    row.RelativeItem().Text($"Pieces: {payment.Cargo.Pieces}").FontSize(10);
+                                    row.RelativeItem().Text($"Weight: {payment.Cargo.Weight:N1} lbs").FontSize(10);
+                                });
+                            });
+                        });
+                    }
+                    else
+                    {
+                        col.Item().Text($"AWB: {payment.AwbNumber}").FontSize(10);
+                    }
+
+                    // Payment breakdown table
+                    col.Item().PaddingTop(8).Column(c =>
+                    {
+                        c.Item().Text("PAYMENT BREAKDOWN").FontSize(9).Bold();
+                        c.Item().PaddingTop(4).Table(table =>
+                        {
+                            table.ColumnsDefinition(cols =>
+                            {
+                                cols.RelativeColumn(3);
+                                cols.RelativeColumn(1);
+                            });
+
+                            table.Cell().PaddingVertical(4).Text("Service Charges").FontSize(10);
+                            table.Cell().PaddingVertical(4).AlignRight().Text($"${payment.Amount:N2}").FontSize(10);
+
+                            table.Cell().PaddingVertical(4).Text("Processing Fee").FontSize(10);
+                            table.Cell().PaddingVertical(4).AlignRight().Text($"${payment.ProcessingFee:N2}").FontSize(10);
+
+                            table.Cell().BorderTop(1).BorderColor(Colors.Grey.Darken1).PaddingTop(6)
+                                .Text("TOTAL CHARGED (USD)").FontSize(11).Bold();
+                            table.Cell().BorderTop(1).BorderColor(Colors.Grey.Darken1).PaddingTop(6).AlignRight()
+                                .Text($"${totalCharged:N2}").FontSize(11).Bold();
+                        });
+                    });
+
+                    // Payment method
+                    col.Item().PaddingTop(8).Background(Colors.Blue.Lighten5).Padding(10).Column(c =>
+                    {
+                        c.Item().Text("PAYMENT METHOD").FontSize(8).Bold().FontColor(Colors.Blue.Darken3);
+                        c.Item().Text(paymentMethodDisplay).FontSize(11);
+                    });
+                });
+
+                page.Footer().Column(footerCol =>
+                {
+                    footerCol.Item().LineHorizontal(0.5f).LineColor(Colors.Grey.Medium);
+                    footerCol.Item().PaddingTop(6).AlignCenter().Text("Thank you for your payment. This receipt is your proof of payment.")
+                        .FontSize(9).FontColor(Colors.Grey.Darken2);
+                    footerCol.Item().AlignCenter().Text("Questions? Contact support@ghapaymentportal.com").FontSize(8).FontColor(Colors.Grey.Darken1);
+                    footerCol.Item().AlignCenter().Text(t =>
+                    {
+                        t.DefaultTextStyle(s => s.FontSize(8).FontColor(Colors.Grey.Medium));
+                        t.Span("Page ");
+                        t.CurrentPageNumber();
+                        t.Span(" of ");
+                        t.TotalPages();
+                    });
+                });
             });
         });
 
