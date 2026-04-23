@@ -200,7 +200,16 @@ export function DashboardCheckoutWrapper() {
 
   if (!isCartCheckout && !globalState.billingInfo) return null;
 
-  const handleConfirmPayment = async (paymentInfo: { paymentMethod: string }) => {
+  const handleConfirmPayment = async (paymentInfo: {
+    paymentMethod: string;
+    cardNumber?: string;
+    cardExpiry?: string;
+    cardCVV?: string;
+    cardName?: string;
+    accountNumber?: string;
+    routingNumber?: string;
+    accountName?: string;
+  }) => {
     // ---- Account Credit: client-side only (backend has no credit ledger). ----
     if (paymentInfo.paymentMethod === 'Account Credit') {
       if (isCartCheckout) {
@@ -268,6 +277,11 @@ export function DashboardCheckoutWrapper() {
           awbNumbers,
           paymentMethod: paymentInfo.paymentMethod,
           email: user.email,
+          cardNumber: paymentInfo.cardNumber,
+          cardExpiry: paymentInfo.cardExpiry,
+          cardCVV: paymentInfo.cardCVV,
+          accountNumber: paymentInfo.accountNumber,
+          routingNumber: paymentInfo.routingNumber,
         });
 
         // Synthesize a "header" confirmation for the summary card. The full
@@ -293,6 +307,11 @@ export function DashboardCheckoutWrapper() {
           awbNumber: globalState.billingInfo!.awbNumber,
           paymentMethod: paymentInfo.paymentMethod,
           email: user.email,
+          cardNumber: paymentInfo.cardNumber,
+          cardExpiry: paymentInfo.cardExpiry,
+          cardCVV: paymentInfo.cardCVV,
+          accountNumber: paymentInfo.accountNumber,
+          routingNumber: paymentInfo.routingNumber,
         });
         globalState.confirmation = confirmation;
         globalState.confirmationList = [];

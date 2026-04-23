@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router';
 import { CreditCard, Building2, Wallet, ArrowLeft, CheckCircle } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
@@ -9,9 +8,20 @@ import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { BillingInfo } from '../../types';
 import { globalAccountState } from '../../data/accountState';
 
+export interface DashboardCheckoutPaymentInfo {
+  paymentMethod: string;
+  cardNumber?: string;
+  cardExpiry?: string;
+  cardCVV?: string;
+  cardName?: string;
+  accountNumber?: string;
+  routingNumber?: string;
+  accountName?: string;
+}
+
 interface DashboardCheckoutProps {
   billing: BillingInfo;
-  onConfirmPayment: (paymentInfo: { paymentMethod: string }) => void | Promise<void>;
+  onConfirmPayment: (paymentInfo: DashboardCheckoutPaymentInfo) => void | Promise<void>;
   onBack: () => void;
 }
 
@@ -19,6 +29,17 @@ export function DashboardCheckout({ billing, onConfirmPayment, onBack }: Dashboa
   const [paymentMethod, setPaymentMethod] = useState<'credit' | 'ach' | 'account'>('credit');
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentBalance, setCurrentBalance] = useState(globalAccountState.getBalance());
+
+  // Credit Card form state
+  const [cardNumber, setCardNumber] = useState('');
+  const [cardExpiry, setCardExpiry] = useState('');
+  const [cardCVV, setCardCVV] = useState('');
+  const [cardName, setCardName] = useState('');
+
+  // ACH form state
+  const [accountNumber, setAccountNumber] = useState('');
+  const [routingNumber, setRoutingNumber] = useState('');
+  const [accountName, setAccountName] = useState('');
 
   // Subscribe to account balance changes
   useEffect(() => {
@@ -46,10 +67,26 @@ export function DashboardCheckout({ billing, onConfirmPayment, onBack }: Dashboa
                      : paymentMethod === 'ach' ? 'ACH'
                      : 'Account Credit';
 
+    // Only include payment-method-specific fields for the matching method.
+    // Account Credit is client-side only — backend is never called, so we
+    // pass no card/ACH fields (the wrapper short-circuits on this method).
+    const paymentInfo: DashboardCheckoutPaymentInfo = { paymentMethod: methodName };
+    if (paymentMethod === 'credit') {
+      // Strip display-only spaces from the card number before transmitting.
+      paymentInfo.cardNumber = cardNumber.replace(/\s+/g, '');
+      paymentInfo.cardExpiry = cardExpiry;
+      paymentInfo.cardCVV = cardCVV;
+      paymentInfo.cardName = cardName;
+    } else if (paymentMethod === 'ach') {
+      paymentInfo.accountNumber = accountNumber;
+      paymentInfo.routingNumber = routingNumber;
+      paymentInfo.accountName = accountName;
+    }
+
     // The backend call may take a few hundred ms; let it run without an
     // artificial delay. If it errors, the wrapper calls back through
     // onConfirmPayment's caller and we re-enable the button.
-    Promise.resolve(onConfirmPayment({ paymentMethod: methodName })).finally(() => {
+    Promise.resolve(onConfirmPayment(paymentInfo)).finally(() => {
       setIsProcessing(false);
     });
   };
@@ -139,6 +176,8 @@ export function DashboardCheckout({ billing, onConfirmPayment, onBack }: Dashboa
                         id="cardNumber"
                         type="text"
                         placeholder="1234 5678 9012 3456"
+                        value={cardNumber}
+                        onChange={(e) => setCardNumber(e.target.value)}
                         required
                       />
                     </div>
@@ -150,6 +189,8 @@ export function DashboardCheckout({ billing, onConfirmPayment, onBack }: Dashboa
                           id="expiry"
                           type="text"
                           placeholder="MM/YY"
+                          value={cardExpiry}
+                          onChange={(e) => setCardExpiry(e.target.value)}
                           required
                         />
                       </div>
@@ -159,6 +200,8 @@ export function DashboardCheckout({ billing, onConfirmPayment, onBack }: Dashboa
                           id="cvv"
                           type="text"
                           placeholder="123"
+                          value={cardCVV}
+                          onChange={(e) => setCardCVV(e.target.value)}
                           required
                         />
                       </div>
@@ -170,6 +213,8 @@ export function DashboardCheckout({ billing, onConfirmPayment, onBack }: Dashboa
                         id="cardName"
                         type="text"
                         placeholder="John Doe"
+                        value={cardName}
+                        onChange={(e) => setCardName(e.target.value)}
                         required
                       />
                     </div>
@@ -189,6 +234,8 @@ export function DashboardCheckout({ billing, onConfirmPayment, onBack }: Dashboa
                         id="accountNumber"
                         type="text"
                         placeholder="000123456789"
+                        value={accountNumber}
+                        onChange={(e) => setAccountNumber(e.target.value)}
                         required
                       />
                     </div>
@@ -199,6 +246,8 @@ export function DashboardCheckout({ billing, onConfirmPayment, onBack }: Dashboa
                         id="routingNumber"
                         type="text"
                         placeholder="110000000"
+                        value={routingNumber}
+                        onChange={(e) => setRoutingNumber(e.target.value)}
                         required
                       />
                     </div>
@@ -209,6 +258,8 @@ export function DashboardCheckout({ billing, onConfirmPayment, onBack }: Dashboa
                         id="accountName"
                         type="text"
                         placeholder="Your Company Name"
+                        value={accountName}
+                        onChange={(e) => setAccountName(e.target.value)}
                         required
                       />
                     </div>
