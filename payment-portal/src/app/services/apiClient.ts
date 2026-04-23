@@ -140,7 +140,42 @@ export const paymentApi = {
 
   getReceiptUrl: (confirmationNumber: string) =>
     `${BASE_URL}/payments/${encodeURIComponent(confirmationNumber)}/receipt`,
+
+  // Bulk-receipt endpoint is [Authorize] — use downloadAuthenticatedPdf() to
+  // attach the JWT, NOT window.open().
+  getBulkReceiptUrl: (confirmationNumbers: string[]) =>
+    `${BASE_URL}/payments/bulk-receipt?confirmations=${confirmationNumbers
+      .map(encodeURIComponent)
+      .join(',')}`,
 };
+
+/**
+ * Download a PDF that requires JWT auth. Falls back to a friendly error
+ * if the request fails. Used for endpoints that cannot be hit with a plain
+ * `window.open(url)` because they require an Authorization header.
+ */
+export async function downloadAuthenticatedPdf(url: string, filename: string): Promise<boolean> {
+  const headers: Record<string, string> = {};
+  if (accessToken) {
+    headers['Authorization'] = `Bearer ${accessToken}`;
+  }
+
+  const res = await fetch(url, { headers });
+  if (!res.ok) {
+    return false;
+  }
+
+  const blob = await res.blob();
+  const blobUrl = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = blobUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(blobUrl);
+  return true;
+}
 
 // Forwarder API
 export const forwarderApi = {

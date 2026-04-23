@@ -1,18 +1,39 @@
 import { CheckCircle, Download, Package, Calendar, CreditCard } from 'lucide-react';
+import { toast } from 'sonner';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Separator } from './ui/separator';
 import { PaymentConfirmation } from '../types';
-import { paymentApi } from '../services/apiClient';
+import { paymentApi, downloadAuthenticatedPdf } from '../services/apiClient';
 
 interface ConfirmationScreenProps {
   confirmation: PaymentConfirmation;
+  /**
+   * Per-AWB confirmations from a bulk payment. When present and length > 1,
+   * the screen renders a bulk summary (list + combined-receipt download).
+   * When undefined or empty, behaves as the original single-payment screen.
+   */
+  confirmations?: PaymentConfirmation[];
   onNewSearch: () => void;
 }
 
-export function ConfirmationScreen({ confirmation, onNewSearch }: ConfirmationScreenProps) {
-  const handleDownloadReceipt = () => {
-    window.open(paymentApi.getReceiptUrl(confirmation.confirmationNumber), '_blank');
+export function ConfirmationScreen({ confirmation, confirmations, onNewSearch }: ConfirmationScreenProps) {
+  const isBulk = (confirmations?.length ?? 0) > 1;
+
+  const handleDownloadReceipt = async () => {
+    if (isBulk && confirmations) {
+      const numbers = confirmations.map((c) => c.confirmationNumber);
+      const url = paymentApi.getBulkReceiptUrl(numbers);
+      const filename = `BulkReceipt-${confirmation.confirmationNumber}.pdf`;
+      const ok = await downloadAuthenticatedPdf(url, filename);
+      if (!ok) {
+        toast.error('Failed to download combined receipt');
+      }
+    } else {
+      // Single-receipt endpoint is not [Authorize] — plain window.open is fine
+      // and preserves the existing browser-handled download behavior.
+      window.open(paymentApi.getReceiptUrl(confirmation.confirmationNumber), '_blank');
+    }
   };
 
   // Calculate fees (reverse calculation from total)
@@ -47,8 +68,14 @@ export function ConfirmationScreen({ confirmation, onNewSearch }: ConfirmationSc
           <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-4">
             <CheckCircle className="h-12 w-12 text-green-600" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Payment Completed Successfully!</h1>
-          <p className="text-lg text-gray-600">Thank you for your payment</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            {isBulk ? 'Bulk Payment Completed Successfully!' : 'Payment Completed Successfully!'}
+          </h1>
+          <p className="text-lg text-gray-600">
+            {isBulk
+              ? `${confirmations!.length} payments processed — thank you`
+              : 'Thank you for your payment'}
+          </p>
         </div>
 
         {/* Confirmation Details */}
@@ -121,6 +148,24 @@ export function ConfirmationScreen({ confirmation, onNewSearch }: ConfirmationSc
           </div>
         </Card>
 
+        {/* Per-AWB list (bulk only) */}
+        {isBulk && confirmations && (
+          <Card className="p-6 mb-6">
+            <h2 className="font-semibold text-gray-900 mb-4">Included Payments</h2>
+            <div className="divide-y">
+              {confirmations.map((c) => (
+                <div key={c.confirmationNumber} className="py-3 flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-gray-900">{c.awbNumber}</p>
+                    <p className="text-xs text-gray-500">{c.confirmationNumber}</p>
+                  </div>
+                  <span className="font-semibold text-gray-900">${c.amount.toFixed(2)}</span>
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
+
         {/* Action Buttons */}
         <div className="grid md:grid-cols-2 gap-4">
           <Button
@@ -130,7 +175,7 @@ export function ConfirmationScreen({ confirmation, onNewSearch }: ConfirmationSc
             className="w-full"
           >
             <Download className="h-5 w-5 mr-2" />
-            Download Receipt
+            {isBulk ? 'Download Combined Receipt' : 'Download Receipt'}
           </Button>
           <Button
             size="lg"

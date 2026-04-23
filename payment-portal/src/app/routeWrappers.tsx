@@ -28,7 +28,14 @@ import type { CargoInfo, BillingInfo, PaymentInfo, PaymentConfirmation } from '.
 let globalState = {
   selectedCargo: null as CargoInfo | null,
   billingInfo: null as BillingInfo | null,
+  // Single confirmation card shown on the Confirmation screen. For bulk
+  // payments this is a synthesized "header" (e.g. "5 AWBs", grand total)
+  // built from `confirmationList`.
   confirmation: null as PaymentConfirmation | null,
+  // Per-AWB confirmations from a bulk payment. Empty for single payments.
+  // When non-empty, the Confirmation screen offers a combined-receipt
+  // download via the bulk-receipt endpoint.
+  confirmationList: [] as PaymentConfirmation[],
   cartItems: [] as Array<{ awbNumber: string; amount: number }>,
   cartBillingDetails: [] as Array<BillingInfo>,
   previousRoute: null as string | null,
@@ -130,6 +137,7 @@ export function CheckoutWrapper() {
         routingNumber: paymentInfo.routingNumber,
       });
       globalState.confirmation = confirmationData;
+      globalState.confirmationList = [];
       navigate('/confirmation');
       toast.success('Payment completed successfully!');
     } catch (err) {
@@ -162,12 +170,14 @@ export function ConfirmationWrapper({ redirectTo }: { redirectTo: string }) {
     globalState.selectedCargo = null;
     globalState.billingInfo = null;
     globalState.confirmation = null;
+    globalState.confirmationList = [];
     navigate(redirectTo);
   };
 
   return (
     <ConfirmationScreen
       confirmation={globalState.confirmation}
+      confirmations={globalState.confirmationList}
       onNewSearch={handleNewSearch}
     />
   );
@@ -203,16 +213,21 @@ export function DashboardCheckoutWrapper() {
         globalState.cartItems.forEach((item) => {
           globalWatchlistState.removeFromWatchlist(item.awbNumber);
         });
+        const paymentDate = new Date().toLocaleString('en-US', {
+          year: 'numeric', month: '2-digit', day: '2-digit',
+          hour: '2-digit', minute: '2-digit',
+        });
+        // Account Credit is client-side only — there is no backend confirmation
+        // number per AWB, so we keep `confirmationList` empty (no combined-PDF
+        // download is meaningful for credit-only payments).
         globalState.confirmation = {
           confirmationNumber: `PMT-${Date.now()}`,
           awbNumber: `${globalState.cartItems.length} AWBs`,
           amount: total,
-          paymentDate: new Date().toLocaleString('en-US', {
-            year: 'numeric', month: '2-digit', day: '2-digit',
-            hour: '2-digit', minute: '2-digit',
-          }),
+          paymentDate,
           paymentMethod: paymentInfo.paymentMethod,
         };
+        globalState.confirmationList = [];
         globalState.cartItems = [];
         globalState.cartBillingDetails = [];
         globalCartState.clearCart();
@@ -232,6 +247,7 @@ export function DashboardCheckoutWrapper() {
           }),
           paymentMethod: paymentInfo.paymentMethod,
         };
+        globalState.confirmationList = [];
       }
       navigate('/dashboard/confirmation');
       toast.success('Payment completed successfully!');
@@ -254,9 +270,9 @@ export function DashboardCheckoutWrapper() {
           email: user.email,
         });
 
-        // Use the most recent confirmation as the "header" for the bulk
-        // receipt. The list contains one entry per AWB; the wrapper currently
-        // only displays one confirmation card on the screen.
+        // Synthesize a "header" confirmation for the summary card. The full
+        // per-AWB list lives on `confirmationList` so the Confirmation screen
+        // can offer a combined-PDF download via the bulk-receipt endpoint.
         const total = results.reduce((sum, r) => sum + r.amount, 0);
         const last = results[results.length - 1];
         globalState.confirmation = {
@@ -266,6 +282,7 @@ export function DashboardCheckoutWrapper() {
           paymentDate: last?.paymentDate ?? new Date().toLocaleString('en-US'),
           paymentMethod: paymentInfo.paymentMethod,
         };
+        globalState.confirmationList = results;
 
         awbNumbers.forEach((awb) => globalWatchlistState.removeFromWatchlist(awb));
         globalState.cartItems = [];
@@ -278,6 +295,7 @@ export function DashboardCheckoutWrapper() {
           email: user.email,
         });
         globalState.confirmation = confirmation;
+        globalState.confirmationList = [];
         globalWatchlistState.removeFromWatchlist(globalState.billingInfo!.awbNumber);
       }
 
