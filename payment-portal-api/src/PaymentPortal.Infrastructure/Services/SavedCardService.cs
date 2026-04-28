@@ -24,7 +24,6 @@ public class SavedCardService : ISavedCardService
     public async Task<List<SavedCardDto>> ListAsync(int userId)
     {
         var user = await _db.Users.FindAsync(userId) ?? throw new KeyNotFoundException("User not found.");
-        if (user.CompanyId == null) return new List<SavedCardDto>();
 
         var cards = await _db.SavedCards
             .Where(c => c.CompanyId == user.CompanyId)
@@ -59,7 +58,7 @@ public class SavedCardService : ISavedCardService
 
         var card = new SavedCard
         {
-            CompanyId = user.CompanyId!.Value,
+            CompanyId = user.CompanyId,
             CardLast4 = last4,
             CardBrand = request.CardBrand,
             CardHolderName = request.CardHolderName,
@@ -113,8 +112,6 @@ public class SavedCardService : ISavedCardService
     private async Task<User> RequireCompanyAdminAsync(int userId)
     {
         var user = await _db.Users.FindAsync(userId) ?? throw new KeyNotFoundException("User not found.");
-        if (user.CompanyId == null)
-            throw new InvalidOperationException("User is not associated with a company.");
         if (user.CompanyRole != Domain.Enums.CompanyRole.Admin)
             throw new ForbiddenException("Only company admins can manage saved cards.");
         return user;

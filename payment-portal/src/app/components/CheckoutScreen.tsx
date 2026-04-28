@@ -477,7 +477,7 @@ export function CheckoutScreen({ billing, onConfirmPayment, onBack }: CheckoutSc
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center space-x-3">
             <Package className="h-8 w-8 text-blue-600" />
-            <span className="text-2xl font-bold text-gray-900">Swissport</span>
+            <span className="text-2xl font-bold text-gray-900">SELLAS</span>
             <span className="text-sm text-gray-500">Payment Portal</span>
           </div>
         </div>

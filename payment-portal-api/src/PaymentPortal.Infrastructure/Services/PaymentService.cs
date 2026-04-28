@@ -43,7 +43,7 @@ public class PaymentService : IPaymentService
 
         // Resolve card last4: prefer SavedCard, fall back to raw CardNumber.
         string? cardLast4 = null;
-        if (request.SavedCardId.HasValue && user?.CompanyId != null)
+        if (request.SavedCardId.HasValue && user != null)
         {
             var savedCard = await _db.SavedCards
                 .FirstOrDefaultAsync(c => c.Id == request.SavedCardId.Value && c.CompanyId == user.CompanyId)
@@ -85,7 +85,7 @@ public class PaymentService : IPaymentService
 
         // Associate cargo with the paying company (first payment wins — keeps
         // legacy CompanyId stable if paid again later).
-        if (cargo.CompanyId == null && user?.CompanyId != null)
+        if (cargo.CompanyId == null && user != null)
         {
             cargo.CompanyId = user.CompanyId;
         }

@@ -217,7 +217,7 @@ public class ForwarderService : IForwarderService
 
         if (watchlist == null)
         {
-            watchlist = new Watchlist { CompanyId = user.CompanyId!.Value };
+            watchlist = new Watchlist { CompanyId = user.CompanyId };
             _db.Watchlists.Add(watchlist);
             await _db.SaveChangesAsync();
         }
@@ -286,6 +286,12 @@ public class ForwarderService : IForwarderService
         EnsureCompanyAdmin(admin);
         var target = await _db.Users.FirstOrDefaultAsync(u => u.Id == targetUserId && u.CompanyId == admin.CompanyId)
             ?? throw new KeyNotFoundException("User not found in your company.");
+
+        var isSelf = userId == targetUserId;
+        if (isSelf && request.CompanyRole.HasValue && request.CompanyRole.Value != Domain.Enums.CompanyRole.Admin)
+            throw new InvalidOperationException("You cannot demote yourself from Admin.");
+        if (isSelf && request.IsActive.HasValue && !request.IsActive.Value)
+            throw new InvalidOperationException("You cannot deactivate yourself.");
 
         if (request.FullName != null) target.FullName = request.FullName;
         if (request.CompanyRole.HasValue) target.CompanyRole = request.CompanyRole.Value;

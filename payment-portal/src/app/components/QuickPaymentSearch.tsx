@@ -11,7 +11,7 @@ interface QuickPaymentSearchProps {
   ghaLogo?: string;
 }
 
-export function QuickPaymentSearch({ onSearch, ghaName = "Swissport", ghaLogo }: QuickPaymentSearchProps) {
+export function QuickPaymentSearch({ onSearch, ghaName = "SELLAS", ghaLogo }: QuickPaymentSearchProps) {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
 

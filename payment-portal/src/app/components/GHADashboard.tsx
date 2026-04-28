@@ -29,14 +29,14 @@ export function GHADashboard({ onBackToPortal }: GHADashboardProps) {
             <div className="flex items-center space-x-3">
               <Building2 className="h-10 w-10" />
               <div>
-                <h1 className="text-2xl font-bold">Swissport GHA</h1>
+                <h1 className="text-2xl font-bold">SELLAS GHA</h1>
                 <p className="text-xs text-blue-100">Admin Dashboard - Payment Portal Management</p>
               </div>
             </div>
             <div className="flex items-center space-x-3">
               <div className="text-right mr-4 hidden md:block">
                 <p className="text-sm font-semibold">Admin User</p>
-                <p className="text-xs text-blue-100">admin@swissport.com</p>
+                <p className="text-xs text-blue-100">admin@sellas.com</p>
               </div>
               <Button variant="secondary" size="sm" onClick={onBackToPortal}>
                 Public Portal

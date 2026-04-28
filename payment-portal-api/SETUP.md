@@ -86,7 +86,7 @@ dotnet run --project src/PaymentPortal.Api
 ### Companies (3)
 | Name | Email |
 |---|---|
-| Global Freight Solutions | contact@globalfreight.com |
+| SELLAS Solutions | contact@globalfreight.com |
 | Pacific Logistics Inc. | info@pacificlog.com |
 | Express Air Cargo | support@expressair.com |
 

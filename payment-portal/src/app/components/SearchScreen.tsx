@@ -12,7 +12,7 @@ interface SearchScreenProps {
   ghaLogo?: string;
 }
 
-export function SearchScreen({ onSearch, onNavigateToDashboard, ghaName = "Swissport", ghaLogo }: SearchScreenProps) {
+export function SearchScreen({ onSearch, onNavigateToDashboard, ghaName = "SELLAS", ghaLogo }: SearchScreenProps) {
   const [searchValue, setSearchValue] = useState('');
 
   const handleSearch = () => {

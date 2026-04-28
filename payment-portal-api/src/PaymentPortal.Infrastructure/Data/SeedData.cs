@@ -12,21 +12,26 @@ public static class SeedData
             return;
 
         // 1. Companies
-        var globalFreight = new Company { Name = "Global Freight Solutions", Email = "contact@globalfreight.com", TaxId = "12-3456789", AccountCredit = 100000.00m };
+        // GHA Headquarters is the internal company that owns GhaAdmin users — required
+        // because every User now has a non-nullable CompanyId.
+        var ghaHq = new Company { Name = "GHA Headquarters", Email = "admin@gha.com", TaxId = "00-0000000", AccountCredit = 0m };
+        var globalFreight = new Company { Name = "SELLAS Solutions", Email = "contact@globalfreight.com", TaxId = "12-3456789", AccountCredit = 100000.00m };
         var pacificLog = new Company { Name = "Pacific Logistics Inc.", Email = "info@pacificlog.com", TaxId = "98-7654321", AccountCredit = 100000.00m };
         var expressAir = new Company { Name = "Express Air Cargo", Email = "support@expressair.com", TaxId = "55-1234567", AccountCredit = 100000.00m };
         var playwrightCo = new Company { Name = "Playwright Co.", Email = "contact@playwrite.test", TaxId = "00-0000001", AccountCredit = 100000.00m };
-        context.Companies.AddRange(globalFreight, pacificLog, expressAir, playwrightCo);
+        context.Companies.AddRange(ghaHq, globalFreight, pacificLog, expressAir, playwrightCo);
         await context.SaveChangesAsync();
 
         // 2. Users (password: "1234")
+        // pacificLog gets two users (jane=Admin, tom=Member) so the Admin-manages-Member flow has a real fixture.
         var passwordHash = BCrypt.Net.BCrypt.HashPassword("1234");
-        var admin = new User { Username = "admin", Email = "admin@gha.com", PasswordHash = passwordHash, FullName = "GHA Administrator", Role = UserRole.GhaAdmin, IsActive = true };
+        var admin = new User { Username = "admin", Email = "admin@gha.com", PasswordHash = passwordHash, FullName = "GHA Administrator", Role = UserRole.GhaAdmin, Company = ghaHq, IsActive = true };
         var john = new User { Username = "john", Email = "john@globalfreight.com", PasswordHash = passwordHash, FullName = "John Smith", Role = UserRole.Forwarder, Company = globalFreight, CompanyRole = Domain.Enums.CompanyRole.Manager, IsActive = true };
         var jane = new User { Username = "jane", Email = "jane@pacificlog.com", PasswordHash = passwordHash, FullName = "Jane Doe", Role = UserRole.Forwarder, Company = pacificLog, CompanyRole = Domain.Enums.CompanyRole.Admin, IsActive = true };
+        var tom = new User { Username = "tom", Email = "tom@pacificlog.com", PasswordHash = passwordHash, FullName = "Tom Wilson", Role = UserRole.Forwarder, Company = pacificLog, CompanyRole = Domain.Enums.CompanyRole.Member, IsActive = true };
         var mike = new User { Username = "mike", Email = "mike@expressair.com", PasswordHash = passwordHash, FullName = "Mike Johnson", Role = UserRole.Forwarder, Company = expressAir, CompanyRole = Domain.Enums.CompanyRole.Manager, IsActive = true };
         var playwrite = new User { Username = "playwrite", Email = "playwrite@test.com", PasswordHash = passwordHash, FullName = "Playwright User", Role = UserRole.Forwarder, Company = playwrightCo, CompanyRole = Domain.Enums.CompanyRole.Admin, IsActive = true };
-        context.Users.AddRange(admin, john, jane, mike, playwrite);
+        context.Users.AddRange(admin, john, jane, tom, mike, playwrite);
         await context.SaveChangesAsync();
 
         // 3. Cargo (26 AWBs, dates: Apr 10 ~ Apr 20, 2026)

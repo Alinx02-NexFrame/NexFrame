@@ -16,7 +16,7 @@ interface HomeProps {
   ghaLogo?: string;
 }
 
-export function Home({ ghaName = "Swissport", ghaLogo }: HomeProps) {
+export function Home({ ghaName = "SELLAS", ghaLogo }: HomeProps) {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');

@@ -55,7 +55,7 @@ export function ForwarderDashboard({ onBackToPortal }: ForwarderDashboardProps) 
             <div className="flex items-center space-x-3">
               <Package className="h-8 w-8 text-blue-600" />
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Global Freight Solutions</h1>
+                <h1 className="text-xl font-bold text-gray-900">SELLAS Solutions</h1>
                 <p className="text-xs text-gray-500">Forwarder Dashboard</p>
               </div>
             </div>
