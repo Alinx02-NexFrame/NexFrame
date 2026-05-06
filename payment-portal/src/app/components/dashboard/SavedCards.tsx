@@ -216,8 +216,8 @@ export function SavedCards() {
               className="flex items-center justify-between border rounded-lg p-4 hover:bg-gray-50"
             >
               <div className="flex items-center space-x-4">
-                <div className="bg-blue-100 rounded-full p-2">
-                  <CreditCard className="h-6 w-6 text-blue-600" />
+                <div className="bg-[color:var(--sellas-surface-lilac)] rounded-full p-2">
+                  <CreditCard className="h-6 w-6 text-[color:var(--sellas-purple)]" />
                 </div>
                 <div>
                   <div className="flex items-center space-x-2">

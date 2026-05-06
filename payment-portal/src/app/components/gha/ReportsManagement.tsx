@@ -83,7 +83,7 @@ export function ReportsManagement() {
         {reportTypes.map((report) => {
           const IconComponent = report.icon;
           const colorClasses: Record<string, string> = {
-            blue: 'bg-blue-100 text-blue-600',
+            blue: 'bg-[color:var(--sellas-surface-lilac)] text-[color:var(--sellas-purple)]',
             green: 'bg-green-100 text-green-600',
             purple: 'bg-purple-100 text-purple-600',
             orange: 'bg-orange-100 text-orange-600'
@@ -106,7 +106,7 @@ export function ReportsManagement() {
                 <ul className="space-y-1">
                   {report.insights.map((insight, idx) => (
                     <li key={idx} className="text-sm text-gray-600 flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>
+                      <span className="text-[color:var(--sellas-purple)] mr-2">•</span>
                       {insight}
                     </li>
                   ))}
@@ -185,7 +185,7 @@ export function ReportsManagement() {
           {scheduledReports.map((report, idx) => (
             <div key={idx} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div className="flex items-center space-x-4">
-                <Calendar className="h-5 w-5 text-blue-600" />
+                <Calendar className="h-5 w-5 text-[color:var(--sellas-purple)]" />
                 <div>
                   <p className="font-semibold text-gray-900">{report.name}</p>
                   <p className="text-sm text-gray-500">{report.schedule} • {report.format}</p>
@@ -229,7 +229,7 @@ export function ReportsManagement() {
       </Card>
 
       {/* Report Insights */}
-      <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+      <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-[color:var(--sellas-border-soft)]">
         <h3 className="text-lg font-semibold text-blue-900 mb-4">This Month's Key Insights</h3>
         <div className="grid md:grid-cols-3 gap-4">
           <div className="bg-white p-4 rounded-lg">
@@ -248,8 +248,8 @@ export function ReportsManagement() {
           </div>
           <div className="bg-white p-4 rounded-lg">
             <div className="flex items-center justify-between mb-2">
-              <Users className="h-5 w-5 text-blue-600" />
-              <Badge className="bg-blue-100 text-blue-800">
+              <Users className="h-5 w-5 text-[color:var(--sellas-purple)]" />
+              <Badge className="bg-[color:var(--sellas-surface-lilac)] text-[color:var(--sellas-purple)]">
                 {insights ? `+${insights.newCustomersThisMonth}` : '—'}
               </Badge>
             </div>

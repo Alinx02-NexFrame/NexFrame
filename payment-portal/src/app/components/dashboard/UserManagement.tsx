@@ -117,7 +117,7 @@ export function UserManagement() {
       case 'Admin':
         return <Badge className="bg-purple-100 text-purple-800">Administrator</Badge>;
       case 'Manager':
-        return <Badge className="bg-blue-100 text-blue-800">Manager</Badge>;
+        return <Badge className="bg-[color:var(--sellas-surface-lilac)] text-[color:var(--sellas-purple)]">Manager</Badge>;
       case 'Member':
         return <Badge className="bg-gray-100 text-gray-800">Member</Badge>;
       default:
@@ -149,8 +149,8 @@ export function UserManagement() {
               <p className="text-sm text-gray-500 mb-1">Total Users</p>
               <p className="text-3xl font-bold text-gray-900">{users.length}</p>
             </div>
-            <div className="bg-blue-100 rounded-full p-3">
-              <Users className="h-8 w-8 text-blue-600" />
+            <div className="bg-[color:var(--sellas-surface-lilac)] rounded-full p-3">
+              <Users className="h-8 w-8 text-[color:var(--sellas-purple)]" />
             </div>
           </div>
         </Card>

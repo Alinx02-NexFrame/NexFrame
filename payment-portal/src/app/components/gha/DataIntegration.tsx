@@ -66,7 +66,7 @@ export function DataIntegration() {
           <div className="space-y-6">
             <Card className="p-6">
               <div className="flex items-center space-x-3 mb-4">
-                <Link2 className="h-6 w-6 text-blue-600" />
+                <Link2 className="h-6 w-6 text-[color:var(--sellas-purple)]" />
                 <h3 className="text-lg font-semibold text-gray-900">Standard API Integration</h3>
               </div>
               <p className="text-sm text-gray-600 mb-6">
@@ -114,7 +114,7 @@ export function DataIntegration() {
                   </pre>
                 </div>
                 <p className="text-gray-600">
-                  For detailed API documentation, please refer to the <a href="#" className="text-blue-600 underline">Developer Guide</a>.
+                  For detailed API documentation, please refer to the <a href="#" className="text-[color:var(--sellas-purple)] underline">Developer Guide</a>.
                 </p>
               </div>
             </Card>
@@ -138,9 +138,9 @@ export function DataIntegration() {
                 <p className="text-sm text-gray-500 mb-4">Supported formats: Excel (.xlsx), CSV (.csv), JSON (.json)</p>
                 <Button onClick={handleUploadData}>Select File</Button>
               </div>
-              <div className="mt-6 p-4 bg-blue-50 rounded-lg flex items-start space-x-3">
-                <Sparkles className="h-5 w-5 text-blue-600 mt-0.5" />
-                <div className="text-sm text-blue-800">
+              <div className="mt-6 p-4 bg-[color:var(--sellas-surface-lilac)] rounded-lg flex items-start space-x-3">
+                <Sparkles className="h-5 w-5 text-[color:var(--sellas-purple)] mt-0.5" />
+                <div className="text-sm text-[color:var(--sellas-purple)]">
                   <p className="font-semibold mb-1">AI Automatic Data Cleansing</p>
                   <p>AI analyzes cargo data in different formats and automatically organizes it to match the system requirements.</p>
                 </div>
@@ -232,10 +232,10 @@ export function DataIntegration() {
                   <p className="text-3xl font-bold text-green-900">98.5%</p>
                   <p className="text-xs text-green-600 mt-1">Auto-processing success rate</p>
                 </div>
-                <div className="p-4 bg-blue-50 rounded-lg">
-                  <p className="text-sm text-blue-700 mb-1">Workload Reduction</p>
+                <div className="p-4 bg-[color:var(--sellas-surface-lilac)] rounded-lg">
+                  <p className="text-sm text-[color:var(--sellas-purple)] mb-1">Workload Reduction</p>
                   <p className="text-3xl font-bold text-blue-900">82%</p>
-                  <p className="text-xs text-blue-600 mt-1">Simple inquiries auto-handled</p>
+                  <p className="text-xs text-[color:var(--sellas-purple)] mt-1">Simple inquiries auto-handled</p>
                 </div>
                 <div className="p-4 bg-purple-50 rounded-lg">
                   <p className="text-sm text-purple-700 mb-1">Prediction Accuracy</p>

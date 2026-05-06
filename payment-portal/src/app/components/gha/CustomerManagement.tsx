@@ -27,8 +27,8 @@ export function CustomerManagement() {
               <p className="text-sm text-gray-500 mb-1">Total Customers</p>
               <p className="text-3xl font-bold text-gray-900">{customers.length}</p>
             </div>
-            <div className="bg-blue-100 rounded-full p-3">
-              <Building2 className="h-8 w-8 text-blue-600" />
+            <div className="bg-[color:var(--sellas-surface-lilac)] rounded-full p-3">
+              <Building2 className="h-8 w-8 text-[color:var(--sellas-purple)]" />
             </div>
           </div>
         </Card>
@@ -93,8 +93,8 @@ export function CustomerManagement() {
             <div key={customer.id} className="border rounded-lg p-5 hover:bg-gray-50 transition-colors">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-start space-x-4">
-                  <div className="bg-blue-100 rounded-lg h-12 w-12 flex items-center justify-center">
-                    <Building2 className="h-6 w-6 text-blue-600" />
+                  <div className="bg-[color:var(--sellas-surface-lilac)] rounded-lg h-12 w-12 flex items-center justify-center">
+                    <Building2 className="h-6 w-6 text-[color:var(--sellas-purple)]" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 text-lg">{customer.companyName}</h4>
@@ -143,8 +143,8 @@ export function CustomerManagement() {
           {activities.map((activity, idx) => (
             <div key={idx} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div className="flex items-center space-x-4">
-                <div className="bg-white rounded-full h-10 w-10 flex items-center justify-center border-2 border-blue-200">
-                  <Building2 className="h-5 w-5 text-blue-600" />
+                <div className="bg-white rounded-full h-10 w-10 flex items-center justify-center border-2 border-[color:var(--sellas-border-soft)]">
+                  <Building2 className="h-5 w-5 text-[color:var(--sellas-purple)]" />
                 </div>
                 <div>
                   <p className="font-semibold text-gray-900">{activity.description}</p>

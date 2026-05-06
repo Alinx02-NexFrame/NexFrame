@@ -11,6 +11,8 @@ import { calculateBilling } from '../../services/billingCalculator';
 import { setCheckoutData } from '../../routeWrappers';
 import type { CargoInfo } from '../../types';
 import { Input } from '../ui/input';
+import { BrandHeader } from '../sellas/BrandHeader';
+import { DecoLine } from '../sellas/DecoLine';
 
 export function Cart() {
   const navigate = useNavigate();
@@ -123,42 +125,40 @@ export function Cart() {
   }, [cart, pickupDates, cargoMap]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                onClick={() => navigate('/dashboard')}
-                className="flex items-center"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Dashboard
-              </Button>
-              <div className="h-6 w-px bg-gray-300"></div>
-              <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-                <ShoppingCart className="h-6 w-6 mr-3 text-blue-600" />
-                Shopping Cart
-              </h1>
-            </div>
+    <div className="min-h-screen sellas-bg">
+      <BrandHeader
+        subtitle="Shopping Cart"
+        actions={
+          <>
+            <Button variant="ghost" onClick={() => navigate('/dashboard')} className="link-sellas">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Dashboard
+            </Button>
             {cart.length > 0 && (
               <Button
                 variant="outline"
                 onClick={handleClearCart}
-                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
               >
                 <Trash2 className="h-4 w-4 mr-2" />
                 Clear Cart
               </Button>
             )}
-          </div>
-        </div>
-      </div>
+          </>
+        }
+      />
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="mx-auto px-6 sm:px-8 lg:px-12 py-10" style={{ maxWidth: '1230px' }}>
+        <div className="mb-8">
+          <DecoLine />
+          <h1
+            className="mt-5 flex items-center"
+            style={{ fontSize: 35, fontWeight: 700, color: 'var(--sellas-fg-1)' }}
+          >
+            <ShoppingCart className="h-8 w-8 mr-3" style={{ color: 'var(--sellas-purple)' }} />
+            Shopping Cart
+          </h1>
+        </div>
         {cart.length === 0 ? (
           <Card className="p-12 text-center">
             <ShoppingCart className="h-16 w-16 text-gray-300 mx-auto mb-4" />
@@ -166,7 +166,7 @@ export function Cart() {
             <p className="text-gray-600 mb-6">
               Search for AWB numbers and add items to your cart
             </p>
-            <Button onClick={() => navigate('/dashboard')} className="bg-blue-600 hover:bg-blue-700">
+            <Button onClick={() => navigate('/dashboard')} className="bg-[color:var(--sellas-purple)] hover:opacity-90">
               Go to Dashboard
             </Button>
           </Card>
@@ -178,7 +178,7 @@ export function Cart() {
                 <h2 className="text-lg font-semibold text-gray-900">
                   Cart Items
                 </h2>
-                <Badge className="bg-blue-600 text-white">{cart.length} item(s)</Badge>
+                <Badge className="bg-[color:var(--sellas-purple)] text-white">{cart.length} item(s)</Badge>
               </div>
 
               <Card className="overflow-hidden">
@@ -196,7 +196,7 @@ export function Cart() {
                           {/* Left: AWB Info */}
                           <div className="flex-1 space-y-3">
                             <div className="flex items-center space-x-2">
-                              <Package className="h-5 w-5 text-blue-600 flex-shrink-0" />
+                              <Package className="h-5 w-5 text-[color:var(--sellas-purple)] flex-shrink-0" />
                               <div>
                                 <p className="font-semibold text-gray-900 text-base">{item.awbNumber}</p>
                                 {cargo && (
@@ -233,8 +233,8 @@ export function Cart() {
                                 </p>
 
                                 {/* Pickup Date Selector */}
-                                <div className="flex items-center space-x-2 bg-blue-50 border border-blue-200 rounded-lg p-3">
-                                  <Calendar className="h-4 w-4 text-blue-600" />
+                                <div className="flex items-center space-x-2 bg-[color:var(--sellas-surface-lilac)] border border-[color:var(--sellas-border-soft)] rounded-lg p-3">
+                                  <Calendar className="h-4 w-4 text-[color:var(--sellas-purple)]" />
                                   <label className="text-sm font-medium text-gray-700 whitespace-nowrap">
                                     Pickup Date:
                                   </label>
@@ -243,7 +243,7 @@ export function Cart() {
                                     value={pickupDate}
                                     onChange={(e) => handlePickupDateChange(item.awbNumber, e.target.value)}
                                     min={cargo.storageStartDate}
-                                    className="h-8 text-sm border-blue-300 focus:border-blue-500 focus:ring-blue-500"
+                                    className="h-8 text-sm border-[color:var(--sellas-border-soft)] focus:border-[color:var(--sellas-purple)] focus:ring-blue-500"
                                   />
                                   <span className="text-xs text-gray-600 whitespace-nowrap">
                                     (Storage fee updates automatically)
@@ -275,7 +275,7 @@ export function Cart() {
                                 <div className="border-t border-gray-200 pt-1 mt-1">
                                   <div className="flex justify-between gap-3">
                                     <span className="text-sm font-semibold text-gray-900">Total:</span>
-                                    <span className="text-lg font-bold text-blue-600">
+                                    <span className="text-lg font-bold text-[color:var(--sellas-purple)]">
                                       ${billing.total.toFixed(2)}
                                     </span>
                                   </div>
@@ -328,7 +328,7 @@ export function Cart() {
 
                 <Button
                   onClick={handleCheckout}
-                  className="w-full bg-blue-600 hover:bg-blue-700 h-12 text-base"
+                  className="w-full bg-[color:var(--sellas-purple)] hover:opacity-90 h-12 text-base"
                 >
                   <CreditCard className="h-5 w-5 mr-2" />
                   Proceed to Checkout

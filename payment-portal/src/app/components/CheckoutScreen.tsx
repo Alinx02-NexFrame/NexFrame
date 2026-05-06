@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { CreditCard, Package, ArrowLeft, CheckCircle, Check, ChevronsUpDown, User, LogIn } from 'lucide-react';
+import { CreditCard, ArrowLeft, CheckCircle, Check, ChevronsUpDown, User, LogIn } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Input } from './ui/input';
@@ -9,6 +9,9 @@ import { BillingInfo, PaymentInfo } from '../types';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './ui/command';
 import { cn } from './ui/utils';
+import { BrandHeader } from './sellas/BrandHeader';
+import { BrandFooter } from './sellas/BrandFooter';
+import { DecoLine } from './sellas/DecoLine';
 
 interface CheckoutScreenProps {
   billing: BillingInfo;
@@ -471,27 +474,22 @@ export function CheckoutScreen({ billing, onConfirmPayment, onBack }: CheckoutSc
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center space-x-3">
-            <Package className="h-8 w-8 text-blue-600" />
-            <span className="text-2xl font-bold text-gray-900">SELLAS</span>
-            <span className="text-sm text-gray-500">Payment Portal</span>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen sellas-bg">
+      <BrandHeader subtitle="Payment Portal" />
 
-      {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Button variant="ghost" onClick={onBack} disabled={isProcessing} className="mb-4">
+      <main className="mx-auto px-6 sm:px-8 lg:px-12 pt-10 pb-16" style={{ maxWidth: '1080px' }}>
+        <Button variant="ghost" onClick={onBack} disabled={isProcessing} className="mb-4 link-sellas">
           <ArrowLeft className="h-5 w-5 mr-2" /> Back
         </Button>
 
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Pay</h1>
-          <p className="text-lg text-gray-600">AWB: {billing.awbNumber}</p>
+        <div className="mb-8">
+          <DecoLine />
+          <h1 className="mt-5" style={{ fontSize: 40, lineHeight: '52px', fontWeight: 700, color: 'var(--sellas-fg-1)' }}>
+            Complete Your Payment
+          </h1>
+          <p className="mt-2" style={{ fontSize: 16, color: 'var(--sellas-fg-3)' }}>
+            AWB: <span className="font-semibold" style={{ color: 'var(--sellas-fg-1)' }}>{billing.awbNumber}</span>
+          </p>
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -499,8 +497,9 @@ export function CheckoutScreen({ billing, onConfirmPayment, onBack }: CheckoutSc
             {/* Left: Payment Form */}
             <div className="space-y-6">
               {/* Email */}
-              <Card className="p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Contact Information</h2>
+              <Card className="p-6 sellas-card">
+                <DecoLine size="sm" />
+                <h2 className="mt-3 mb-4" style={{ fontSize: 20, fontWeight: 700, color: 'var(--sellas-fg-1)' }}>Contact Information</h2>
                 <div className="space-y-4">
                   <div>
                     <Label htmlFor="email">Email Address</Label>
@@ -533,10 +532,11 @@ export function CheckoutScreen({ billing, onConfirmPayment, onBack }: CheckoutSc
               </Card>
 
               {/* Credit Card Details */}
-              <Card className="p-6">
-                <div className="flex items-center space-x-2 mb-4">
-                  <CreditCard className="h-5 w-5 text-blue-600" />
-                  <h2 className="text-lg font-semibold text-gray-900">Credit Card Details</h2>
+              <Card className="p-6 sellas-card">
+                <DecoLine size="sm" />
+                <div className="flex items-center space-x-2 mt-3 mb-4">
+                  <CreditCard className="h-5 w-5" style={{ color: 'var(--sellas-purple)' }} />
+                  <h2 style={{ fontSize: 20, fontWeight: 700, color: 'var(--sellas-fg-1)' }}>Credit Card Details</h2>
                 </div>
 
                 <div className="space-y-4">
@@ -609,8 +609,9 @@ export function CheckoutScreen({ billing, onConfirmPayment, onBack }: CheckoutSc
               </Card>
 
               {/* Billing Address */}
-              <Card className="p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Billing Address</h2>
+              <Card className="p-6 sellas-card">
+                <DecoLine size="sm" />
+                <h2 className="mt-3 mb-4" style={{ fontSize: 20, fontWeight: 700, color: 'var(--sellas-fg-1)' }}>Billing Address</h2>
                 <div className="space-y-4">
                   <div>
                     <Label htmlFor="address">Address</Label>
@@ -752,56 +753,56 @@ export function CheckoutScreen({ billing, onConfirmPayment, onBack }: CheckoutSc
 
             {/* Right: Order Summary */}
             <div>
-              <Card className="p-6 sticky top-24">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Summary</h2>
+              <Card className="p-6 sticky top-24 sellas-card">
+                <DecoLine size="sm" />
+                <h2 className="mt-3 mb-5" style={{ fontSize: 22, fontWeight: 700, color: 'var(--sellas-fg-1)' }}>Order Summary</h2>
 
                 <div className="space-y-3 mb-6">
-                  <div className="flex justify-between text-gray-600">
-                    <span>AWB Number</span>
-                    <span className="font-semibold text-gray-900">{billing.awbNumber}</span>
+                  <div className="flex justify-between" style={{ fontSize: 14 }}>
+                    <span style={{ color: 'var(--sellas-fg-4)' }}>AWB Number</span>
+                    <span style={{ fontWeight: 600, color: 'var(--sellas-fg-1)' }}>{billing.awbNumber}</span>
                   </div>
 
-                  <div className="border-t pt-3 space-y-2">
+                  <div className="pt-3 space-y-2" style={{ borderTop: '1px solid var(--sellas-border-soft)' }}>
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Service Fee</span>
-                      <span className="font-medium">${billing.serviceFee.toFixed(2)}</span>
+                      <span style={{ color: 'var(--sellas-fg-4)' }}>Service Fee</span>
+                      <span style={{ fontWeight: 500, color: 'var(--sellas-fg-1)' }}>${billing.serviceFee.toFixed(2)}</span>
                     </div>
 
                     {billing.storageFee > 0 && (
                       <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Storage Fee</span>
-                        <span className="font-medium">${billing.storageFee.toFixed(2)}</span>
+                        <span style={{ color: 'var(--sellas-fg-4)' }}>Storage Fee</span>
+                        <span style={{ fontWeight: 500, color: 'var(--sellas-fg-1)' }}>${billing.storageFee.toFixed(2)}</span>
                       </div>
                     )}
 
                     {billing.otherCharge > 0 && (
                       <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Other Charges</span>
-                        <span className="font-medium">${billing.otherCharge.toFixed(2)}</span>
+                        <span style={{ color: 'var(--sellas-fg-4)' }}>Other Charges</span>
+                        <span style={{ fontWeight: 500, color: 'var(--sellas-fg-1)' }}>${billing.otherCharge.toFixed(2)}</span>
                       </div>
                     )}
 
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Processing Fee (2.5%)</span>
-                      <span className="font-medium">${billing.processingFee.toFixed(2)}</span>
+                      <span style={{ color: 'var(--sellas-fg-4)' }}>Processing Fee (2.5%)</span>
+                      <span style={{ fontWeight: 500, color: 'var(--sellas-fg-1)' }}>${billing.processingFee.toFixed(2)}</span>
                     </div>
 
-                    <div className="flex justify-between text-sm border-t pt-2">
-                      <span className="font-semibold text-gray-900">Subtotal</span>
-                      <span className="font-semibold">${billing.subtotal.toFixed(2)}</span>
+                    <div className="flex justify-between text-sm pt-2" style={{ borderTop: '1px solid var(--sellas-border-soft)' }}>
+                      <span style={{ fontWeight: 700, color: 'var(--sellas-fg-1)' }}>Subtotal</span>
+                      <span style={{ fontWeight: 700, color: 'var(--sellas-fg-1)' }}>${billing.subtotal.toFixed(2)}</span>
                     </div>
 
-                    {/* Credit Card Fee - Always shown for Quick Pay */}
-                    <div className="flex justify-between text-sm text-blue-600">
+                    <div className="flex justify-between text-sm" style={{ color: 'var(--sellas-purple)' }}>
                       <span>Credit Card Fee (2.9%)</span>
-                      <span className="font-medium">${creditCardFee.toFixed(2)}</span>
+                      <span style={{ fontWeight: 600 }}>${creditCardFee.toFixed(2)}</span>
                     </div>
                   </div>
 
-                  <div className="border-t pt-3">
+                  <div className="pt-3" style={{ borderTop: '1px solid var(--sellas-border-soft)' }}>
                     <div className="flex justify-between items-center">
-                      <span className="text-lg font-semibold text-gray-900">Total</span>
-                      <span className="text-2xl font-bold text-gray-900">
+                      <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--sellas-fg-1)' }}>Total</span>
+                      <span style={{ fontSize: 28, fontWeight: 800 }} className="text-gradient">
                         ${finalTotal.toFixed(2)}
                       </span>
                     </div>
@@ -809,15 +810,15 @@ export function CheckoutScreen({ billing, onConfirmPayment, onBack }: CheckoutSc
                 </div>
 
                 {/* Not Signed In Notice */}
-                <div className="mb-2 p-3 bg-green-50 rounded-lg border border-green-200">
+                <div className="mb-3 p-3 rounded-lg" style={{ background: 'var(--sellas-surface-mint)', border: '1px solid #B8E6CC' }}>
                   <div className="flex items-start space-x-2">
-                    <User className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                    <User className="h-4 w-4 mt-0.5 flex-shrink-0" style={{ color: '#1F7A4D' }} />
                     <div className="flex-1">
-                      <p className="text-xs text-green-800 font-medium mb-1">
+                      <p style={{ fontSize: 12, fontWeight: 600, color: '#1F7A4D' }}>
                         You are not signed in
                       </p>
-                      <p className="text-xs text-green-700">
-                        Sign in for faster payments, bulk processing, and comprehensive reporting
+                      <p style={{ fontSize: 12, color: '#2D5A3F', marginTop: 2 }}>
+                        Sign in for faster payments, bulk processing, and comprehensive reporting.
                       </p>
                     </div>
                   </div>
@@ -826,7 +827,7 @@ export function CheckoutScreen({ billing, onConfirmPayment, onBack }: CheckoutSc
                 <Button
                   type="submit"
                   disabled={isProcessing}
-                  className="w-full bg-blue-600 hover:bg-blue-700 h-12 text-base mb-2"
+                  className="w-full h-12 text-base mb-2"
                 >
                   {isProcessing ? (
                     <>Processing...</>
@@ -838,21 +839,20 @@ export function CheckoutScreen({ billing, onConfirmPayment, onBack }: CheckoutSc
                   )}
                 </Button>
 
-                {/* Sign in & Pay Button */}
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => navigate('/')}
                   disabled={isProcessing}
-                  className="w-full h-10 text-sm mb-2 border-blue-600 text-blue-600 hover:bg-blue-50"
+                  className="w-full h-10 text-sm mb-3"
                 >
                   <LogIn className="h-4 w-4 mr-2" />
                   Sign in & Pay
                 </Button>
 
-                <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                  <p className="text-xs text-gray-700 text-center">
-                    Your payment information is encrypted and secure
+                <div className="p-3 rounded-lg" style={{ background: 'var(--sellas-surface-lilac)' }}>
+                  <p className="text-center" style={{ fontSize: 12, color: 'var(--sellas-fg-3)' }}>
+                    Your payment information is encrypted and secure.
                   </p>
                 </div>
               </Card>
@@ -861,20 +861,24 @@ export function CheckoutScreen({ billing, onConfirmPayment, onBack }: CheckoutSc
         </form>
 
         {/* Frequent Customer Banner */}
-        <Card className="p-6 mt-8 bg-blue-50 border-blue-200">
-          <div className="text-center">
-            <h3 className="font-semibold text-gray-900 mb-2">
-              Frequent Customer?
-            </h3>
-            <p className="text-sm text-gray-600 mb-4">
-              Create an account for faster payments, bulk processing, and comprehensive reporting
+        <div
+          className="rounded-[20px] p-7 mt-10 flex flex-col md:flex-row items-center justify-between gap-5"
+          style={{ background: 'var(--sellas-surface-2)', border: '1px solid var(--sellas-border-soft)' }}
+        >
+          <div>
+            <DecoLine size="sm" />
+            <h3 className="mt-3" style={{ fontSize: 20, fontWeight: 700, color: 'var(--sellas-fg-1)' }}>Frequent customer?</h3>
+            <p className="mt-2" style={{ fontSize: 14, color: 'var(--sellas-fg-3)' }}>
+              Create an account for faster payments, bulk processing, and comprehensive reporting.
             </p>
-            <Button variant="outline" onClick={() => navigate('/')}>
-              Create Account
-            </Button>
           </div>
-        </Card>
+          <Button variant="outline" onClick={() => navigate('/')}>
+            Create Account
+          </Button>
+        </div>
       </main>
+
+      <BrandFooter />
     </div>
   );
 }

@@ -152,7 +152,7 @@ export function DashboardCheckout({ billing, onConfirmPayment, onBack }: Dashboa
                     <RadioGroupItem value="credit" id="credit" className="mt-1" />
                     <Label htmlFor="credit" className="flex-1 cursor-pointer">
                       <div className="flex items-center space-x-2 mb-1">
-                        <CreditCard className="h-5 w-5 text-blue-600" />
+                        <CreditCard className="h-5 w-5 text-[color:var(--sellas-purple)]" />
                         <span className="font-semibold text-gray-900">Credit Card</span>
                       </div>
                       <p className="text-sm text-gray-600">
@@ -414,7 +414,7 @@ export function DashboardCheckout({ billing, onConfirmPayment, onBack }: Dashboa
 
                     {/* Credit Card Fee - Only show if credit card selected */}
                     {paymentMethod === 'credit' && (
-                      <div className="flex justify-between text-sm text-blue-600">
+                      <div className="flex justify-between text-sm text-[color:var(--sellas-purple)]">
                         <span>Credit Card Fee (2.9%)</span>
                         <span className="font-medium">${creditCardFee.toFixed(2)}</span>
                       </div>
@@ -434,7 +434,7 @@ export function DashboardCheckout({ billing, onConfirmPayment, onBack }: Dashboa
                 <Button
                   type="submit"
                   disabled={isProcessing || (paymentMethod === 'account' && balanceAfterPayment < 0)}
-                  className="w-full bg-blue-600 hover:bg-blue-700 h-12 text-base"
+                  className="w-full bg-[color:var(--sellas-purple)] hover:opacity-90 h-12 text-base"
                 >
                   {isProcessing ? (
                     <>Processing...</>

@@ -88,7 +88,7 @@ export function PendingPayments() {
       <Card className="p-4">
         <div>
           <h3 className="text-lg font-semibold text-gray-900 mb-0.5 flex items-center">
-            <Search className="h-5 w-5 mr-2 text-blue-600" />
+            <Search className="h-5 w-5 mr-2 text-[color:var(--sellas-purple)]" />
             AWB Search
           </h3>
           <p className="text-sm text-gray-600 mb-2">
@@ -112,7 +112,7 @@ export function PendingPayments() {
           </div>
           <Button
             onClick={handleSearch}
-            className="px-6 bg-blue-600 hover:bg-blue-700"
+            className="px-6 bg-[color:var(--sellas-purple)] hover:opacity-90"
           >
             <Search className="h-4 w-4 mr-2" />
             Search
@@ -131,12 +131,12 @@ export function PendingPayments() {
           <h3
             className="text-lg font-semibold text-gray-900 flex items-center"
           >
-            <Eye className="h-5 w-5 mr-2 text-blue-600" />
+            <Eye className="h-5 w-5 mr-2 text-[color:var(--sellas-purple)]" />
             Your Watchlist
           </h3>
           <Badge
             variant="outline"
-            className="cursor-pointer hover:bg-blue-50 transition-colors"
+            className="cursor-pointer hover:bg-[color:var(--sellas-surface-lilac)] transition-colors"
             onClick={() => navigate('/watchlist')}
           >
             {watchlist.length} AWB(s)

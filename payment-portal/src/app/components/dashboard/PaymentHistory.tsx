@@ -56,8 +56,8 @@ export function PaymentHistory() {
               <p className="text-sm text-gray-500 mb-1">Total Amount Paid</p>
               <p className="text-3xl font-bold text-gray-900">${totalPaid.toFixed(2)}</p>
             </div>
-            <div className="bg-blue-100 rounded-full p-3">
-              <Calendar className="h-8 w-8 text-blue-600" />
+            <div className="bg-[color:var(--sellas-surface-lilac)] rounded-full p-3">
+              <Calendar className="h-8 w-8 text-[color:var(--sellas-purple)]" />
             </div>
           </div>
         </Card>

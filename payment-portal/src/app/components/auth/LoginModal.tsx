@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { X, User, Lock } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
-import { Card } from '../ui/card';
 import { authApi, setAccessToken, setCurrentUser } from '../../services/apiClient';
 import { globalCartState } from '../../data/cartState';
 import { toast } from 'sonner';
+import { DecoLine } from '../sellas/DecoLine';
+import { Logo } from '../sellas/Logo';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -42,37 +43,55 @@ export function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginModalProps)
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-md bg-white shadow-2xl">
-        <div className="p-6">
+      <div
+        className="w-full max-w-md rounded-[20px] overflow-hidden"
+        style={{
+          background: 'var(--sellas-surface-0)',
+          boxShadow: '0 24px 80px rgba(0,0,0,0.25)',
+        }}
+      >
+        <div className="p-7">
           {/* Header */}
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Sign In to Continue</h2>
+          <div className="flex justify-between items-start mb-5">
+            <div>
+              <DecoLine size="sm" />
+              <h2 className="mt-3" style={{ fontSize: 26, fontWeight: 700, color: 'var(--sellas-fg-1)' }}>
+                Sign in to continue
+              </h2>
+            </div>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="transition-colors"
+              style={{ color: 'var(--sellas-fg-5)' }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--sellas-fg-2)')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--sellas-fg-5)')}
             >
               <X className="h-6 w-6" />
             </button>
           </div>
 
           {/* Info Message */}
-          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm text-blue-800">
-              Sign in to access your Forwarder Dashboard with enhanced features including AWB watchlist, bulk payment processing, and comprehensive reporting.
+          <div
+            className="mb-5 p-4 rounded-lg"
+            style={{ background: 'var(--sellas-surface-lilac)', border: '1px solid #D6D8FF' }}
+          >
+            <p style={{ fontSize: 13, color: 'var(--sellas-fg-2)', lineHeight: 1.6 }}>
+              Sign in to your Forwarder Dashboard for AWB watchlist, bulk payment processing,
+              and comprehensive reporting.
             </p>
           </div>
 
           {/* Login Form */}
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
+              <label className="block mb-1.5" style={{ fontSize: 13, fontWeight: 500, color: 'var(--sellas-fg-2)' }}>
+                Username or Email
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5" style={{ color: 'var(--sellas-fg-5)' }} />
                 <Input
-                  type="email"
-                  placeholder="your.email@company.com"
+                  type="text"
+                  placeholder="your.username"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="pl-10"
@@ -82,11 +101,11 @@ export function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginModalProps)
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block mb-1.5" style={{ fontSize: 13, fontWeight: 500, color: 'var(--sellas-fg-2)' }}>
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5" style={{ color: 'var(--sellas-fg-5)' }} />
                 <Input
                   type="password"
                   placeholder="Enter your password"
@@ -99,11 +118,11 @@ export function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginModalProps)
             </div>
 
             <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center">
-                <input type="checkbox" className="mr-2 rounded" />
-                <span className="text-gray-600">Remember me</span>
+              <label className="flex items-center" style={{ color: 'var(--sellas-fg-4)', fontSize: 13 }}>
+                <input type="checkbox" className="mr-2" />
+                <span>Remember me</span>
               </label>
-              <a href="#" className="text-blue-600 hover:text-blue-800">
+              <a href="#" className="link-sellas" style={{ fontSize: 13 }}>
                 Forgot password?
               </a>
             </div>
@@ -119,31 +138,35 @@ export function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginModalProps)
           </form>
 
           {/* Test Credentials */}
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-              <p className="text-xs font-semibold text-yellow-800 mb-2">
-                <span className="bg-yellow-200 px-1.5 py-0.5 rounded text-xs mr-1">TEST</span>
+          <div className="mt-6 pt-5" style={{ borderTop: '1px solid var(--sellas-border-soft)' }}>
+            <div className="rounded-lg p-3" style={{ background: 'var(--sellas-surface-butter)' }}>
+              <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--sellas-fg-1)' }}>
+                <span
+                  className="px-1.5 py-0.5 rounded text-xs mr-1"
+                  style={{ background: 'rgba(0,0,0,0.08)' }}
+                >
+                  TEST
+                </span>
                 Demo Credentials
               </p>
-              <div className="space-y-1 text-xs text-yellow-700">
-                <p><strong>Email:</strong> demo@forwarder.com</p>
-                <p><strong>Password:</strong> demo123</p>
-                <p className="text-yellow-600 mt-2">Any email/password will work in demo mode</p>
+              <div className="space-y-1 mt-2" style={{ fontSize: 12, color: 'var(--sellas-fg-2)' }}>
+                <p><strong>Username:</strong> playwrite</p>
+                <p><strong>Password:</strong> 1234</p>
               </div>
             </div>
           </div>
 
-          {/* Sign Up Link */}
-          <div className="mt-4 text-center">
-            <p className="text-sm text-gray-600">
+          <div className="mt-5 flex items-center justify-between">
+            <Logo size={20} showWordmark={false} />
+            <p style={{ fontSize: 13, color: 'var(--sellas-fg-4)' }}>
               Don't have an account?{' '}
-              <a href="#" className="text-blue-600 hover:text-blue-800 font-medium">
+              <a href="#" className="link-sellas font-medium" style={{ color: 'var(--sellas-purple)' }}>
                 Request Access
               </a>
             </p>
           </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }

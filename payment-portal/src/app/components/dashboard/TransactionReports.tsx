@@ -172,7 +172,7 @@ export function TransactionReports() {
           onClick={() => handleWidgetClick('monthly')}
         >
           <div className="flex items-center justify-between mb-2">
-            <DollarSign className="h-8 w-8 text-blue-600" />
+            <DollarSign className="h-8 w-8 text-[color:var(--sellas-purple)]" />
             <TrendingUp className="h-5 w-5 text-green-600" />
           </div>
           <p className="text-sm text-gray-500 mb-1">Monthly Total</p>
@@ -274,7 +274,7 @@ export function TransactionReports() {
       </Card>
 
       {/* Payment History Section - Integrated from PaymentHistory.tsx */}
-      <div className="border-t-4 border-blue-100 pt-6">
+      <div className="border-t-4 border-[color:var(--sellas-border-soft)] pt-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-6">Payment History</h2>
 
         {/* Payment History Summary */}
@@ -297,8 +297,8 @@ export function TransactionReports() {
                 <p className="text-sm text-gray-500 mb-1">Total Amount Paid</p>
                 <p className="text-3xl font-bold text-gray-900">${totalPaid.toFixed(2)}</p>
               </div>
-              <div className="bg-blue-100 rounded-full p-3">
-                <Calendar className="h-8 w-8 text-blue-600" />
+              <div className="bg-[color:var(--sellas-surface-lilac)] rounded-full p-3">
+                <Calendar className="h-8 w-8 text-[color:var(--sellas-purple)]" />
               </div>
             </div>
           </Card>

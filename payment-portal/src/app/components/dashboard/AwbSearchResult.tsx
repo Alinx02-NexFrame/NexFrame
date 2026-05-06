@@ -141,7 +141,7 @@ export function AwbSearchResult({ awbNumber, onBack, onAddToCart, onAddToWatchli
       <Card className="p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <Package className="h-6 w-6 text-blue-600" />
+            <Package className="h-6 w-6 text-[color:var(--sellas-purple)]" />
             <div>
               <h2 className="text-2xl font-bold text-gray-900">AWB: {awbNumber}</h2>
               <p className="text-gray-600">{cargo.description}</p>
@@ -189,7 +189,7 @@ export function AwbSearchResult({ awbNumber, onBack, onAddToCart, onAddToWatchli
         {/* Flight & Route Information */}
         <Card className="p-6">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
-            <MapPin className="h-5 w-5 mr-2 text-blue-600" />
+            <MapPin className="h-5 w-5 mr-2 text-[color:var(--sellas-purple)]" />
             Flight & Route Information
           </h3>
           <div className="space-y-3">
@@ -215,7 +215,7 @@ export function AwbSearchResult({ awbNumber, onBack, onAddToCart, onAddToWatchli
         {/* Cargo Details */}
         <Card className="p-6">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
-            <Package className="h-5 w-5 mr-2 text-blue-600" />
+            <Package className="h-5 w-5 mr-2 text-[color:var(--sellas-purple)]" />
             Cargo Details
           </h3>
           <div className="space-y-3">
@@ -258,7 +258,7 @@ export function AwbSearchResult({ awbNumber, onBack, onAddToCart, onAddToWatchli
         {/* Select Pickup Date & Storage Charges */}
         <Card className="p-6">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
-            <Calendar className="h-5 w-5 mr-2 text-blue-600" />
+            <Calendar className="h-5 w-5 mr-2 text-[color:var(--sellas-purple)]" />
             Select Pickup Date
           </h3>
 
@@ -279,7 +279,7 @@ export function AwbSearchResult({ awbNumber, onBack, onAddToCart, onAddToWatchli
               </p>
             </div>
 
-            <div className="bg-blue-50 rounded-lg p-4">
+            <div className="bg-[color:var(--sellas-surface-lilac)] rounded-lg p-4">
               <h4 className="font-semibold text-gray-900 mb-3">Storage Charge Summary</h4>
               {storageDetails && (
                 <div className="space-y-2 text-sm">
@@ -298,7 +298,7 @@ export function AwbSearchResult({ awbNumber, onBack, onAddToCart, onAddToWatchli
                   <div className="border-t pt-2 mt-2">
                     <div className="flex justify-between items-center">
                       <span className="font-semibold text-gray-900">Storage Fee</span>
-                      <span className="text-lg font-bold text-blue-600">
+                      <span className="text-lg font-bold text-[color:var(--sellas-purple)]">
                         ${billing?.storageFee.toFixed(2)}
                       </span>
                     </div>
@@ -316,7 +316,7 @@ export function AwbSearchResult({ awbNumber, onBack, onAddToCart, onAddToWatchli
         {billing && (
           <Card className="p-6">
             <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
-              <DollarSign className="h-5 w-5 mr-2 text-blue-600" />
+              <DollarSign className="h-5 w-5 mr-2 text-[color:var(--sellas-purple)]" />
               Fee Detail
             </h3>
 
@@ -354,7 +354,7 @@ export function AwbSearchResult({ awbNumber, onBack, onAddToCart, onAddToWatchli
               <div className="border-t pt-3 mt-3 mb-4">
                 <div className="flex justify-between items-center">
                   <span className="text-lg font-bold text-gray-900">Total Amount</span>
-                  <span className="text-2xl font-bold text-blue-600">
+                  <span className="text-2xl font-bold text-[color:var(--sellas-purple)]">
                     ${billing.total.toFixed(2)}
                   </span>
                 </div>
@@ -366,7 +366,7 @@ export function AwbSearchResult({ awbNumber, onBack, onAddToCart, onAddToWatchli
                   <DollarSign className="h-4 w-4 mr-2" />
                   Pay Now
                 </Button>
-                <Button onClick={handleAddToCart} size="lg" className="bg-blue-600 hover:bg-blue-700 w-full">
+                <Button onClick={handleAddToCart} size="lg" className="bg-[color:var(--sellas-purple)] hover:opacity-90 w-full">
                   <ShoppingCart className="h-4 w-4 mr-2" />
                   Add to Cart
                 </Button>

@@ -1,22 +1,24 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Package, Zap } from 'lucide-react';
+import { Zap, ArrowRight } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Card } from './ui/card';
 import { Checkbox } from './ui/checkbox';
 import { authApi, setAccessToken, setCurrentUser } from '../services/apiClient';
 import { globalCartState } from '../data/cartState';
 import { toast } from 'sonner';
 import { RegisterModal } from './auth/RegisterModal';
+import { BrandHeader } from './sellas/BrandHeader';
+import { BrandFooter } from './sellas/BrandFooter';
+import { DecoLine } from './sellas/DecoLine';
 
 interface HomeProps {
   ghaName?: string;
   ghaLogo?: string;
 }
 
-export function Home({ ghaName = "SELLAS", ghaLogo }: HomeProps) {
+export function Home({ ghaName: _ghaName = "Sellas", ghaLogo: _ghaLogo }: HomeProps) {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -50,67 +52,104 @@ export function Home({ ghaName = "SELLAS", ghaLogo }: HomeProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50" data-testid="home-page">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200" data-testid="header">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center space-x-4">
-            {ghaLogo ? (
-              <img src={ghaLogo} alt={ghaName} className="h-10" data-testid="gha-logo" />
-            ) : (
-              <div className="flex items-center space-x-2" data-testid="gha-logo-text">
-                <Package className="h-8 w-8 text-blue-600" />
-                <span className="text-2xl font-bold text-gray-900">{ghaName}</span>
-              </div>
-            )}
-            <div className="h-8 w-px bg-gray-300"></div>
-            <span className="text-xl font-semibold text-gray-700" data-testid="portal-title">Payment Portal</span>
+    <div className="min-h-screen sellas-bg" data-testid="home-page">
+      <BrandHeader subtitle="Payment Portal" />
+
+      {/* Hero — split: copy on left, login + quick-pay on right */}
+      <main
+        className="mx-auto px-6 sm:px-8 lg:px-12 pt-16 pb-20"
+        style={{ maxWidth: '1230px' }}
+        data-testid="main-content"
+      >
+        <div className="grid lg:grid-cols-2 gap-16 items-start">
+          {/* LEFT — narrative */}
+          <div className="pt-6">
+            <span className="farthings-eyebrow">Air Cargo Payments</span>
+            <h1
+              className="mt-2"
+              style={{ fontSize: 60, lineHeight: '68px', color: 'var(--sellas-fg-1)' }}
+              data-testid="hero-title"
+            >
+              Pay Your Air Cargo Bills <br />
+              <span className="text-gradient">With Confidence</span>
+            </h1>
+            <DecoLine className="mt-6" />
+            <p
+              className="mt-6 lead"
+              style={{ fontSize: 18, lineHeight: '32px', color: 'var(--sellas-fg-3)', maxWidth: 520 }}
+              data-testid="hero-description"
+            >
+              Look up an AWB, review your charges, and settle the bill in under two minutes. Built
+              for forwarders who need fast, secure payment processing — no enterprise paperwork.
+            </p>
+
+            <div className="mt-10 grid grid-cols-2 gap-3" data-testid="hero-features" style={{ maxWidth: 520 }}>
+              {[
+                '24/7 Access',
+                'Secure Payments',
+                'Instant Receipts',
+                'Multiple Methods',
+              ].map((label) => (
+                <div
+                  key={label}
+                  className="px-5 py-4"
+                  style={{
+                    background: '#FFFFFF',
+                    border: '3px solid var(--sellas-yellow)',
+                    borderRadius: 20,
+                  }}
+                  data-testid={`feature-${label.toLowerCase().replace(/\s+/g, '-')}`}
+                >
+                  <span
+                    style={{
+                      fontFamily: 'var(--sellas-font-heading)',
+                      fontWeight: 600,
+                      color: 'var(--sellas-fg-1)',
+                      fontSize: 17,
+                      letterSpacing: 0,
+                    }}
+                  >
+                    {label}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <p className="mt-12 script" style={{ fontSize: 32 }}>Let's get started!</p>
           </div>
-        </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-testid="main-content">
-        {/* Hero Banner - Full Width at Top */}
-        <div className="bg-white border-2 border-blue-200 rounded-lg p-8 mb-8" data-testid="hero-banner">
-          <h2 className="text-3xl font-bold mb-4 text-gray-900" data-testid="hero-title">
-            Streamlined Cargo Payment Solutions
-          </h2>
-          <p className="text-gray-600 mb-6" data-testid="hero-description">
-            Experience fast, secure payment processing for air cargo with real-time tracking and transparent billing.
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm" data-testid="hero-features">
-            <div className="flex items-center bg-gray-50 rounded-lg px-4 py-3 border border-gray-200" data-testid="feature-24-7-access">
-              <span className="font-medium text-gray-700">24/7 Access</span>
-            </div>
-            <div className="flex items-center bg-gray-50 rounded-lg px-4 py-3 border border-gray-200" data-testid="feature-secure-payments">
-              <span className="font-medium text-gray-700">Secure Payments</span>
-            </div>
-            <div className="flex items-center bg-gray-50 rounded-lg px-4 py-3 border border-gray-200" data-testid="feature-instant-receipts">
-              <span className="font-medium text-gray-700">Instant Receipts</span>
-            </div>
-            <div className="flex items-center bg-gray-50 rounded-lg px-4 py-3 border border-gray-200" data-testid="feature-multiple-methods">
-              <span className="font-medium text-gray-700">Multiple Methods</span>
-            </div>
-          </div>
-        </div>
+          {/* RIGHT — auth + quick pay */}
+          <div className="space-y-6">
+            {/* Sign In card — yellow 5px border */}
+            <div
+              className="p-8"
+              style={{
+                background: 'var(--sellas-surface-0)',
+                borderRadius: 30,
+                border: '5px solid var(--sellas-yellow)',
+              }}
+              data-testid="sign-in-card"
+            >
+              <span className="farthings-eyebrow" style={{ fontSize: 14 }}>Members</span>
+              <h2
+                className="mt-1"
+                style={{ fontSize: 34, lineHeight: 1.15, color: 'var(--sellas-fg-1)' }}
+                data-testid="sign-in-title"
+              >
+                Customer Sign In
+              </h2>
+              <p style={{ color: 'var(--sellas-fg-3)', fontSize: 15, marginTop: 6 }}>
+                Access your account dashboard.
+              </p>
 
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Left Side - Sign In */}
-          <div data-testid="sign-in-section">
-            <Card className="p-6 border-2 border-gray-200 bg-gradient-to-br from-gray-50 to-slate-50" data-testid="sign-in-card">
-              <div className="mb-3">
-                <h1 className="text-xl font-bold text-gray-900" data-testid="sign-in-title">
-                  Customer Sign In
-                </h1>
-                <p className="text-xs text-gray-600">
-                  Access your account dashboard
-                </p>
-              </div>
-
-              <form onSubmit={handleSignIn} className="space-y-3" data-testid="sign-in-form">
+              <form onSubmit={handleSignIn} className="mt-6 space-y-4" data-testid="sign-in-form">
                 <div>
-                  <Label htmlFor="username" className="text-sm">Username or Email</Label>
+                  <Label
+                    htmlFor="username"
+                    style={{ color: 'var(--sellas-fg-1)', fontFamily: 'var(--sellas-font-heading)', fontSize: 14 }}
+                  >
+                    Username or Email
+                  </Label>
                   <Input
                     id="username"
                     name="username"
@@ -118,14 +157,20 @@ export function Home({ ghaName = "SELLAS", ghaLogo }: HomeProps) {
                     placeholder="Enter your username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="mt-1.5"
+                    className="mt-2"
                     data-testid="username-input"
                     aria-label="Username or Email"
+                    style={{ borderRadius: 7, height: 46 }}
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="password" className="text-sm">Password</Label>
+                  <Label
+                    htmlFor="password"
+                    style={{ color: 'var(--sellas-fg-1)', fontFamily: 'var(--sellas-font-heading)', fontSize: 14 }}
+                  >
+                    Password
+                  </Label>
                   <Input
                     id="password"
                     name="password"
@@ -133,9 +178,10 @@ export function Home({ ghaName = "SELLAS", ghaLogo }: HomeProps) {
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="mt-1.5"
+                    className="mt-2"
                     data-testid="password-input"
                     aria-label="Password"
+                    style={{ borderRadius: 7, height: 46 }}
                   />
                 </div>
 
@@ -147,18 +193,18 @@ export function Home({ ghaName = "SELLAS", ghaLogo }: HomeProps) {
                       onCheckedChange={(checked) => setRememberMe(checked as boolean)}
                       data-testid="remember-me-checkbox"
                     />
-                    <Label htmlFor="remember" className="text-xs font-normal cursor-pointer">
+                    <Label htmlFor="remember" className="text-xs font-normal cursor-pointer" style={{ color: 'var(--sellas-fg-4)' }}>
                       Remember me
                     </Label>
                   </div>
-                  <a href="#" className="text-xs text-blue-600 hover:text-blue-800" data-testid="forgot-password-link">
+                  <a href="#" className="link-sellas" style={{ fontSize: 13, fontWeight: 600 }} data-testid="forgot-password-link">
                     Forgot password?
                   </a>
                 </div>
 
                 <Button
                   type="submit"
-                  className="w-full cursor-pointer hover:bg-blue-700 transition-colors"
+                  className="w-full cursor-pointer"
                   size="lg"
                   disabled={isLoading}
                   data-testid="sign-in-button"
@@ -167,8 +213,8 @@ export function Home({ ghaName = "SELLAS", ghaLogo }: HomeProps) {
                 </Button>
               </form>
 
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <p className="text-xs text-gray-600 text-center mb-3">
+              <div className="mt-7 pt-5" style={{ borderTop: '2px dashed var(--sellas-fg-1)' }}>
+                <p className="text-center mb-3" style={{ color: 'var(--sellas-fg-4)', fontSize: 13 }}>
                   Don't have an account?
                 </p>
                 <Button
@@ -180,14 +226,18 @@ export function Home({ ghaName = "SELLAS", ghaLogo }: HomeProps) {
                   Create Account
                 </Button>
               </div>
-            </Card>
-          </div>
+            </div>
 
-          {/* Right Side - Quick Payment */}
-          <div data-testid="quick-payment-section">
-            {/* Enhanced Quick Payment Section */}
-            <Card
-              className="p-8 cursor-pointer transition-all duration-300 border-2 border-blue-300 bg-gradient-to-br from-blue-50 to-cyan-50 hover:border-blue-500 relative"
+            {/* Quick Payment showcase card — solid red, white text */}
+            <div
+              className="relative p-8 cursor-pointer transition-transform"
+              style={{
+                background: 'var(--sellas-red)',
+                borderRadius: 30,
+                border: 0,
+                color: '#FFFFFF',
+                boxShadow: 'var(--sellas-shadow-card)',
+              }}
               onClick={() => navigate('/search')}
               data-testid="quick-payment-card"
               role="button"
@@ -198,58 +248,112 @@ export function Home({ ghaName = "SELLAS", ghaLogo }: HomeProps) {
                   navigate('/search');
                 }
               }}
+            >
+              {/* Yellow circular INSTANT badge — hangover style */}
+              <div
+                className="absolute -top-4 -right-4 inline-flex items-center justify-center"
+                style={{
+                  background: 'var(--sellas-yellow)',
+                  color: 'var(--sellas-fg-1)',
+                  fontFamily: 'var(--sellas-font-heading)',
+                  fontSize: 13,
+                  letterSpacing: '0.1em',
+                  width: 88,
+                  height: 88,
+                  borderRadius: '9999px',
+                  border: '4px solid #FFFFFF',
+                  boxShadow: '0 6px 18px rgba(0,0,0,0.15)',
+                  flexDirection: 'column',
+                  lineHeight: 1.05,
+                  textAlign: 'center',
+                }}
+                data-testid="instant-badge"
               >
-                {/* Premium badge */}
-                <div className="absolute top-4 right-4 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full shadow-md flex items-center" data-testid="instant-badge">
-                  <Zap className="h-3 w-3 mr-1" />
-                  INSTANT
-                </div>
+                <Zap className="h-4 w-4 mb-0.5" />
+                INSTANT
+              </div>
 
-                <div className="space-y-4">
-                  {/* Header */}
-                  <div>
-                    <div className="mb-2">
-                      <h3 className="text-xl font-bold text-gray-900" data-testid="quick-payment-title">
-                        Quick Payment
-                      </h3>
-                      <p className="text-xs text-gray-600">
-                        Pay without an account
-                      </p>
-                    </div>
-                  </div>
+              <span
+                className="farthings-eyebrow"
+                style={{ color: 'var(--sellas-yellow)', fontSize: 14 }}
+              >
+                No Account Needed
+              </span>
+              <h3
+                className="mt-1"
+                style={{ fontSize: 34, lineHeight: 1.15, color: '#FFFFFF', fontFamily: 'var(--sellas-font-heading)' }}
+                data-testid="quick-payment-title"
+              >
+                Quick Payment
+              </h3>
+              <p style={{ color: 'rgba(255,255,255,0.92)', fontSize: 15, marginTop: 6 }}>
+                Pay without an account.
+              </p>
 
-                  {/* Features list */}
-                  <div className="space-y-2 py-2" data-testid="quick-payment-features">
-                    <div className="text-sm text-gray-700" data-testid="feature-fast-payment">
-                      <span>Pay in under 2 minutes</span>
-                    </div>
-                    <div className="text-sm text-gray-700" data-testid="feature-awb-entry">
-                      <span>Just enter your AWB number</span>
-                    </div>
-                    <div className="text-sm text-gray-700" data-testid="feature-instant-receipt">
-                      <span>Instant receipt via email</span>
-                    </div>
-                  </div>
+              <ul
+                className="mt-6 space-y-3"
+                style={{ color: 'rgba(255,255,255,0.95)', fontSize: 15 }}
+                data-testid="quick-payment-features"
+              >
+                <li
+                  className="flex items-center gap-3"
+                  data-testid="feature-fast-payment"
+                  style={{ borderBottom: '2px dashed rgba(255,255,255,0.35)', paddingBottom: 10 }}
+                >
+                  <span
+                    style={{
+                      width: 8, height: 8, borderRadius: '50%', background: 'var(--sellas-yellow)', flexShrink: 0,
+                    }}
+                  />
+                  Pay in under 2 minutes
+                </li>
+                <li
+                  className="flex items-center gap-3"
+                  data-testid="feature-awb-entry"
+                  style={{ borderBottom: '2px dashed rgba(255,255,255,0.35)', paddingBottom: 10 }}
+                >
+                  <span
+                    style={{
+                      width: 8, height: 8, borderRadius: '50%', background: 'var(--sellas-yellow)', flexShrink: 0,
+                    }}
+                  />
+                  Just enter your AWB number
+                </li>
+                <li className="flex items-center gap-3" data-testid="feature-instant-receipt">
+                  <span
+                    style={{
+                      width: 8, height: 8, borderRadius: '50%', background: 'var(--sellas-yellow)', flexShrink: 0,
+                    }}
+                  />
+                  Instant receipt via email
+                </li>
+              </ul>
 
-                  {/* CTA Button — explicit onClick so Playwright / React
-                      synthetic events fire reliably even if the parent Card's
-                      bubbled onClick doesn't trigger. stopPropagation avoids
-                      double-navigate when the parent handler also fires. */}
-                  <div className="pt-2">
-                    <button
-                      type="button"
-                      className="w-full flex items-center justify-center bg-blue-600 text-white font-bold py-4 px-6 rounded-lg hover:bg-blue-700 transition-colors shadow-lg"
-                      data-testid="start-quick-payment-button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate('/search');
-                      }}
-                    >
-                      <span className="text-lg">Start Quick Payment</span>
-                    </button>
-                  </div>
-                </div>
-              </Card>
+              <button
+                type="button"
+                className="mt-7 w-full inline-flex items-center justify-center gap-2"
+                data-testid="start-quick-payment-button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate('/search');
+                }}
+                style={{
+                  background: 'var(--sellas-yellow)',
+                  color: 'var(--sellas-fg-1)',
+                  fontFamily: 'var(--sellas-font-heading)',
+                  fontSize: 16,
+                  letterSpacing: '0.02em',
+                  padding: '14px 24px',
+                  borderRadius: 12,
+                  border: 0,
+                  cursor: 'pointer',
+                  boxShadow: '0 6px 16px rgba(0,0,0,0.15)',
+                }}
+              >
+                <span>Start Quick Payment</span>
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
           </div>
         </div>
       </main>
@@ -263,14 +367,7 @@ export function Home({ ghaName = "SELLAS", ghaLogo }: HomeProps) {
         }}
       />
 
-      {/* Footer */}
-      <footer className="mt-16 border-t border-gray-200 bg-white" data-testid="footer">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="text-center text-sm text-gray-500">
-            <p data-testid="copyright-text">© 2026 {ghaName}. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <BrandFooter />
     </div>
   );
 }

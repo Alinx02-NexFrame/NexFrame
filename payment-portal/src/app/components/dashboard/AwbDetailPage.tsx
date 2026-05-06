@@ -5,6 +5,7 @@ import { AwbSearchResult } from './AwbSearchResult';
 import { globalCartState } from '../../data/cartState';
 import { globalWatchlistState } from '../../data/watchlistState';
 import { toast } from 'sonner';
+import { BrandHeader } from '../sellas/BrandHeader';
 
 export function AwbDetailPage() {
   const { awbNumber } = useParams<{ awbNumber: string }>();
@@ -65,23 +66,18 @@ export function AwbDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <Button
-            variant="ghost"
-            onClick={handleBack}
-            className="flex items-center"
-          >
+    <div className="min-h-screen sellas-bg">
+      <BrandHeader
+        subtitle="AWB Detail"
+        actions={
+          <Button variant="ghost" onClick={handleBack} className="link-sellas">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Dashboard
           </Button>
-        </div>
-      </div>
+        }
+      />
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="mx-auto px-6 sm:px-8 lg:px-12 py-10" style={{ maxWidth: '1230px' }}>
         <AwbSearchResult
           awbNumber={awbNumber}
           onBack={handleBack}

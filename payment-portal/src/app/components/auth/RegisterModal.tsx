@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { X, Mail, Lock, User, Building2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
-import { Card } from '../ui/card';
 import { authApi, setAccessToken, setCurrentUser } from '../../services/apiClient';
 import { globalCartState } from '../../data/cartState';
 import { toast } from 'sonner';
+import { DecoLine } from '../sellas/DecoLine';
 
 interface RegisterModalProps {
   isOpen: boolean;
@@ -49,28 +49,46 @@ export function RegisterModal({ isOpen, onClose, onRegisterSuccess }: RegisterMo
     }
   };
 
+  const inputIcon = (Icon: typeof User) => (
+    <Icon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5" style={{ color: 'var(--sellas-fg-5)' }} />
+  );
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-md bg-white shadow-2xl">
-        <div className="p-6">
+      <div
+        className="w-full max-w-md rounded-[20px] overflow-hidden"
+        style={{
+          background: 'var(--sellas-surface-0)',
+          boxShadow: '0 24px 80px rgba(0,0,0,0.25)',
+        }}
+      >
+        <div className="p-7">
           {/* Header */}
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Create Account</h2>
+          <div className="flex justify-between items-start mb-5">
+            <div>
+              <DecoLine size="sm" />
+              <h2 className="mt-3" style={{ fontSize: 26, fontWeight: 700, color: 'var(--sellas-fg-1)' }}>
+                Create Account
+              </h2>
+              <p className="script mt-1" style={{ fontSize: 18 }}>Let's get started!</p>
+            </div>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="transition-colors"
+              style={{ color: 'var(--sellas-fg-5)' }}
               data-testid="register-modal-close"
+              onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--sellas-fg-2)')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--sellas-fg-5)')}
             >
               <X className="h-6 w-6" />
             </button>
           </div>
 
-          {/* Register Form */}
           <form onSubmit={handleRegister} className="space-y-4" data-testid="register-form">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+              <label className="block mb-1.5" style={{ fontSize: 13, fontWeight: 500, color: 'var(--sellas-fg-2)' }}>Username</label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                {inputIcon(User)}
                 <Input
                   type="text"
                   placeholder="Choose a username"
@@ -84,9 +102,9 @@ export function RegisterModal({ isOpen, onClose, onRegisterSuccess }: RegisterMo
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+              <label className="block mb-1.5" style={{ fontSize: 13, fontWeight: 500, color: 'var(--sellas-fg-2)' }}>Full Name</label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                {inputIcon(User)}
                 <Input
                   type="text"
                   placeholder="John Doe"
@@ -100,9 +118,9 @@ export function RegisterModal({ isOpen, onClose, onRegisterSuccess }: RegisterMo
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+              <label className="block mb-1.5" style={{ fontSize: 13, fontWeight: 500, color: 'var(--sellas-fg-2)' }}>Email Address</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                {inputIcon(Mail)}
                 <Input
                   type="email"
                   placeholder="your.email@company.com"
@@ -116,9 +134,9 @@ export function RegisterModal({ isOpen, onClose, onRegisterSuccess }: RegisterMo
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+              <label className="block mb-1.5" style={{ fontSize: 13, fontWeight: 500, color: 'var(--sellas-fg-2)' }}>Company Name</label>
               <div className="relative">
-                <Building2 className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                {inputIcon(Building2)}
                 <Input
                   type="text"
                   placeholder="Your Company Ltd."
@@ -132,9 +150,9 @@ export function RegisterModal({ isOpen, onClose, onRegisterSuccess }: RegisterMo
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+              <label className="block mb-1.5" style={{ fontSize: 13, fontWeight: 500, color: 'var(--sellas-fg-2)' }}>Password</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                {inputIcon(Lock)}
                 <Input
                   type="password"
                   placeholder="Create a password"
@@ -149,9 +167,9 @@ export function RegisterModal({ isOpen, onClose, onRegisterSuccess }: RegisterMo
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+              <label className="block mb-1.5" style={{ fontSize: 13, fontWeight: 500, color: 'var(--sellas-fg-2)' }}>Confirm Password</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                {inputIcon(Lock)}
                 <Input
                   type="password"
                   placeholder="Confirm your password"
@@ -176,7 +194,7 @@ export function RegisterModal({ isOpen, onClose, onRegisterSuccess }: RegisterMo
             </Button>
           </form>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }

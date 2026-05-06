@@ -67,7 +67,7 @@ export function RevenueAnalytics() {
       <div className="grid md:grid-cols-4 gap-6">
         <Card className="p-6">
           <div className="flex items-center justify-between mb-2">
-            <DollarSign className="h-10 w-10 text-blue-600" />
+            <DollarSign className="h-10 w-10 text-[color:var(--sellas-purple)]" />
             <TrendingUp className="h-5 w-5 text-green-600" />
           </div>
           <p className="text-sm text-gray-500 mb-1">Total Revenue</p>
@@ -75,13 +75,13 @@ export function RevenueAnalytics() {
           <p className="text-xs text-green-600 mt-1">↑ 15% from last month</p>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+        <Card className="p-6 bg-[color:var(--sellas-surface-lilac)] border-[color:var(--sellas-border-soft)]">
           <div className="flex items-center justify-between mb-2">
-            <CreditCard className="h-10 w-10 text-blue-600" />
+            <CreditCard className="h-10 w-10 text-[color:var(--sellas-purple)]" />
           </div>
-          <p className="text-sm text-blue-700 mb-1">Processing Fee Revenue</p>
+          <p className="text-sm text-[color:var(--sellas-purple)] mb-1">Processing Fee Revenue</p>
           <p className="text-3xl font-bold text-blue-900">${revenueStats.processingFeeRevenue.toLocaleString()}</p>
-          <p className="text-xs text-blue-700 mt-1">Your platform revenue</p>
+          <p className="text-xs text-[color:var(--sellas-purple)] mt-1">Your platform revenue</p>
         </Card>
 
         <Card className="p-6">
@@ -168,8 +168,8 @@ export function RevenueAnalytics() {
           {topCustomers.map((customer, idx) => (
             <div key={idx} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div className="flex items-center space-x-4">
-                <div className="bg-blue-100 rounded-full h-10 w-10 flex items-center justify-center">
-                  <span className="text-blue-600 font-bold">{idx + 1}</span>
+                <div className="bg-[color:var(--sellas-surface-lilac)] rounded-full h-10 w-10 flex items-center justify-center">
+                  <span className="text-[color:var(--sellas-purple)] font-bold">{idx + 1}</span>
                 </div>
                 <div>
                   <p className="font-semibold text-gray-900">{customer.name}</p>

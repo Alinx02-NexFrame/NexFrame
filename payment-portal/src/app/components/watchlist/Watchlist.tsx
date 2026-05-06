@@ -9,6 +9,8 @@ import { useState, useEffect } from 'react';
 import { cargoApi } from '../../services/apiClient';
 import type { CargoInfo } from '../../types';
 import { Input } from '../ui/input';
+import { BrandHeader } from '../sellas/BrandHeader';
+import { DecoLine } from '../sellas/DecoLine';
 
 export function Watchlist() {
   const navigate = useNavigate();
@@ -95,42 +97,40 @@ export function Watchlist() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                onClick={() => navigate('/dashboard')}
-                className="flex items-center"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Dashboard
-              </Button>
-              <div className="h-6 w-px bg-gray-300"></div>
-              <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-                <Eye className="h-6 w-6 mr-3 text-blue-600" />
-                Your Watchlist
-              </h1>
-            </div>
+    <div className="min-h-screen sellas-bg">
+      <BrandHeader
+        subtitle="Watchlist"
+        actions={
+          <>
+            <Button variant="ghost" onClick={() => navigate('/dashboard')} className="link-sellas">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Dashboard
+            </Button>
             {watchlist.length > 0 && (
               <Button
                 variant="outline"
                 onClick={handleClearWatchlist}
-                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
               >
                 <X className="h-4 w-4 mr-2" />
                 Clear All
               </Button>
             )}
-          </div>
-        </div>
-      </div>
+          </>
+        }
+      />
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="mx-auto px-6 sm:px-8 lg:px-12 py-10" style={{ maxWidth: '1230px' }}>
+        <div className="mb-8">
+          <DecoLine />
+          <h1
+            className="mt-5 flex items-center"
+            style={{ fontSize: 35, fontWeight: 700, color: 'var(--sellas-fg-1)' }}
+          >
+            <Eye className="h-8 w-8 mr-3" style={{ color: 'var(--sellas-purple)' }} />
+            Your Watchlist
+          </h1>
+        </div>
         {watchlist.length === 0 ? (
           <Card className="p-12 text-center">
             <Eye className="h-16 w-16 text-gray-300 mx-auto mb-4" />
@@ -138,7 +138,7 @@ export function Watchlist() {
             <p className="text-gray-600 mb-6">
               Add AWB numbers to your watchlist to track them easily
             </p>
-            <Button onClick={() => navigate('/dashboard')} className="bg-blue-600 hover:bg-blue-700">
+            <Button onClick={() => navigate('/dashboard')} className="bg-[color:var(--sellas-purple)] hover:opacity-90">
               Go to Dashboard
             </Button>
           </Card>
@@ -148,7 +148,7 @@ export function Watchlist() {
               <h2 className="text-lg font-semibold text-gray-900">
                 Tracked Shipments
               </h2>
-              <Badge className="bg-blue-600 text-white">{watchlist.length} AWB(s)</Badge>
+              <Badge className="bg-[color:var(--sellas-purple)] text-white">{watchlist.length} AWB(s)</Badge>
             </div>
 
             <div className="mb-6 flex items-center gap-3">
@@ -159,7 +159,7 @@ export function Watchlist() {
                   placeholder="Search AWB number..."
                   value={searchTerm}
                   onChange={handleSearchChange}
-                  className="w-full pl-10 h-12 border-2 border-gray-300 focus:border-blue-500 shadow-sm"
+                  className="w-full pl-10 h-12 border-2 border-gray-300 focus:border-[color:var(--sellas-purple)] shadow-sm"
                 />
               </div>
               <Button
@@ -168,14 +168,14 @@ export function Watchlist() {
                 onClick={() => setShowFilter(!showFilter)}
                 className={`flex items-center gap-2 px-4 h-12 border-2 ${
                   showFilter || filterType !== 'none'
-                    ? 'bg-blue-50 border-blue-300 text-blue-700 hover:bg-blue-100'
+                    ? 'bg-[color:var(--sellas-surface-lilac)] border-[color:var(--sellas-border-soft)] text-[color:var(--sellas-purple)] hover:bg-[color:var(--sellas-surface-lilac)]'
                     : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                 }`}
               >
                 <Filter className="h-4 w-4" />
                 <span className="font-medium">Filter</span>
                 {filterType !== 'none' && (
-                  <Badge className="bg-blue-600 text-white ml-1">1</Badge>
+                  <Badge className="bg-[color:var(--sellas-purple)] text-white ml-1">1</Badge>
                 )}
               </Button>
               <div className="flex items-center gap-2 border-2 border-gray-200 rounded-lg p-1 bg-white">
@@ -185,7 +185,7 @@ export function Watchlist() {
                   onClick={() => setViewMode('list')}
                   className={`flex items-center gap-2 px-3 ${
                     viewMode === 'list'
-                      ? 'bg-blue-100 text-blue-700 hover:bg-blue-100'
+                      ? 'bg-[color:var(--sellas-surface-lilac)] text-[color:var(--sellas-purple)] hover:bg-[color:var(--sellas-surface-lilac)]'
                       : 'text-gray-600 hover:bg-gray-100'
                   }`}
                 >
@@ -198,7 +198,7 @@ export function Watchlist() {
                   onClick={() => setViewMode('grid')}
                   className={`flex items-center gap-2 px-3 ${
                     viewMode === 'grid'
-                      ? 'bg-blue-100 text-blue-700 hover:bg-blue-100'
+                      ? 'bg-[color:var(--sellas-surface-lilac)] text-[color:var(--sellas-purple)] hover:bg-[color:var(--sellas-surface-lilac)]'
                       : 'text-gray-600 hover:bg-gray-100'
                   }`}
                 >
@@ -213,7 +213,7 @@ export function Watchlist() {
               <div className="mb-6 bg-white border-2 border-gray-200 rounded-lg p-4 shadow-sm">
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2 text-gray-700">
-                    <Filter className="h-5 w-5 text-blue-600" />
+                    <Filter className="h-5 w-5 text-[color:var(--sellas-purple)]" />
                     <span className="font-medium">Filter by:</span>
                   </div>
                   <select
@@ -222,7 +222,7 @@ export function Watchlist() {
                       setFilterType(e.target.value as any);
                       setFilterValue('');
                     }}
-                    className="px-3 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none bg-white text-sm font-medium"
+                    className="px-3 py-2 border-2 border-gray-300 rounded-lg focus:border-[color:var(--sellas-purple)] focus:outline-none bg-white text-sm font-medium"
                   >
                     <option value="none">No Filter</option>
                     <option value="consignee">Consignee</option>
@@ -237,7 +237,7 @@ export function Watchlist() {
                         placeholder={`Enter ${filterType}...`}
                         value={filterValue}
                         onChange={(e) => setFilterValue(e.target.value)}
-                        className="flex-1 h-10 border-2 border-gray-300 focus:border-blue-500"
+                        className="flex-1 h-10 border-2 border-gray-300 focus:border-[color:var(--sellas-purple)]"
                       />
                       <Button
                         variant="ghost"
@@ -279,7 +279,7 @@ export function Watchlist() {
                         {/* Header with AWB and Status */}
                         <div className={`flex items-center mb-3 ${viewMode === 'grid' ? 'flex-col items-start gap-2' : 'justify-between'}`}>
                           <div className="flex items-center space-x-2">
-                            <Package className="h-5 w-5 text-blue-600 flex-shrink-0" />
+                            <Package className="h-5 w-5 text-[color:var(--sellas-purple)] flex-shrink-0" />
                             <h3 className="font-bold text-gray-900 text-base">{awb}</h3>
                             {cargo && (
                               <span className="text-sm">
@@ -295,7 +295,7 @@ export function Watchlist() {
                             <Button
                               onClick={() => handleViewDetails(awb)}
                               size="sm"
-                              className={`bg-blue-600 hover:bg-blue-700 ${viewMode === 'grid' ? 'flex-1 transition-none' : ''}`}
+                              className={`bg-[color:var(--sellas-purple)] hover:opacity-90 ${viewMode === 'grid' ? 'flex-1 transition-none' : ''}`}
                             >
                               View Details
                             </Button>

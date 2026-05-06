@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Building2, DollarSign, TrendingUp, Users, Settings, BarChart3, Database, LogOut } from 'lucide-react';
+import { DollarSign, Users, BarChart3, Database, LogOut } from 'lucide-react';
 import { Button } from './ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { RevenueAnalytics } from './gha/RevenueAnalytics';
@@ -7,6 +7,8 @@ import { CustomerManagement } from './gha/CustomerManagement';
 import { DataIntegration } from './gha/DataIntegration';
 import { ReportsManagement } from './gha/ReportsManagement';
 import { useNavigate } from 'react-router';
+import { BrandHeader } from './sellas/BrandHeader';
+import { DecoLine } from './sellas/DecoLine';
 
 interface GHADashboardProps {
   onBackToPortal: () => void;
@@ -21,44 +23,51 @@ export function GHADashboard({ onBackToPortal }: GHADashboardProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Building2 className="h-10 w-10" />
-              <div>
-                <h1 className="text-2xl font-bold">SELLAS GHA</h1>
-                <p className="text-xs text-blue-100">Admin Dashboard - Payment Portal Management</p>
-              </div>
+    <div className="min-h-screen sellas-bg">
+      <BrandHeader
+        variant="gradient"
+        subtitle="GHA Admin"
+        actions={
+          <>
+            <div className="text-right mr-2 hidden md:block">
+              <p style={{ fontSize: 13, fontWeight: 600, color: '#FFFFFF' }}>Admin User</p>
+              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.85)' }}>admin@sellas.com</p>
             </div>
-            <div className="flex items-center space-x-3">
-              <div className="text-right mr-4 hidden md:block">
-                <p className="text-sm font-semibold">Admin User</p>
-                <p className="text-xs text-blue-100">admin@sellas.com</p>
-              </div>
-              <Button variant="secondary" size="sm" onClick={onBackToPortal}>
-                Public Portal
-              </Button>
-              <Button variant="ghost" size="sm" onClick={handleLogout} className="text-white hover:text-white hover:bg-blue-700">
-                <LogOut className="h-4 w-4 mr-2" />
-                Logout
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+            <button
+              onClick={onBackToPortal}
+              className="px-4 py-2 rounded-md text-sm font-semibold"
+              style={{ background: 'rgba(255,255,255,0.18)', color: '#FFFFFF' }}
+            >
+              Public Portal
+            </button>
+            <button
+              onClick={handleLogout}
+              className="inline-flex items-center px-3 py-2 rounded-md text-sm font-medium"
+              style={{ color: '#FFFFFF' }}
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
+            </button>
+          </>
+        }
+      />
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">GHA Management Center</h2>
-          <p className="text-gray-600">Revenue analytics, customer management, and AI data integration in one place</p>
+      <main className="mx-auto px-6 sm:px-8 lg:px-12 py-10" style={{ maxWidth: '1230px' }}>
+        <div className="mb-8">
+          <DecoLine />
+          <h2 className="mt-5" style={{ fontSize: 35, fontWeight: 700, color: 'var(--sellas-fg-1)' }}>
+            Management Center
+          </h2>
+          <p className="mt-2" style={{ fontSize: 16, color: 'var(--sellas-fg-3)' }}>
+            Revenue analytics, customer management, and AI data integration in one place.
+          </p>
         </div>
 
         <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
+          <TabsList
+            className="grid w-full grid-cols-4 mb-8 p-1"
+            style={{ background: 'var(--sellas-surface-lilac)', border: '1px solid var(--sellas-border-soft)' }}
+          >
             <TabsTrigger value="revenue" className="flex items-center space-x-2">
               <DollarSign className="h-4 w-4" />
               <span className="hidden sm:inline">Revenue Analytics</span>

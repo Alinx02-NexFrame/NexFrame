@@ -115,6 +115,13 @@ credentials.json
 publish-profile.xml
 publish/
 publish.zip
+publish-farthings/
+publish-farthings*.zip
+publish-farthings-fx/
+publish-farthings-portable/
+
+# Azure Functions local dev settings (may contain secrets)
+local.settings.json
 applogs.zip
 azure-credentials.json
 sp-creds.json
