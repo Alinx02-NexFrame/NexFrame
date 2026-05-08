@@ -1,0 +1,330 @@
+/* ============================================================
+   Nest Mart brand layer — colors, type, utilities.
+   Loaded after tailwind.css and theme.css; overrides shadcn tokens
+   so every Button/Card/Input/Tab inherits the Nest Mart palette.
+
+   Token *names* are preserved from the prior Farthings/Sellas
+   layer so all downstream components keep working — only the
+   *values* changed. This is the key to applying Nest Mart to
+   every page without rewriting components.
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Lato:wght@400;500;700;900&display=swap");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css");
+
+:root {
+  /* ===== Nest Mart brand tokens (mapped onto Sellas variable names) ===== */
+  --sellas-pink:       #BCE3C9;                /* mapped → mint border */
+  --sellas-purple:     #3BB77E;                /* mapped → brand green primary */
+  --sellas-red:        #3BB77E;                /* mapped → brand green */
+  --sellas-yellow:     #BCE3C9;                /* mapped → mint accent */
+  --sellas-red-hover:  #29a06a;                /* darker green for hover */
+  --sellas-gradient:   #3BB77E;                /* solid brand green — Nest Mart has no gradients */
+  --sellas-gradient-h: #29a06a;
+
+  /* Ink ramp — Nest Mart navy ink for headings, gray for body */
+  --sellas-fg-1: #253D4E;     /* ink — headings */
+  --sellas-fg-2: #253D4E;     /* primary text */
+  --sellas-fg-3: #7E7E7E;     /* body copy (Nest Mart default body gray) */
+  --sellas-fg-4: #687188;     /* muted ink-soft */
+  --sellas-fg-5: #ADADAD;     /* very muted (timestamps, ratings) */
+  --sellas-fg-6: #ECECEC;     /* hairline — Nest Mart card border */
+
+  /* Surfaces */
+  --sellas-surface-0: #FFFFFF;
+  --sellas-surface-1: #FFFFFF;
+  --sellas-surface-2: #F8F9FA;       /* bg-muted */
+  --sellas-surface-pink:   #DEF9EC;  /* mint-100 (Add-button bg, info chip) */
+  --sellas-surface-lilac:  #F0FBF5;  /* mint-50 (faintest wash) */
+  --sellas-surface-mint:   #DEF9EC;  /* native mint surface */
+  --sellas-surface-butter: #BCE3C9;  /* mint-200 (count chip / accent) */
+
+  --sellas-border-soft: #ECECEC;
+
+  /* Shadows — Nest Mart signature soft drop (down + right) */
+  --sellas-shadow-nav:    0 2px 6px 0 rgba(0,0,0,0.04);
+  --sellas-shadow-card:   5px 5px 15px 0 rgba(0,0,0,0.05);
+  --sellas-shadow-button: 0 2px 6px 0 rgba(59,183,126,0.18);
+  --sellas-shadow-pill:   0 2px 6px 0 rgba(0,0,0,0.06);
+  --sellas-shadow-soft:   0 14px 40px 0 rgba(37,61,78,0.10);
+  --sellas-shadow-avatar: 0 2px 6px 0 rgba(0,0,0,0.05);
+
+  /* Type — Quicksand display, Lato body */
+  --sellas-font-sans:    "Lato", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --sellas-font-heading: "Quicksand", "Comic Sans MS", system-ui, sans-serif;
+  --sellas-font-script:  "Quicksand", "Comic Sans MS", system-ui, sans-serif; /* "signature" slot */
+
+  /* ===== Override shadcn tokens so primitives pick up Nest Mart palette ===== */
+  --background: #FFFFFF;
+  --foreground: #253D4E;
+  --card: #FFFFFF;
+  --card-foreground: #253D4E;
+  --popover: #FFFFFF;
+  --popover-foreground: #253D4E;
+  --primary: #3BB77E;                  /* brand green */
+  --primary-foreground: #FFFFFF;
+  --secondary: #BCE3C9;                /* mint accent */
+  --secondary-foreground: #253D4E;
+  --muted: #F8F9FA;
+  --muted-foreground: #687188;
+  --accent: #DEF9EC;                   /* mint tint */
+  --accent-foreground: #253D4E;
+  --destructive: #F74B81;              /* hot pink */
+  --destructive-foreground: #FFFFFF;
+  --border: #ECECEC;
+  --input: #ECECEC;
+  --input-background: #FFFFFF;
+  --ring: #3BB77E;
+
+  /* Recharts / sidebar — Nest Mart palette with status accents */
+  --chart-1: #3BB77E;
+  --chart-2: #67BCEE;
+  --chart-3: #F59758;
+  --chart-4: #81B13D;
+  --chart-5: #F74B81;
+
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #253D4E;
+  --sidebar-primary: #3BB77E;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #DEF9EC;
+  --sidebar-accent-foreground: #253D4E;
+  --sidebar-border: #ECECEC;
+  --sidebar-ring: #3BB77E;
+
+  --radius: 0.9375rem;   /* 15px — Nest Mart card standard */
+}
+
+/* Body type — Lato */
+html, body {
+  font-family: var(--sellas-font-sans);
+  color: var(--sellas-fg-3);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Heading defaults — Quicksand Bold, navy ink */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--sellas-font-heading);
+  font-weight: 700;
+  color: var(--sellas-fg-1);
+  letter-spacing: 0;
+}
+
+/* ===== Nest Mart utility classes (preserved class names) ===== */
+
+/* The signature mint underline pill that sits below
+   centered section titles. Replaces the yellow Farthings bar but
+   keeps the same class name so nothing downstream breaks. */
+.deco-line {
+  display: inline-block;
+  width: 80px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--sellas-yellow);
+}
+.deco-line-sm {
+  display: inline-block;
+  width: 56px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--sellas-yellow);
+}
+
+/* Primary green CTA — solid brand green, 5px radius, Quicksand Bold label */
+.btn-gradient {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 5px;
+  background: var(--sellas-red);
+  color: #FFFFFF;
+  font-family: var(--sellas-font-heading);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  border: 0;
+  cursor: pointer;
+  box-shadow: var(--sellas-shadow-button);
+  transition: background-color 180ms ease,
+              transform 90ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.btn-gradient:hover { background: #253D4E; }   /* Nest Mart hover: ink */
+.btn-gradient:active { transform: translateY(1px); }
+
+/* Inline accent — Quicksand Bold in brand green */
+.text-gradient {
+  color: var(--sellas-red);
+  font-family: var(--sellas-font-heading);
+  font-weight: 700;
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  -webkit-text-fill-color: currentColor;
+}
+
+/* Display accent — Quicksand Bold in brand green */
+.script {
+  font-family: var(--sellas-font-heading);
+  font-weight: 700;
+  color: var(--sellas-red);
+  letter-spacing: 0.01em;
+}
+
+/* Surface tints — soft mint variants */
+.surface-pink   { background-color: var(--sellas-surface-pink); }
+.surface-lilac  { background-color: var(--sellas-surface-lilac); }
+.surface-mint   { background-color: var(--sellas-surface-mint); }
+.surface-butter { background-color: var(--sellas-surface-butter); }
+
+/* Card — soft drop-shadow, hairline border */
+.sellas-card {
+  background: #FFFFFF;
+  border-radius: 15px;
+  box-shadow: var(--sellas-shadow-card);
+  border: 1px solid var(--sellas-border-soft);
+}
+
+/* Card with hairline border (no shadow) */
+.sellas-card-bordered {
+  background: var(--sellas-surface-1);
+  border-radius: 15px;
+  border: 1px solid var(--sellas-border-soft);
+}
+
+/* Showcase card — Nest Mart 2px mint accent border */
+.sellas-card-showcase {
+  border-radius: 15px;
+  background: #FFFFFF;
+  border: 2px solid var(--sellas-yellow);
+}
+
+/* Section-title row */
+.sellas-section-title {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* "Contact us" pill in nav — solid brand green, fully rounded */
+.btn-pill-gradient {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 24px;
+  border-radius: 50px;
+  background: var(--sellas-red);
+  color: #FFFFFF;
+  font-family: var(--sellas-font-heading);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  border: 0;
+  cursor: pointer;
+  box-shadow: var(--sellas-shadow-pill);
+  transition: background 180ms ease;
+}
+.btn-pill-gradient:hover { background: #253D4E; }
+
+/* Tight ring around hero / illustration containers — mint 2px in Nest Mart */
+.sellas-ring-gradient {
+  position: relative;
+  border: 2px solid var(--sellas-yellow);
+  border-radius: inherit;
+}
+.sellas-ring-gradient::before { content: none; }
+
+/* Status badges — Nest Mart status palette */
+.sellas-badge-success {
+  background: #DEF9EC;
+  color: #1f7a4d;
+  border: 1px solid #BCE3C9;
+}
+.sellas-badge-warning {
+  background: #FFF4E0;
+  color: #8A5A00;
+  border: 1px solid #FDC040;
+}
+.sellas-badge-info {
+  background: #E1F2FB;
+  color: #1A6FA0;
+  border: 1px solid #67BCEE;
+}
+
+/* Subtle hover-link — green */
+.link-sellas {
+  color: var(--sellas-fg-1);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+.link-sellas:hover { color: var(--sellas-red); }
+
+/* Page background — soft mint wash */
+.sellas-bg {
+  background:
+    radial-gradient(900px 500px at 92% -8%, rgba(59,183,126,0.08), transparent 60%),
+    radial-gradient(800px 420px at -8% 110%, rgba(188,227,201,0.18), transparent 60%),
+    #FFFFFF;
+}
+
+/* ===== Nest Mart-specific signature utilities (additive — opt-in) ===== */
+
+/* UPPERCASE green Quicksand eyebrow above section titles */
+.farthings-eyebrow {
+  display: block;
+  font-family: var(--sellas-font-heading);
+  color: var(--sellas-red);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+/* 1px hairline divider — used between menu rows */
+.farthings-divider {
+  border: 0;
+  border-top: 1px solid var(--sellas-border-soft);
+  margin: 16px 0;
+}
+
+/* Mint pill tag (count badge / price tag) */
+.farthings-pill-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: var(--sellas-yellow);
+  color: var(--sellas-fg-1);
+  font-family: var(--sellas-font-sans);
+  font-weight: 700;
+  text-align: center;
+  line-height: 1;
+}
+
+/* Soft-shadow card — the dominant Nest Mart card */
+.farthings-card {
+  background: #FFFFFF;
+  border-radius: 15px;
+  border: 1px solid var(--sellas-border-soft);
+  box-shadow: var(--sellas-shadow-card);
+}
+
+/* Mint underline (heading flourish) — used on section heads */
+.nm-section-underline {
+  position: relative;
+  padding-bottom: 14px;
+}
+.nm-section-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 80px;
+  height: 2px;
+  background: var(--sellas-yellow);
+}
